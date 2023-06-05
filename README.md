@@ -34,6 +34,13 @@ Command line run example for Java 1.6 version of OmegaMUD:
 
 *NOTE: the JAR filename will be different depending on which Java version it was built for.*
 
+## What Works
+* Telnet connections.
+* Basic ANSI/BBS support (adding more CSI/commands as they are found).
+* Basic MajorMUD string (ANSI) parsing (room data, etc.).
+* Debug frame with various tabs to show debug info.
+* Toggle between single and multi-char input (send) type.
+
 ## Tested Systems
 WinXP, Win7, Win8, Win10\
 Slackware Linux 15.0 x64\
