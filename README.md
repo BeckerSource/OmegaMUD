@@ -38,6 +38,7 @@ Command line run example for Java 1.6 version of OmegaMUD:
 * Telnet connections.
 * Basic terminal with ANSI support (adding more CSI/commands as they are found).
 * Basic MajorMUD string (ANSI) parsing (room data, etc.).
+* MegaMUD RoomID generation (for MegaMUD path backward support).
 * Debug frame with various tabs to show debug info.
 * Toggle between single and multi-char input (send) type.
 
