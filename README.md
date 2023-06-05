@@ -30,5 +30,5 @@ NOTE: the JAR filename will be different depending on which Java version it was 
 
 ## Tested Systems
 WinXP, Win7, Win 8, Win10\
-Slackware Linux 15.0 x64
+Slackware Linux 15.0 x64\
 Mac: Untested
