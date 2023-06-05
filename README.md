@@ -6,8 +6,7 @@ Tested with OpenJDK 1.6 (J6), 1.7 (J7), and 1.8 (J8).\
 I assume equivalent Oracle Java versions should work.
 
 ## Apache Commons Net
-Apache Commons Net lib is used for telnet communications.\
-This is also the reason Java 1.6 is the minimum version.
+Apache Commons Net lib is required and used for telnet communications.
 
 ## Environment Setup (Building/Running)
 JAVA_HOME environment variable must be set to your Java location.\
