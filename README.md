@@ -1,9 +1,2 @@
 # OmegaMUD
-Future home of OmegaMUD: next-generation client for MajorMUD
-
-
-dsadsadas
-
-
-dsa
-
+Another attempt at a MegaMUD replacement in Java.
