@@ -36,7 +36,7 @@ Command line run example for Java 1.6 version of OmegaMUD:
 
 ## What Works
 * Telnet connections.
-* Basic ANSI/BBS support (adding more CSI/commands as they are found).
+* Basic terminal with ANSI support (adding more CSI/commands as they are found).
 * Basic MajorMUD string (ANSI) parsing (room data, etc.).
 * Debug frame with various tabs to show debug info.
 * Toggle between single and multi-char input (send) type.
