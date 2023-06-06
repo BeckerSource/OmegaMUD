@@ -1,0 +1,2 @@
+Main-Class: OMUD_Main
+Class-Path: lib/commons-net-3.9.0-telnet.jar
