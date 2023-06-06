@@ -52,3 +52,4 @@ Mac: Untested
 ![BBS Main Menu](./screenshots/omegamud-bbs_main_menu.png)
 ![BBS Account Edit](./screenshots/omegamud-bbs_account_edit.png)
 ![MajorMUD Newhaven Arena](./screenshots/omegamud-mud_newhaven_arena.png)
+![MajorMUD Train Stats](./screenshots/omegamud-mud_train_stats.png)
