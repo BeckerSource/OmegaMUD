@@ -46,3 +46,9 @@ Command line run example for Java 1.6 version of OmegaMUD:
 WinXP, Win7, Win8, Win10\
 Slackware Linux 15.0 x64\
 Mac: Untested
+
+## Screenshots
+![BBS Login](./screenshots/omegamud-bbs_login.png)
+![BBS Main Menu](./screenshots/omegamud-bbs_main_menu.png)
+![BBS Account Edit](./screenshots/omegamud-bbs_account_edit.png)
+![MajorMUD Newhaven Arena](./screenshots/omegamud-mud_newhaven_arena.png)
