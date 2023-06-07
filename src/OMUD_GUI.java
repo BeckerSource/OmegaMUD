@@ -102,13 +102,13 @@ public class OMUD_GUI implements OMUD_ITelnetEvents, OMUD_ITextInputEvents, OMUD
 		// Optional Auto-Stuff
 		// --------------
         // auto single-mode...
-		//SwingUtilities.invokeLater(new Runnable(){public void run(){
-		//	_tglSingleMode.setSelected(true);
-        //}});
+		SwingUtilities.invokeLater(new Runnable(){public void run(){
+			_tglSingleMode.setSelected(true);
+        }});
         // auto connect...
-		//SwingUtilities.invokeLater(new Runnable(){public void run(){
-		//	_omt.connect(_txtTelnetConAdr.getText(), _txtTelnetConPort.getText());
-        //}});
+		SwingUtilities.invokeLater(new Runnable(){public void run(){
+			_omt.connect(_txtTelnetConAdr.getText(), _txtTelnetConPort.getText());
+        }});
     }
 
     private void setStatusLocText(String text){_txtStatusLoc.setText("BBSLoc: " + text);}

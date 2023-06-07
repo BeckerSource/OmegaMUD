@@ -60,9 +60,11 @@ public class OMUD_MMUD{
 	};
 
 	public static class RoomExit{
-		public RoomExit(eExitDir dir, eDoorType door){eDir = dir; eDoor = door;}
 		eExitDir 	eDir = eExitDir.NONE;
 		eDoorType  eDoor = eDoorType.NONE;
+
+		public RoomExit(eExitDir dir, eDoorType door){eDir = dir; eDoor = door;}
+		public RoomExit(RoomExit re){eDir = re.eDir; eDoor = re.eDoor;}
 	}
 
 	// ------------------
@@ -96,6 +98,23 @@ public class OMUD_MMUD{
 		public ArrayList<String> 		arrlItemsHidden = 	new ArrayList<String>();
 		public ArrayList<String> 		arrlUnits = 		new ArrayList<String>();
 		public ArrayList<RoomExit> 		arrlExits = 		new ArrayList<RoomExit>();
+
+		public DataRoom(){}
+		public DataRoom(DataRoom room){
+			roomID = 			new String(room.roomID);
+			name = 				new String(room.name);
+			desc = 				new String(room.desc);
+			items = 			new String(room.items);
+			items_hidden = 		new String(room.items_hidden);
+			units = 			new String(room.units);
+			exits = 			new String(room.exits);
+			light = 			room.light;
+			OMUD.copyStringArrayList(arrlItems, 		room.arrlItems);
+			OMUD.copyStringArrayList(arrlItemsHidden, 	room.arrlItemsHidden);
+			OMUD.copyStringArrayList(arrlUnits, 		room.arrlUnits);
+	        for (int i = 0; i < room.arrlExits.size(); ++i)
+	            arrlExits.add(new RoomExit(room.arrlExits.get(i)));
+		}
 	}	
 
 	public static class DataStatline{
@@ -106,6 +125,17 @@ public class OMUD_MMUD{
 		public int hp_max = 		0;
 		public int ma_max = 		0;
 		public eRestState rest = 	eRestState.ACTIVE;
+
+		public DataStatline(){}
+		public DataStatline(DataStatline dsl){
+			last_cmd = 	new String(dsl.last_cmd);
+			text = 		new String(dsl.text);
+			hp = 		dsl.hp;
+			ma = 		dsl.ma;
+			hp_max = 	dsl.hp_max;
+			ma_max = 	dsl.ma_max;
+			rest = 		dsl.rest;
+		}
 	}
 
 	public static class DataExp{

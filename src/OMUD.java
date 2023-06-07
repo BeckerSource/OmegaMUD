@@ -1,3 +1,4 @@
+
 // *************************************
 // THIS FILE FOR SHARED STATIC CONSTANTS
 // *************************************
@@ -6,6 +7,7 @@ import java.awt.Color;
 import java.io.File;
 import java.io.PrintWriter;
 import java.io.FileOutputStream;
+import java.util.ArrayList;
 
 // ---------------------
 // Enums
@@ -204,4 +206,8 @@ public class OMUD{
     // --------------
     // getFillString(): convenience func for filling spaces...
     public static String getFillString(String strFill, int fill_size){return new String(new char[fill_size]).replace("\0", strFill);}
+    public static void copyStringArrayList(ArrayList<String> arrlSrc, ArrayList<String> arrlDest){
+        for (int i = 0; i < arrlSrc.size(); ++i)
+            arrlDest.add(new String(arrlSrc.get(i)));
+    }
 }

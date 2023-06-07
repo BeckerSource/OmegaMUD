@@ -296,7 +296,7 @@ public class OMUD_MMUDParser{
 					// change/move this later...
 					if (_dataStatline.last_cmd.length() == 0) // LF was removed above
 						_dataStatline.last_cmd = CMD_ENTER;
-					_ommme.notifyMUDDebugCmd(_dataStatline.last_cmd);
+					_ommme.notifyMUDDebugCmd(new String(_dataStatline.last_cmd));
 
 					i = pos_new_lf; // update the main iter
 				}
@@ -394,7 +394,7 @@ public class OMUD_MMUDParser{
 					// NOTE: not always shown, depends on verbose/brief setting
 					} else if ((pos_data_delete_start = findMUDData(true, i, MUD_STRINGS[eMUDStrings.ROOM_DESCRIPTION.ordinal()], "")) > -1){
 						_dataRoom.desc = _sbDataMUD.toString();
-						_ommme.notifyMUDDebugChar(_dataRoom, _dataStatline);
+						_ommme.notifyMUDDebugChar(new OMUD_MMUD.DataRoom(_dataRoom), new OMUD_MMUD.DataStatline(_dataStatline));
 
 					// ------------------
 					// Room Search Revealed None
@@ -501,7 +501,7 @@ public class OMUD_MMUDParser{
 							}
 
 							_dataStatline.text = _sbDataMUD.toString();
-							_ommme.notifyMUDDebugChar(_dataRoom, _dataStatline);
+							_ommme.notifyMUDDebugChar(new OMUD_MMUD.DataRoom(_dataRoom), new OMUD_MMUD.DataStatline(_dataStatline));
 						}
 					}
 
