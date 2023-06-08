@@ -41,6 +41,7 @@ Command line run example for Java 1.6 version of OmegaMUD:
 * MegaMUD RoomID generation (for MegaMUD path backward support).
 * Debug frame with various tabs to show debug info.
 * Toggle between single and multi-char input (send) type.
+* Command throttling/queueing. Helpful for commands like search, pick, and bash.
 
 ## Tested Systems
 WinXP, Win7, Win8, Win10\

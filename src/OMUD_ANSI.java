@@ -3,19 +3,19 @@ import javax.swing.text.StyleConstants;
 import javax.swing.text.SimpleAttributeSet;
 
 public class OMUD_ANSI{
-    private StringBuilder   _text =         new StringBuilder();
-    private eANSIColors     _fg =           OMUD.ANSI_DEFAULT_FG;
-    private eANSIColors     _bg =           OMUD.ANSI_DEFAULT_BG;
-    private boolean         _fg_set =       false;
-    private boolean         _bg_set =       false;
-    private boolean         _bold =         false;
-    private boolean         _dim =          false;
-    private boolean         _italic =       false;
-    private boolean         _underline =    false;
-    private boolean         _blink =        false;
-    private boolean         _invert =       false;
-    private boolean         _invis =        false;
-    private boolean         _strike =       false;
+    private StringBuilder       _text =         new StringBuilder();
+    private OMUD.eANSIColors    _fg =           OMUD.ANSI_DEFAULT_FG;
+    private OMUD.eANSIColors    _bg =           OMUD.ANSI_DEFAULT_BG;
+    private boolean             _fg_set =       false;
+    private boolean             _bg_set =       false;
+    private boolean             _bold =         false;
+    private boolean             _dim =          false;
+    private boolean             _italic =       false;
+    private boolean             _underline =    false;
+    private boolean             _blink =        false;
+    private boolean             _invert =       false;
+    private boolean             _invis =        false;
+    private boolean             _strike =       false;
 
     public OMUD_ANSI(){}
     public OMUD_ANSI(String text)   {_text.append(text);}
@@ -37,8 +37,8 @@ public class OMUD_ANSI{
     // Setters/Getters
     // --------------
     public StringBuilder getText()      {return _text;}
-    public eANSIColors getFG()          {return _fg;}
-    public eANSIColors getBG()          {return _bg;}
+    public OMUD.eANSIColors getFG()     {return _fg;}
+    public OMUD.eANSIColors getBG()     {return _bg;}
     public boolean isFGSet()            {return _fg_set;}
     public boolean isBGSet()            {return _bg_set;}
     public boolean isBold()             {return _bold;}
@@ -49,8 +49,8 @@ public class OMUD_ANSI{
     public boolean isInvert()           {return _invert;}
     public boolean isInvis()            {return _invis;}
     public boolean isStrike()           {return _strike;}
-    public void setFG(eANSIColors eac)  {_fg = eac; _fg_set = true;}
-    public void setBG(eANSIColors eac)  {_bg = eac; _bg_set = true;}
+    public void setFG(OMUD.eANSIColors eac)  {_fg = eac; _fg_set = true;}
+    public void setBG(OMUD.eANSIColors eac)  {_bg = eac; _bg_set = true;}
     public void setBold(boolean v)      {_bold = v;}
     public void setDim(boolean v)       {_dim = v;}
     public void setItalic(boolean v)    {_italic = v;}
@@ -77,7 +77,7 @@ public class OMUD_ANSI{
     // --------------
     public static void setAttrFromANSI(OMUD_ANSI ansi, SimpleAttributeSet attr, boolean set_fg){
         Color color = Color.WHITE;
-        eANSIColors eac = set_fg ? ansi.getFG() : ansi.getBG();
+        OMUD.eANSIColors eac = set_fg ? ansi.getFG() : ansi.getBG();
 
         if (set_fg){
             if (ansi.isBold())
@@ -104,12 +104,12 @@ public class OMUD_ANSI{
     public static void setANSIFromAttr(OMUD_ANSI ansi, SimpleAttributeSet attr){
         Color fg = StyleConstants.getForeground(attr);
         Color bg = StyleConstants.getBackground(attr);
-        eANSIColors new_eac_fg = null;
-        eANSIColors new_eac_bg = null;
+        OMUD.eANSIColors new_eac_fg = null;
+        OMUD.eANSIColors new_eac_bg = null;
         boolean loop = true;
 
         for (int i = 0; i < 3 && loop; ++i){
-        for (eANSIColors eac : eANSIColors.values()){
+        for (OMUD.eANSIColors eac : OMUD.eANSIColors.values()){
             Color[] ptrArr = OMUD.ANSI_COLORS_NORM;
             if (i == 1)
                 ptrArr = OMUD.ANSI_COLORS_BOLD;

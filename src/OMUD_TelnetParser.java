@@ -109,7 +109,7 @@ public class OMUD_TelnetParser{
     }
 
     public void setGUIReady(){_gui_busy = false;}
-    public void threadParseData(String strNewData, StringBuilder sbLastCmd, String strLastCmd){
+    public boolean threadParseData(String strNewData, StringBuilder sbCmd){
         if (strNewData.length() > 0)
             _sbNewData.append(strNewData);
 
@@ -283,41 +283,41 @@ public class OMUD_TelnetParser{
 
                                 // Colors 8: FG...
                                 } else if (code.equals("30")){
-                                    _ansi.setFG(eANSIColors.BLACK);
+                                    _ansi.setFG(OMUD.eANSIColors.BLACK);
                                 } else if (code.equals("31")){
-                                    _ansi.setFG(eANSIColors.RED);
+                                    _ansi.setFG(OMUD.eANSIColors.RED);
                                 } else if (code.equals("32")){
-                                    _ansi.setFG(eANSIColors.GREEN);
+                                    _ansi.setFG(OMUD.eANSIColors.GREEN);
                                 } else if (code.equals("33")){
-                                    _ansi.setFG(eANSIColors.YELLOW);
+                                    _ansi.setFG(OMUD.eANSIColors.YELLOW);
                                 } else if (code.equals("34")){
-                                    _ansi.setFG(eANSIColors.BLUE);
+                                    _ansi.setFG(OMUD.eANSIColors.BLUE);
                                 } else if (code.equals("35")){
-                                    _ansi.setFG(eANSIColors.MAGENTA);
+                                    _ansi.setFG(OMUD.eANSIColors.MAGENTA);
                                 } else if (code.equals("36")){
-                                    _ansi.setFG(eANSIColors.CYAN);
+                                    _ansi.setFG(OMUD.eANSIColors.CYAN);
                                 } else if (code.equals("37")){
-                                    _ansi.setFG(eANSIColors.WHITE);
+                                    _ansi.setFG(OMUD.eANSIColors.WHITE);
                                 } else if (code.equals("39")){
                                     _ansi.resetFG();
 
                                 // Colors 8: BG...
                                 } else if (code.equals("40")){
-                                    _ansi.setBG(eANSIColors.BLACK);
+                                    _ansi.setBG(OMUD.eANSIColors.BLACK);
                                 } else if (code.equals("41")){
-                                    _ansi.setBG(eANSIColors.RED);
+                                    _ansi.setBG(OMUD.eANSIColors.RED);
                                 } else if (code.equals("42")){
-                                    _ansi.setBG(eANSIColors.GREEN);
+                                    _ansi.setBG(OMUD.eANSIColors.GREEN);
                                 } else if (code.equals("43")){
-                                    _ansi.setBG(eANSIColors.YELLOW);
+                                    _ansi.setBG(OMUD.eANSIColors.YELLOW);
                                 } else if (code.equals("44")){
-                                    _ansi.setBG(eANSIColors.BLUE);
+                                    _ansi.setBG(OMUD.eANSIColors.BLUE);
                                 } else if (code.equals("45")){
-                                    _ansi.setBG(eANSIColors.MAGENTA);
+                                    _ansi.setBG(OMUD.eANSIColors.MAGENTA);
                                 } else if (code.equals("46")){
-                                    _ansi.setBG(eANSIColors.CYAN);
+                                    _ansi.setBG(OMUD.eANSIColors.CYAN);
                                 } else if (code.equals("47")){
-                                    _ansi.setBG(eANSIColors.WHITE);
+                                    _ansi.setBG(OMUD.eANSIColors.WHITE);
                                 } else if (code.equals("49")){
                                     _ansi.resetBG();
 
@@ -498,13 +498,15 @@ public class OMUD_TelnetParser{
         }
 
         // mud: parse data...
-        _mmp.threadParseData(sbLastCmd, strLastCmd);
+        boolean allow_cmds = _mmp.threadParseData(sbCmd);
 
         // notify/gui wait...
         _gui_busy = true;
-        _omte.notifyTelnetParsed(_omb, _arrlBMods, strLastCmd);
+        _omte.notifyTelnetParsed(_omb, _arrlBMods);
         try{
             while (_gui_busy) Thread.sleep(1);
         } catch (Exception e){OMUD.logError("Error parsing telnet data: error waiting (sleeping) for GUI: " + e.getMessage());}
+
+        return allow_cmds;
     }
 }

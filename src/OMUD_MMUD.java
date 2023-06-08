@@ -1,6 +1,21 @@
 import java.util.ArrayList;
 
 public class OMUD_MMUD{
+	// ------------------
+	// Command
+	// ------------------
+	public static abstract class Command{
+		private String cmd_full = 	"";
+		private String cmd_short = 	"";
+		private boolean has_delay = false; // delayed command examples: search, pick door, bash door, etc.
+
+		public Command(String cfull, String cshort, boolean has_dly){
+			cmd_full =  cfull;
+			cmd_short = cshort;
+			has_delay = has_dly;
+		}
+		public abstract boolean findResponseStrings();
+	}
 
 	// ------------------
 	// Room Data
@@ -60,8 +75,8 @@ public class OMUD_MMUD{
 	};
 
 	public static class RoomExit{
-		eExitDir 	eDir = eExitDir.NONE;
-		eDoorType  eDoor = eDoorType.NONE;
+		public eExitDir   eDir =  eExitDir.NONE;
+		public eDoorType  eDoor = eDoorType.NONE;
 
 		public RoomExit(eExitDir dir, eDoorType door){eDir = dir; eDoor = door;}
 		public RoomExit(RoomExit re){eDir = re.eDir; eDoor = re.eDoor;}
@@ -187,19 +202,19 @@ public class OMUD_MMUD{
 	}
 
 	public static class DataParty{
-		ArrayList<String> 	name = 			new ArrayList<String>();
-		ArrayList<String> 	party_class = 	new ArrayList<String>();
-		ArrayList<Integer>  hp_cur = 		new ArrayList<Integer>();
-		ArrayList<Integer>  ma_cur = 		new ArrayList<Integer>();
-		ArrayList<Integer>  hp_max = 		new ArrayList<Integer>();
-		ArrayList<Integer>  ma_max = 		new ArrayList<Integer>();
-		ArrayList<String>  	rank = 			new ArrayList<String>();
+		public ArrayList<String> 	name = 			new ArrayList<String>();
+		public ArrayList<String> 	party_class = 	new ArrayList<String>();
+		public ArrayList<Integer>   hp_cur = 		new ArrayList<Integer>();
+		public ArrayList<Integer>   ma_cur = 		new ArrayList<Integer>();
+		public ArrayList<Integer>   hp_max = 		new ArrayList<Integer>();
+		public ArrayList<Integer>   ma_max = 		new ArrayList<Integer>();
+		public ArrayList<String>  	rank = 			new ArrayList<String>();
 	}
 
 	public static class DataSpell{
-		ArrayList<Integer> 	level = 	 new ArrayList<Integer>();
-		ArrayList<Integer> 	mana  = 	 new ArrayList<Integer>();
-		ArrayList<String> 	name_short = new ArrayList<String>();
-		ArrayList<String> 	name_long =  new ArrayList<String>();
+		public ArrayList<Integer> 	level = 	 	new ArrayList<Integer>();
+		public ArrayList<Integer> 	mana  = 	 	new ArrayList<Integer>();
+		public ArrayList<String> 	name_short = 	new ArrayList<String>();
+		public ArrayList<String> 	name_long =  	new ArrayList<String>();
 	}
 }

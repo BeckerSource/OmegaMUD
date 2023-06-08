@@ -18,24 +18,26 @@ import org.apache.commons.net.telnet.TelnetCommand;
 interface OMUD_ITelnetEvents {
     public void notifyTelnetConnected();
     public void notifyTelnetDisconnected();
-    public void notifyTelnetParsed(OMUD_Buffer omb, ArrayList<OMUD_IBufferMod> arrlBMods, final String strLastCmd);
+    public void notifyTelnetParsed(OMUD_Buffer omb, ArrayList<OMUD_IBufferMod> arrlBMods);
 }
 
 public class OMUD_Telnet {
-    private OMUD_ITelnetEvents          _omte =         null;
-    private OMUD_TelnetParser           _omtp =         null;
-    private ReentrantLock               _lockSend =     null;
-    private ReentrantLock               _lockParse =    null;
-    private RunApache                   _runApache =    null;
-    private Thread                      _threadReader = null;
-    private TelnetClient                _tnc =          null;
-    private TerminalTypeOptionHandler   _tncOptType =   null;
-    private EchoOptionHandler           _tncOptEcho  =  null;
-    private SuppressGAOptionHandler     _tncOptGA  =    null;
-    private Timer                       _tmrAYT =       null;
-    private TimerTask                   _taskAYT =      null;
-    private StringBuilder               _sbCurrCmd =    null;
-    private StringBuilder               _sbLastCmd =    null;
+    private OMUD_ITelnetEvents          _omte =             null;
+    private OMUD_TelnetParser           _omtp =             null;
+    private ReentrantLock               _lockSend =         null;
+    private ReentrantLock               _lockParse =        null;
+    private RunApache                   _runApache =        null;
+    private Thread                      _threadReader =     null;
+    private TelnetClient                _tnc =              null;
+    private TerminalTypeOptionHandler   _tncOptType =       null;
+    private EchoOptionHandler           _tncOptEcho  =      null;
+    private SuppressGAOptionHandler     _tncOptGA  =        null;
+    private Timer                       _tmrAYT =           null;
+    private TimerTask                   _taskAYT =          null;
+    private StringBuilder               _sbCmdNew =         null;
+    private StringBuilder               _sbCmdNewUnsent =   null;
+    private ArrayList<StringBuilder>    _arrlCmds =         null;
+    private boolean                     _allow_send =       false;
     private long                        _ayt_last_response_time_ms = 0;
     private final String    TERMINAL_TYPE =     "ANSI";
     private final String    TERMINAL_CHARSET =  "ISO-8859-1";
@@ -49,11 +51,12 @@ public class OMUD_Telnet {
     public OMUD_Telnet(OMUD_ITelnetEvents omte, OMUD_TelnetParser omtp) throws IOException {
         _omte = omte;
         _omtp = omtp;
-        _lockSend =     new ReentrantLock(true);
-        _lockParse =    new ReentrantLock(true);
-        _runApache =    new RunApache();
-        _sbCurrCmd =    new StringBuilder();
-        _sbLastCmd =    new StringBuilder();
+        _lockSend =         new ReentrantLock(true);
+        _lockParse =        new ReentrantLock(true);
+        _runApache =        new RunApache();
+        _sbCmdNew =         new StringBuilder();
+        _sbCmdNewUnsent =   new StringBuilder();
+        _arrlCmds =         new ArrayList<StringBuilder>();
 
         // create telet client object...
         _tncOptType = new TerminalTypeOptionHandler(TERMINAL_TYPE, false, false, true, false);
@@ -147,38 +150,60 @@ public class OMUD_Telnet {
         public ThreadSend(String text){_text = text;}
         public void run(){
             if (isConnected()){
-                _lockSend.lock(); // lock for ordered sending
+                _lockSend.lock();
+                    _lockParse.lock();
 
-                    // throttle a bit by waiting for the parser to be completely finished -
-                    // not guaranteed but seems to help when spamming 
-                    // both delayed and instant mud commands (search vs just enter, etc)...
-                    try{ 
-                        while (_lockParse.hasQueuedThreads()) Thread.sleep(1);
-                    } catch (Exception e){OMUD.logError("Telnet: error sleeping for parse lock queued threads: " + e.getMessage());}                    
-                    _lockParse.lock(); // prevent parsing while sending
+                        // check if we already have unsent commands/text -
+                        // if first command is empty, mud cleared it, so not unsent if empty...
+                        boolean have_unsent_text = _text.length() == 0 || _sbCmdNewUnsent.length() > 0 || 
+                            (_arrlCmds.size() > 0 && _arrlCmds.get(0).length() > 0);
 
-                        // validate sent text:
-                        // check the first character for a valid range of printable chars and enter.
-                        // only really matters for single mode, but just check every time for simplicity...
-                        if ((_text.charAt(0) >= OMUD.ASCII_SPC && _text.charAt(0) < OMUD.ASCII_DEL) || _text.charAt(0) == OMUD.ASCII_LF){
-                            _sbCurrCmd.append(_text);
-                            if (_sbCurrCmd.charAt(_sbCurrCmd.length() - 1) == OMUD.ASCII_LF){
-                                _sbLastCmd.setLength(0);
-                                _sbLastCmd.append(_sbCurrCmd);
-                                _sbCurrCmd.setLength(0);
+                        // string could be empty if coming coming from a call to send the unsent...
+                        if (_text.length() > 0){
+                            // validate text to send:
+                            // check the first character for a valid range of printable chars and enter.
+                            // only really matters for single mode, but just check every time for simplicity...
+                            if ((_text.charAt(0) >= OMUD.ASCII_SPC && _text.charAt(0) < OMUD.ASCII_DEL) || _text.charAt(0) == OMUD.ASCII_LF){
+                                _sbCmdNew.append(_text);
+                                _sbCmdNewUnsent.append(_text);
+                                if (_sbCmdNew.charAt(_sbCmdNew.length() - 1) == OMUD.ASCII_LF){
+                                    _arrlCmds.add(new StringBuilder(_sbCmdNew));
+                                    _sbCmdNew.setLength(0);
+                                    _sbCmdNewUnsent.setLength(0);
+                                }
+                            // if backspace, delete the last char (assumes single mode)...
+                            } else if (_text.charAt(0) == OMUD.ASCII_BS){
+                                if (_sbCmdNew.length() > 0)
+                                    _sbCmdNew.deleteCharAt(_sbCmdNew.length() - 1);
+                                if (_sbCmdNewUnsent.length() > 0)
+                                    _sbCmdNewUnsent.deleteCharAt(_sbCmdNewUnsent.length() - 1);
                             }
-                        // if backspace, delete the last char (assumes single mode)...
-                        } else if (_text.charAt(0) == OMUD.ASCII_BS && _sbCurrCmd.length() > 0){
-                            _sbCurrCmd.deleteCharAt(_sbCurrCmd.length() - 1);
                         }
 
-                        // send...
-                        try {
-                            _tnc.getOutputStream().write(_text.getBytes(), 0, _text.length());
-                            _tnc.getOutputStream().flush();
-                        } catch (Exception e) {
-                            OMUD.logError("Telnet: error sending: " + e.getMessage());
-                        }                        
+                        // send is prevented when a command is sent and 
+                        // until mud says it's ready for another...
+                        if (_allow_send){
+                            // use unsent commands/text first...
+                            if (have_unsent_text){
+                                if (_arrlCmds.size() > 0){
+                                    _text = _arrlCmds.get(0).toString();
+                                } else if (_sbCmdNewUnsent.length() > 0){
+                                    _text = _sbCmdNewUnsent.toString();
+                                    _sbCmdNewUnsent.setLength(0);
+                                }
+                            } else _sbCmdNewUnsent.setLength(0);
+
+                            if (_text.length() > 0){
+                                _allow_send = _text.charAt(_text.length() - 1) != OMUD.ASCII_LF;
+                                try {
+                                    _tnc.getOutputStream().write(_text.getBytes(), 0, _text.length());
+                                    _tnc.getOutputStream().flush();
+                                } catch (Exception e) {
+                                    OMUD.logError("Telnet: error sending: " + e.getMessage());
+                                }                                
+                            }
+                        }
+
                     _lockParse.unlock();
                 _lockSend.unlock();
             } else {
@@ -200,7 +225,15 @@ public class OMUD_Telnet {
         public ThreadParse(String strData){_strData = strData;}
         public void run(){
             _lockParse.lock();
-                _omtp.threadParseData(_strData, _sbLastCmd, _sbLastCmd.toString()); // string copy passed for convenience
+                // update the command array and check if we need to send the unsent...
+                int cmds_count = _arrlCmds.size();
+                if ((_allow_send = _omtp.threadParseData(_strData, cmds_count > 0 ? _arrlCmds.get(0) : null))){
+                    if (cmds_count > 0)
+                        _arrlCmds.remove(0);
+                    if (!_lockSend.hasQueuedThreads() && 
+                        (_arrlCmds.size() > 0 || _sbCmdNewUnsent.length() > 0))
+                        new ThreadSend("").start();
+                }
             _lockParse.unlock();
         }
     }

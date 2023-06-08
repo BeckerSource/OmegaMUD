@@ -1,6 +1,5 @@
 OMUD
 OMUD_ANSI
-OMUD_BBS
 OMUD_BlinkText
 OMUD_Buffer
 OMUD_BufferInsert

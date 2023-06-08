@@ -31,7 +31,6 @@ public class OMUD_GUI implements OMUD_ITelnetEvents, OMUD_ITextInputEvents, OMUD
     private OMUD_GUIScrollPane  _scroll =           null;
     private OMUD_GUITerminal    _term =             null;
     private OMUD_GUITextInput   _txtInput =         null;
-    private OMUD_BBS            _bbs =              null;
     private OMUD_MMUDChar       _mmc =              null;
     private JFrame              _fMain =            null;
     private JFrame              _fView =            null;
@@ -69,12 +68,6 @@ public class OMUD_GUI implements OMUD_ITelnetEvents, OMUD_ITextInputEvents, OMUD
         _sdf = new SimpleDateFormat("yyyy-MM-dd_kk-mm-ss");
 
         // --------------
-        // BBS/MUD Stuff
-        // --------------
-        _bbs = new OMUD_BBS();
-        _mmc = new OMUD_MMUDChar();
-
-        // --------------
         // GUI Creation
         // --------------
         createGUI();
@@ -98,17 +91,22 @@ public class OMUD_GUI implements OMUD_ITelnetEvents, OMUD_ITextInputEvents, OMUD
         }});
         OMUD.logInfo("GUI Created");
 
+        // --------------
+        // MUD Stuff
+        // --------------
+        _mmc = new OMUD_MMUDChar();
+
 		// --------------
 		// Optional Auto-Stuff
 		// --------------
         // auto single-mode...
-		SwingUtilities.invokeLater(new Runnable(){public void run(){
-			_tglSingleMode.setSelected(true);
-        }});
+		//SwingUtilities.invokeLater(new Runnable(){public void run(){
+		//	_tglSingleMode.setSelected(true);
+        //}});
         // auto connect...
-		SwingUtilities.invokeLater(new Runnable(){public void run(){
-			_omt.connect(_txtTelnetConAdr.getText(), _txtTelnetConPort.getText());
-        }});
+		//SwingUtilities.invokeLater(new Runnable(){public void run(){
+		//	_omt.connect(_txtTelnetConAdr.getText(), _txtTelnetConPort.getText());
+        //}});
     }
 
     private void setStatusLocText(String text){_txtStatusLoc.setText("BBSLoc: " + text);}
@@ -170,7 +168,7 @@ public class OMUD_GUI implements OMUD_ITelnetEvents, OMUD_ITextInputEvents, OMUD
         _txtStatusRoomID.setForeground(OMUD.TERMINAL_LOCAL_INFO_FG);
         _txtStatusEXPLeft.setForeground(OMUD.TERMINAL_LOCAL_INFO_FG);
         _txtStatusEXPRate.setForeground(OMUD.TERMINAL_LOCAL_INFO_FG);
-        setStatusLocText(_bbs.getLocationString());
+        setStatusLocText(OMUD.BBS_LOCATION_STRINGS[OMUD.eBBSLocation.OFFLINE.ordinal()]);
 
         // input...
         _pnlInput = new JPanel();
@@ -401,29 +399,20 @@ public class OMUD_GUI implements OMUD_ITelnetEvents, OMUD_ITextInputEvents, OMUD
     public void notifyTelnetConnected(){
         SwingUtilities.invokeLater(new Runnable(){public void run(){
             _btnTelnetConnect.setText("Disconnect");
-            setStatusLocText(_bbs.setLocation(OMUD_BBS.eLocation.BBS));
+            setStatusLocText(OMUD.BBS_LOCATION_STRINGS[OMUD.eBBSLocation.BBS.ordinal()]);
         }});
     }
 
     public void notifyTelnetDisconnected(){
         SwingUtilities.invokeLater(new Runnable(){public void run(){
             _btnTelnetConnect.setText("Connect");
-            _bbs = new OMUD_BBS();
             _mmc = new OMUD_MMUDChar();
-            setStatusLocText(_bbs.setLocation(OMUD_BBS.eLocation.OFFLINE));
+            setStatusLocText(OMUD.BBS_LOCATION_STRINGS[OMUD.eBBSLocation.OFFLINE.ordinal()]);
         }});
     }
 
-    public void notifyTelnetParsed(final OMUD_Buffer omb, final ArrayList<OMUD_IBufferMod> arrlBMods, final String strLastCmd){
+    public void notifyTelnetParsed(final OMUD_Buffer omb, final ArrayList<OMUD_IBufferMod> arrlBMods){
         SwingUtilities.invokeLater(new Runnable(){public void run(){
-            // parsed telnet data can come in after a disconnect (threaded), so pass connection state...
-            if (_bbs.checkLocation(_omt.isConnected(), strLastCmd)){
-                setStatusLocText(_bbs.getLocationString());
-                // for testing convenince: switch to room debug tab when entering mud...
-                if (_bbs.getLocation() == OMUD_BBS.eLocation.MUD && _tabsInfo.getSelectedIndex() == 0)
-                    _tabsInfo.setSelectedIndex(1);
-            }
-
             // allow the terminal to render buffer mods...
             _term.render(omb, arrlBMods);
 
@@ -467,7 +456,6 @@ public class OMUD_GUI implements OMUD_ITelnetEvents, OMUD_ITextInputEvents, OMUD
     // --------------
     // MUD Events
     // --------------
-    public boolean isInsideMUD(){return _bbs.getLocation() == OMUD_BBS.eLocation.MUD;}
     public void notifyMUDStatline(){}
     public void notifyMUDRoom(){}
     public void notifyMUDExp(){}
@@ -477,9 +465,11 @@ public class OMUD_GUI implements OMUD_ITelnetEvents, OMUD_ITextInputEvents, OMUD
     public void notifyMUDSpells(){}
     public void notifyMUDCombatToggle(boolean is_on){}
 
-    public void notifyMUDBBSMenu(){
+    public void notifyMUDLocation(final OMUD.eBBSLocation eLoc){
         SwingUtilities.invokeLater(new Runnable(){public void run(){
-            setStatusLocText(_bbs.setLocation(OMUD_BBS.eLocation.BBS_MUD_MENU));
+            setStatusLocText(OMUD.BBS_LOCATION_STRINGS[eLoc.ordinal()]);
+            if (_tabsInfo.getSelectedIndex() == 0 && eLoc == OMUD.eBBSLocation.MUD)
+                _tabsInfo.setSelectedIndex(1);
         }});
     }
 

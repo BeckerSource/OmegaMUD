@@ -10,23 +10,28 @@ import java.io.FileOutputStream;
 import java.util.ArrayList;
 
 // ---------------------
-// Enums
-// ---------------------
-enum eANSIColors{
-    BLACK,
-    RED,
-    GREEN,
-    YELLOW,
-    BLUE,
-    MAGENTA,
-    CYAN,
-    WHITE
-}
-
-// ---------------------
 // Shared Static Constants
 // ---------------------
 public class OMUD{
+
+    // ------------------
+    // BBS Locations
+    // ------------------
+    public static enum eBBSLocation{
+        OFFLINE, 
+        BBS,
+        MUD_MENU,
+        MUD
+    }
+
+    public static final String[] BBS_LOCATION_STRINGS = {
+        "Offline",
+        "BBS",
+        "MUD Menu",
+        "MUD"
+    };
+
+
     // --------------
     // Terminal Stuff
     // --------------
@@ -36,6 +41,17 @@ public class OMUD{
     // --------------
     // ANSI Colors/Styles
     // --------------
+    public static enum eANSIColors{
+        BLACK,
+        RED,
+        GREEN,
+        YELLOW,
+        BLUE,
+        MAGENTA,
+        CYAN,
+        WHITE
+    }
+
     public static final Color[] ANSI_COLORS_BOLD = {
         new Color( 85,  85,  85), 
         new Color(240,   0,   0), 
