@@ -52,17 +52,20 @@ public class OMUD_MMUDCmd_Statline extends OMUD_MMUDCmds.Cmd{
 			cleanData(false, true); // strip ansi
 			_dataStatline.text = _sbDataFound.toString();
 			ommme.notifyMUDDebugStatline(new OMUD_MMUD.DataStatline(_dataStatline));
-		}
 
-		// check for multiple statlines:
-		// if multiple statlines were passed, delete all earlier and keep most recent from above.
-		// ( don't bother looking if length isn't close to long enough)
-		if (sbTelnetData.length() > MSTR_STATLINE_PRE.length() + MSTR_STATLINE_END.length()){
-			int pos_multi_statline = -1;
-			do {
-				if ((pos_multi_statline = findData(sbTelnetData, sbTelnetData.length() - 1, false, true, MSTR_STATLINE_PRE, MSTR_STATLINE_END)) > -1)
-					pos_data_found_start = pos_multi_statline;
-			} while (pos_multi_statline > -1);
+			// ------------------
+			// Statline: Remove Extra
+			// ------------------
+			// check for extra (previous) statlines:
+			// if multiple statlines were sent, 
+			// delete all previous and keep the most recent from above.
+			if (sbTelnetData.length() > 0){
+				int pos_multi_statline = -1;
+				do {
+					if ((pos_multi_statline = findData(sbTelnetData, sbTelnetData.length() - 1, false, true, MSTR_STATLINE_PRE, MSTR_STATLINE_END)) > -1)
+						pos_data_found_start = pos_multi_statline;
+				} while (pos_multi_statline > -1);
+			}
 		}
 
 		return pos_data_found_start;
