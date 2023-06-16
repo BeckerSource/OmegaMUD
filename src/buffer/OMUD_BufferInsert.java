@@ -53,7 +53,7 @@ public class OMUD_BufferInsert implements OMUD_IBufferMod{
         else OMUD.logError("Error adding buffer insert mod: " + _strDbgFnc + ", " + _pos_offset + ", " + omb.getText().length() + ", " + _ansi.getText());
     }
 
-    public void render(JTextPane tp, StyledDocument docSwap, ArrayList<OMUD_BlinkText> arrlBlink){
+    public void render(JTextPane tp, StyledDocument docSwap, ArrayList<OMUD_GUIBlinkText> arrlBlink){
         if (_ansi.getText().length() > 0){
             SimpleAttributeSet attr = null;
 
@@ -72,7 +72,7 @@ public class OMUD_BufferInsert implements OMUD_IBufferMod{
             }
 
             if (_ansi.isBlink())
-                arrlBlink.add(new OMUD_BlinkText(_pos_offset, _ansi.getText().length(), (SimpleAttributeSet) attr.copyAttributes()));
+                arrlBlink.add(new OMUD_GUIBlinkText(_pos_offset, _ansi.getText().length(), (SimpleAttributeSet) attr.copyAttributes()));
             try{
                 // JTextPane performance boost by writing to the doc when not attached/visible (swap)...
                 StyledDocument docBuf = tp.getStyledDocument();

@@ -1,11 +1,10 @@
 OMUD
 OMUD_ANSI
-OMUD_BlinkText
 OMUD_Buffer
 OMUD_BufferInsert
 OMUD_BufferMove
 OMUD_BufferRemove
-OMUD_GUI
+OMUD_GUIBlinkText
 OMUD_GUICaret
 OMUD_GUIScrollPane
 OMUD_GUITerminal
@@ -15,5 +14,10 @@ OMUD_MEGA
 OMUD_MMUD
 OMUD_MMUDChar
 OMUD_MMUDParser
+OMUD_MMUDCmds
+OMUD_MMUDCmd_None
+OMUD_MMUDCmd_MUDMenu
+OMUD_MMUDCmd_Statline
+OMUD_MMUDCmd_LookRoom
 OMUD_Telnet
 OMUD_TelnetParser

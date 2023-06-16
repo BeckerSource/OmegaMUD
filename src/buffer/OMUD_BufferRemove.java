@@ -22,7 +22,7 @@ public class OMUD_BufferRemove implements OMUD_IBufferMod{
         else OMUD.logError("Error adding buffer remove mod: " + _strDbgFnc + ", " + _pos_offset + ", " + omb.getText().length() + ", " + _rem_length);
     }
 
-    public void render(JTextPane tp, StyledDocument docSwap, ArrayList<OMUD_BlinkText> arrlBlink){
+    public void render(JTextPane tp, StyledDocument docSwap, ArrayList<OMUD_GUIBlinkText> arrlBlink){
         try{
             // update blinking ANSI positions outside the delete range and 
             // remove blinking ANSI stored in the deleted range...

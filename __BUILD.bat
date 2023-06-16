@@ -25,7 +25,15 @@ copy src\%MAN% %BUILD_DIR% >NUL
 REM ------------
 REM Compile
 REM ------------
-javac -Xlint:deprecation -d %BUILD_DIR% -cp %BUILD_DIR%/lib/%JAR_AC% %SRC%/*.java
+javac -Xlint:deprecation -d %BUILD_DIR% -cp %BUILD_DIR%/lib/%JAR_AC% ^
+    %SRC%/*.java ^
+    %SRC%/ansi/*.java ^
+    %SRC%/buffer/*.java ^
+    %SRC%/gui/*.java ^
+    %SRC%/mega/*.java ^
+    %SRC%/mmud/*.java ^
+    %SRC%/mmud_cmds/*.java ^
+    %SRC%/telnet/*.java
 
 REM ------------
 REM Check Class Files

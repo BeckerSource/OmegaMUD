@@ -2,22 +2,6 @@ import java.util.ArrayList;
 
 public class OMUD_MMUD{
 	// ------------------
-	// Command
-	// ------------------
-	public static abstract class Command{
-		private String cmd_full = 	"";
-		private String cmd_short = 	"";
-		private boolean has_delay = false; // delayed command examples: search, pick door, bash door, etc.
-
-		public Command(String cfull, String cshort, boolean has_dly){
-			cmd_full =  cfull;
-			cmd_short = cshort;
-			has_delay = has_dly;
-		}
-		public abstract boolean findResponseStrings();
-	}
-
-	// ------------------
 	// Room Data
 	// ------------------
 	public static enum eExitDir{
@@ -130,10 +114,9 @@ public class OMUD_MMUD{
 	        for (int i = 0; i < room.arrlExits.size(); ++i)
 	            arrlExits.add(new RoomExit(room.arrlExits.get(i)));
 		}
-	}	
+	}
 
 	public static class DataStatline{
-		public String last_cmd = 	"";
 		public String text = 		"";
 		public int hp = 			0;
 		public int ma = 			0;
@@ -143,13 +126,12 @@ public class OMUD_MMUD{
 
 		public DataStatline(){}
 		public DataStatline(DataStatline dsl){
-			last_cmd = 	new String(dsl.last_cmd);
-			text = 		new String(dsl.text);
-			hp = 		dsl.hp;
-			ma = 		dsl.ma;
-			hp_max = 	dsl.hp_max;
-			ma_max = 	dsl.ma_max;
-			rest = 		dsl.rest;
+			text =   new String(dsl.text);
+			hp = 	 dsl.hp;
+			ma = 	 dsl.ma;
+			hp_max = dsl.hp_max;
+			ma_max = dsl.ma_max;
+			rest = 	 dsl.rest;
 		}
 	}
 

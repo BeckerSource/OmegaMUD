@@ -24,7 +24,15 @@ cp src/$MAN $BUILD_DIR 2>/dev/null
 # ------------
 # Compile
 # ------------
-javac -Xlint:deprecation -d $BUILD_DIR -cp $BUILD_DIR/lib/$JAR_AC $SRC/*.java
+javac -Xlint:deprecation -d $BUILD_DIR -cp $BUILD_DIR/lib/$JAR_AC \
+    $SRC/*.java \
+    $SRC/ansi/*.java \
+    $SRC/buffer/*.java \
+    $SRC/gui/*.java \
+    $SRC/mega/*.java \
+    $SRC/mmud/*.java \
+    $SRC/mmud_cmds/*.java \
+    $SRC/telnet/*.java
 
 # ------------
 # Check Class Files

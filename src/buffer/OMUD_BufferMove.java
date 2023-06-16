@@ -12,7 +12,7 @@ public class OMUD_BufferMove implements OMUD_IBufferMod{
         omb.setPos(_pos_caret_new);
     }
 
-    public void render(JTextPane tp, StyledDocument docSwap, ArrayList<OMUD_BlinkText> arrlBlink){
+    public void render(JTextPane tp, StyledDocument docSwap, ArrayList<OMUD_GUIBlinkText> arrlBlink){
         try{
             tp.setCaretPosition(_pos_caret_new);
         } catch (Exception e){

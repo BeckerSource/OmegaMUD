@@ -16,16 +16,16 @@ import javax.swing.text.StyleConstants;
 
 // OMUD_IBufferMod: buffer modifications that are added to array lists for ordered changes to the terminal JTextPane
 interface OMUD_IBufferMod{
-    public void render(JTextPane tp, StyledDocument docSwap, ArrayList<OMUD_BlinkText> arrlBlink);
+    public void render(JTextPane tp, StyledDocument docSwap, ArrayList<OMUD_GUIBlinkText> arrlBlink);
 }
 
 public class OMUD_GUITerminal extends JTextPane {
-    private OMUD_GUIScrollPane         _scroll =       null;
-    private SimpleAttributeSet          _attrLocal =    null;
-    private StyledDocument              _docSwap =      null;
-    private ArrayList<OMUD_BlinkText>   _arrlBlink =    null;
-    private Timer                       _tmrBlink =     null;
-    private Font                        _font =         null;
+    private OMUD_GUIScrollPane                  _scroll =       null;
+    private SimpleAttributeSet                  _attrLocal =    null;
+    private StyledDocument                      _docSwap =      null;
+    private ArrayList<OMUD_GUIBlinkText>        _arrlBlink =    null;
+    private Timer                               _tmrBlink =     null;
+    private Font                                _font =         null;
     private final int       BLINK_DELAY_MS =    500;
     private final int       FONT_SIZE =         8;
     private final String    FONT_FILE =         "fonts/dos437.ttf";
@@ -35,7 +35,7 @@ public class OMUD_GUITerminal extends JTextPane {
         _attrLocal = new SimpleAttributeSet();
         _docSwap =  new DefaultStyledDocument();
         _tmrBlink = new Timer(BLINK_DELAY_MS, null);
-        _arrlBlink = new ArrayList<OMUD_BlinkText>();
+        _arrlBlink = new ArrayList<OMUD_GUIBlinkText>();
 
         setCaret(new OMUD_GUICaret(OMUD_ANSI.getDefaultFGColor()));
         setEditable(false);
