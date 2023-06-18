@@ -11,9 +11,9 @@ public class OMUD_MMUDBlocks{
 		public String 	strCmdText = 		"?";
 
 		public void update(int bp, boolean wfs, String ct){
-			block_pos =  bp;
+			block_pos =  		bp;
 			wait_for_statline = wfs;
-			strCmdText = ct;
+			strCmdText = 		ct;
 		}
 	}
 
@@ -160,33 +160,44 @@ public class OMUD_MMUDBlocks{
 	// ------------------
 	// OMUD_MMUDBlocks
 	// ------------------
-	private ArrayList<Block> 		_arrlBlocks = 		null;
-	private final int 				BPOS_MUD_MENU = 	0;
-	private final int 				BPOS_STATLINE = 	1;
-	private final int  				BPOS_CMDS_START =  	2;
-	private final int 				BPOS_CMD_LOOKROOM = 2;
-	private final int  				BPOS_CMDS_STOP =  	3;
-	private final int 				BPOS_OTHER = 		3;
+	private ArrayList<Block> 			_arrlBlocks = 		null;
+	private int _bpos_cmds_start = 		0;
+	private int _bpos_cmds_stop =  		0;
+	private final int BPOS_MUD_MENU = 	0;
+	private final int BPOS_STATLINE = 	1;
+	private final int BPOS_LOOKROOM = 	2;
 
 	public OMUD_MMUDBlocks(){
 		_arrlBlocks = new ArrayList<Block>();
-		_arrlBlocks.add(new OMUD_MMUDBlock_MUDMenu());	// BPOS_MUD_MENU
-		_arrlBlocks.add(new OMUD_MMUDBlock_Statline()); // BPOS_STATLINE
-		_arrlBlocks.add(new OMUD_MMUDBlock_LookRoom()); // BPOS_CMD_LOOKROOM
-		_arrlBlocks.add(new OMUD_MMUDBlock_Other()); 	// BPOS_OTHER
+		// ------------------
+		// End-of-Buffer Blocks: MUD Menu + Statline
+		// ------------------
+		_arrlBlocks.add(new OMUD_MMUDBlock_MUDMenu());		// BPOS_MUD_MENU
+		_arrlBlocks.add(new OMUD_MMUDBlock_Statline()); 	// BPOS_STATLINE
+		// ------------------
+		// Command Blocks
+		// ------------------
+		_bpos_cmds_start = _arrlBlocks.size();
+		_arrlBlocks.add(new OMUD_MMUDBlock_LookRoom()); 	// BPOS_LOOKROOM
+		_arrlBlocks.add(new OMUD_MMUDBlock_TrainStats());
+		_bpos_cmds_stop = _arrlBlocks.size();
+		// ------------------
+		// Other Line Blocks
+		// ------------------
+		_arrlBlocks.add(new OMUD_MMUDBlock_Other());
 	}
 
 	// resetData(): reset internal data for some special commands
 	public void resetData(){
-		_arrlBlocks.get(BPOS_CMD_LOOKROOM).resetData();
+		_arrlBlocks.get(BPOS_LOOKROOM).resetData();
 	}
 
 	public int parseLineBlocks(ActiveBlock ablk, OMUD_IMUDEvents ommme, StringBuilder sbTelnetData, int pos_offset){
 		int pos_data_found_start = -1;
 
 		// if current block is the statline or mud menu, just parse all the line blocks...
-		if (ablk.block_pos < BPOS_CMDS_START){
-			for (int i = BPOS_CMDS_START; i < _arrlBlocks.size() && pos_data_found_start == -1; ++i)
+		if (ablk.block_pos < _bpos_cmds_start){
+			for (int i = _bpos_cmds_start; i < _arrlBlocks.size() && pos_data_found_start == -1; ++i)
 				pos_data_found_start = _arrlBlocks.get(i).findBlockData(ommme, sbTelnetData, pos_offset);
 		// else parse only the current line block...
 		} else {
@@ -200,7 +211,7 @@ public class OMUD_MMUDBlocks{
 		int pos_data_found_start = _arrlBlocks.get(BPOS_STATLINE).findBlockData(ommme, sbTelnetData, 0);
 		if (pos_data_found_start > -1){
 			ablk.update(BPOS_STATLINE, _arrlBlocks.get(BPOS_STATLINE).waitForStatline(), "");
-			_arrlBlocks.get(BPOS_CMD_LOOKROOM).notifyEvents(ommme);
+			_arrlBlocks.get(BPOS_LOOKROOM).notifyEvents(ommme);
 		}
 		return pos_data_found_start;
 	}
@@ -216,7 +227,7 @@ public class OMUD_MMUDBlocks{
 	// NOTE: assumes passed in as lower-case...
 	public void findCmd(ActiveBlock ablk, String strCmd){
 		String strFoundCmdFull = null;
-		for (int i = BPOS_CMDS_START; i < BPOS_CMDS_STOP && ablk.block_pos == ActiveBlock.BPOS_INVALID; ++i)
+		for (int i = _bpos_cmds_start; i < _bpos_cmds_stop && ablk.block_pos == ActiveBlock.BPOS_INVALID; ++i)
 			if ((strFoundCmdFull = _arrlBlocks.get(i).matchCmdText(strCmd)) != null)
 				ablk.update(i, _arrlBlocks.get(i).waitForStatline(), strFoundCmdFull);
 	}	
