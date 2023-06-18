@@ -1,30 +1,58 @@
 import java.util.ArrayList;
 
-public class OMUD_MMUDCmds{
+public class OMUD_MMUDBlocks{
 	// ------------------
-	// Cmd
+	// ActiveBlock
 	// ------------------	
-	public static abstract class Cmd{
+	public static class ActiveBlock{
+		public static final int BPOS_INVALID = 	-1;
+		public int 		block_pos = 		BPOS_INVALID;
+		public boolean 	wait_for_statline = true;
+		public String 	strCmdText = 		"?";
+
+		public void update(int bp, boolean wfs, String ct){
+			block_pos =  bp;
+			wait_for_statline = wfs;
+			strCmdText = ct;
+		}
+	}
+
+	// ------------------
+	// Block
+	// ------------------	
+	public static abstract class Block{
 		protected class CmdText{
-			public String 	text = "";
-			public int 		pos_req = 0;
-			public boolean  has_delay = false; // delayed command examples: search, pick door, bash door, etc.
-			public CmdText(String t, int pr, boolean hd){text = t; pos_req = pr; has_delay = hd;}
+			public String 	text  = 	"";
+			public int 		min_len = 	0;
+			public CmdText(String t, int ml){text = t; min_len = ml;}
 		}
 
 		protected ArrayList<CmdText> _arrlCmdText = new ArrayList<CmdText>();
-		protected StringBuilder 	 _sbDataFound = new StringBuilder();
+		protected StringBuilder 	 _sbBlockData = new StringBuilder();
 
-		public abstract boolean allowCmds();
-		public boolean matchCmdText(StringBuilder sbCmd){
+		public abstract void resetData();
+		public abstract void notifyEvents(OMUD_IMUDEvents ommme);
+		public abstract boolean waitForStatline();
+
+		public String matchCmdText(String strCmd){
+			String strFoundCmdFull = null;
+
+			int i = 0;
 			boolean found = false;
-			for (int i = 0; i < _arrlCmdText.size() && !found; ++i){
-				found = OMUD.compareSBString(sbCmd, _arrlCmdText.get(i).text);
+			for (; i < _arrlCmdText.size() && !found; ++i){
+				// initial check to meet min length requirement of the command...
+				found = strCmd.length() >= _arrlCmdText.get(i).min_len && strCmd.length() <= _arrlCmdText.get(i).text.length();
+				// match characters if valid (assumes all lower case)...
+				for (int j = 0; j < strCmd.length() && found; ++j)
+					found = strCmd.charAt(j) == _arrlCmdText.get(i).text.charAt(j);
 			}
-			return found;
+
+			if (found)
+				strFoundCmdFull = _arrlCmdText.get(--i).text;
+			return strFoundCmdFull;
 		}
 
-		public abstract int findCmdData(OMUD_IMUDEvents ommme, StringBuilder sbTelnetData, int pos_offset);
+		public abstract int findBlockData(OMUD_IMUDEvents ommme, StringBuilder sbTelnetData, int pos_offset);
 		protected int findData(StringBuilder sbTelnetData, int pos_offset, boolean offset_is_lf, boolean has_dynamic_text, String strStartSeq, String strEndSeq){
 			int pos_endseq_left =  	 -1;
 			int pos_endseq_right = 	 -1;
@@ -62,12 +90,12 @@ public class OMUD_MMUDCmds{
 					}
 
 					if (valid_range){
-						_sbDataFound.setLength(0);
+						_sbBlockData.setLength(0);
 						if (pos_startseq_right < pos_endseq_left){
 							// adjust the endseq left if for a LF with no end seq text...
 							if (offset_is_lf && strEndSeq.length() == 0)
 								pos_endseq_left++;
-							_sbDataFound.append(sbTelnetData.substring(pos_startseq_right, pos_endseq_left));
+							_sbBlockData.append(sbTelnetData.substring(pos_startseq_right, pos_endseq_left));
 						}
 						// delete the data in the buffer...
 						sbTelnetData.delete(pos_startseq_left, pos_endseq_right + (offset_is_lf ? 1 : 0) + 1); // +1 for exclusive
@@ -81,19 +109,19 @@ public class OMUD_MMUDCmds{
 		protected void cleanData(boolean trim_lf_spc, boolean strip_ansi){
 			int pos_first_char = -1;
 			int pos_last_char  = -1;
-			for (int i = 0; i < _sbDataFound.length(); ++i){
-				if (strip_ansi && _sbDataFound.charAt(i) == OMUD.ASCII_ESC){
-					int pos_ansi_end = _sbDataFound.indexOf(OMUD.CSI_GRAPHICS_STR, i);
+			for (int i = 0; i < _sbBlockData.length(); ++i){
+				if (strip_ansi && _sbBlockData.charAt(i) == OMUD.ASCII_ESC){
+					int pos_ansi_end = _sbBlockData.indexOf(OMUD.CSI_GRAPHICS_STR, i);
 					// if matching ansi end is not found, just delete the escape char.
 					if (pos_ansi_end == -1)
 						pos_ansi_end = i + 1; 	// +1 for exclusive end
 					else pos_ansi_end++; 		// 
-					_sbDataFound.delete(i--, pos_ansi_end); // move 'i' back after delete so that we pick up the first char after the delete
+					_sbBlockData.delete(i--, pos_ansi_end); // move 'i' back after delete so that we pick up the first char after the delete
 
 				} else if (trim_lf_spc){
-					if (_sbDataFound.charAt(i) == OMUD.ASCII_LF){
-						_sbDataFound.setCharAt(i, OMUD.ASCII_SPC);
-					} else if (_sbDataFound.charAt(i) != OMUD.ASCII_SPC){
+					if (_sbBlockData.charAt(i) == OMUD.ASCII_LF){
+						_sbBlockData.setCharAt(i, OMUD.ASCII_SPC);
+					} else if (_sbBlockData.charAt(i) != OMUD.ASCII_SPC){
 						pos_last_char = i;
 						if (pos_first_char == -1)
 							pos_first_char = i;
@@ -103,10 +131,10 @@ public class OMUD_MMUDCmds{
 
 			// trim: delete end first...
 			if (trim_lf_spc){
-				if (pos_last_char > pos_first_char && pos_last_char < _sbDataFound.length() - 1)
-					_sbDataFound.delete(pos_last_char + 1, _sbDataFound.length()); // +1 to move forward to begin at space after last char
+				if (pos_last_char > pos_first_char && pos_last_char < _sbBlockData.length() - 1)
+					_sbBlockData.delete(pos_last_char + 1, _sbBlockData.length()); // +1 to move forward to begin at space after last char
 				if (pos_first_char > 0)
-					_sbDataFound.delete(0, pos_first_char);			
+					_sbBlockData.delete(0, pos_first_char);			
 			}
 		}
 
@@ -130,65 +158,68 @@ public class OMUD_MMUDCmds{
 	}
 
 	// ------------------
-	// OMUD_MMUDCmds
+	// OMUD_MMUDBlocks
 	// ------------------
-	private Cmd 					_cmd = 			null;
-	private OMUD_MMUDCmd_MUDMenu 	_cmdMUDMenu = 	null;
-	private OMUD_MMUDCmd_Statline 	_cmdStatline = 	null;
-	private OMUD_MMUDCmd_LookRoom 	_cmdLookRoom = 	null;
-	private ArrayList<Cmd> 			_arrlLineCmds = new ArrayList<Cmd>();
+	private ArrayList<Block> 		_arrlBlocks = 		null;
+	private final int 				BPOS_MUD_MENU = 	0;
+	private final int 				BPOS_STATLINE = 	1;
+	private final int  				BPOS_CMDS_START =  	2;
+	private final int 				BPOS_CMD_LOOKROOM = 2;
+	private final int  				BPOS_CMDS_STOP =  	3;
+	private final int 				BPOS_OTHER = 		3;
 
-	public OMUD_MMUDCmds(){
-		// special commands...
-		_cmdMUDMenu = 	new OMUD_MMUDCmd_MUDMenu();
-		_cmdStatline = 	new OMUD_MMUDCmd_Statline();
-		// all commands that work on lines...
-		_arrlLineCmds.add((_cmdLookRoom = new OMUD_MMUDCmd_LookRoom()));
-		_arrlLineCmds.add(new OMUD_MMUDCmd_None()); // add 'none' last
+	public OMUD_MMUDBlocks(){
+		_arrlBlocks = new ArrayList<Block>();
+		_arrlBlocks.add(new OMUD_MMUDBlock_MUDMenu());	// BPOS_MUD_MENU
+		_arrlBlocks.add(new OMUD_MMUDBlock_Statline()); // BPOS_STATLINE
+		_arrlBlocks.add(new OMUD_MMUDBlock_LookRoom()); // BPOS_CMD_LOOKROOM
+		_arrlBlocks.add(new OMUD_MMUDBlock_Other()); 	// BPOS_OTHER
 	}
 
 	// resetData(): reset internal data for some special commands
 	public void resetData(){
-		_cmdLookRoom.resetData();
+		_arrlBlocks.get(BPOS_CMD_LOOKROOM).resetData();
 	}
 
-	// findCmd(): main external call to match a user-input command
-	public boolean findCmd(StringBuilder sbCmd){
-		boolean allow_cmds = true;
-
-		_cmd = null;
-		for (int i = 0; i < _arrlLineCmds.size() && _cmd == null; ++i)
-			if (_arrlLineCmds.get(i).matchCmdText(sbCmd)){
-				_cmd = _arrlLineCmds.get(i);
-				allow_cmds = _cmd.allowCmds();
-			}
-
-		return allow_cmds;
-	}
-
-	public int parseLineCmds(OMUD_IMUDEvents ommme, StringBuilder sbTelnetData, int pos_offset){
+	public int parseLineBlocks(ActiveBlock ablk, OMUD_IMUDEvents ommme, StringBuilder sbTelnetData, int pos_offset){
 		int pos_data_found_start = -1;
-		if (_cmd != null){
-			_cmd.findCmdData(ommme, sbTelnetData, pos_offset);
+
+		// if current block is the statline or mud menu, just parse all the line blocks...
+		if (ablk.block_pos < BPOS_CMDS_START){
+			for (int i = BPOS_CMDS_START; i < _arrlBlocks.size() && pos_data_found_start == -1; ++i)
+				pos_data_found_start = _arrlBlocks.get(i).findBlockData(ommme, sbTelnetData, pos_offset);
+		// else parse only the current line block...
 		} else {
-			for (int i = 0; i < _arrlLineCmds.size() && pos_data_found_start == -1; ++i)
-				pos_data_found_start = _arrlLineCmds.get(i).findCmdData(ommme, sbTelnetData, pos_offset);
+			pos_data_found_start = _arrlBlocks.get(ablk.block_pos).findBlockData(ommme, sbTelnetData, pos_offset);			
 		}
-		return pos_data_found_start;			
+
+		return pos_data_found_start;
 	}
 
-	public int parseStatline(OMUD_IMUDEvents ommme, StringBuilder sbTelnetData){
-		int pos_data_found_start = _cmdStatline.findCmdData(ommme, sbTelnetData, 0);
+	public int parseStatline(ActiveBlock ablk, OMUD_IMUDEvents ommme, StringBuilder sbTelnetData){
+		int pos_data_found_start = _arrlBlocks.get(BPOS_STATLINE).findBlockData(ommme, sbTelnetData, 0);
 		if (pos_data_found_start > -1){
-			_cmdLookRoom.notifyRoomData(ommme);
-			_cmd = null; // statline always at the end, clear current command
+			ablk.update(BPOS_STATLINE, _arrlBlocks.get(BPOS_STATLINE).waitForStatline(), "");
+			_arrlBlocks.get(BPOS_CMD_LOOKROOM).notifyEvents(ommme);
 		}
 		return pos_data_found_start;
 	}
 
-	public int parseMUDMenu(OMUD_IMUDEvents ommme, StringBuilder sbTelnetData){
-		return _cmdMUDMenu.findCmdData(ommme, sbTelnetData, 0);
+	public int parseMUDMenu(ActiveBlock ablk, OMUD_IMUDEvents ommme, StringBuilder sbTelnetData){
+		int pos_data_found_start = _arrlBlocks.get(BPOS_MUD_MENU).findBlockData(ommme, sbTelnetData, 0);
+		if (pos_data_found_start > -1)
+			ablk.update(BPOS_MUD_MENU, _arrlBlocks.get(BPOS_MUD_MENU).waitForStatline(), "");
+		return pos_data_found_start;
 	}
+
+	// findCmd(): main external call to match a user-input command
+	// NOTE: assumes passed in as lower-case...
+	public void findCmd(ActiveBlock ablk, String strCmd){
+		String strFoundCmdFull = null;
+		for (int i = BPOS_CMDS_START; i < BPOS_CMDS_STOP && ablk.block_pos == ActiveBlock.BPOS_INVALID; ++i)
+			if ((strFoundCmdFull = _arrlBlocks.get(i).matchCmdText(strCmd)) != null)
+				ablk.update(i, _arrlBlocks.get(i).waitForStatline(), strFoundCmdFull);
+	}	
 }
 
 

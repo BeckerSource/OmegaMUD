@@ -31,7 +31,7 @@ javac -Xlint:deprecation -d $BUILD_DIR -cp $BUILD_DIR/lib/$JAR_AC \
     $SRC/gui/*.java \
     $SRC/mega/*.java \
     $SRC/mmud/*.java \
-    $SRC/mmud_cmds/*.java \
+    $SRC/mmud_blocks/*.java \
     $SRC/telnet/*.java
 
 # ------------

@@ -1,4 +1,4 @@
-public class OMUD_MMUDCmd_None extends OMUD_MMUDCmds.Cmd{
+public class OMUD_MMUDBlock_Other extends OMUD_MMUDBlocks.Block{
 	private final String MSTR_PREFIX_RESET_WHBL =  		"[0;37;40m";
 	private final String MSTR_COMBAT_ON =  				"[79D[K[0;33m*Combat Engaged*";
 	private final String MSTR_COMBAT_OFF =  			"[79D[K[0;33m*Combat Off*";
@@ -14,10 +14,9 @@ public class OMUD_MMUDCmd_None extends OMUD_MMUDCmds.Cmd{
 	private final String MSTR_COLOR_WHITE =  			"[79D[K[1;37m";
 	private final String MSTR_COLOR_OTHER =  			"[79D[K";
 
-	public boolean allowCmds(){return true;}
-	public OMUD_MMUDCmd_None(){}
+	public OMUD_MMUDBlock_Other(){}
 		
-	public int findCmdData(OMUD_IMUDEvents ommme, StringBuilder sbTelnetData, int pos_offset){
+	public int findBlockData(OMUD_IMUDEvents ommme, StringBuilder sbTelnetData, int pos_offset){
 		int pos_data_found_start = -1;
 
 		// ------------------
@@ -68,9 +67,13 @@ public class OMUD_MMUDCmd_None extends OMUD_MMUDCmds.Cmd{
 			(pos_data_found_start = findData(sbTelnetData, pos_offset, true, true, MSTR_COLOR_CYAN, "")) 	> -1 ||
 			(pos_data_found_start = findData(sbTelnetData, pos_offset, true, true, MSTR_COLOR_WHITE, "")) 	> -1 ||
 			(pos_data_found_start = findData(sbTelnetData, pos_offset, true, true, MSTR_COLOR_OTHER, "")) 	> -1){
-			ommme.notifyMUDDebugOther("[COLOR_TEXT]\n" + _sbDataFound.toString() + "\n");
+			ommme.notifyMUDDebugOther("[COLOR_TEXT]\n" + _sbBlockData.toString() + "\n");
 		}
 
 		return pos_data_found_start;
 	}
+
+	public void resetData(){}
+	public void notifyEvents(OMUD_IMUDEvents ommme){}
+	public boolean waitForStatline(){return false;}
 }

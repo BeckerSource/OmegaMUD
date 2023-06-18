@@ -1,4 +1,4 @@
-public class OMUD_MMUDCmd_Statline extends OMUD_MMUDCmds.Cmd{
+public class OMUD_MMUDBlock_Statline extends OMUD_MMUDBlocks.Block{
 	private final String MSTR_STATLINE_PRE = 		"[79D[K[0;37m[";
 	private final String MSTR_STATLINE_END = 		"]:";
 	private final String MSTR_STATLINE_RESTING = 	" (Resting) ";
@@ -6,12 +6,11 @@ public class OMUD_MMUDCmd_Statline extends OMUD_MMUDCmds.Cmd{
 
 	private OMUD_MMUD.DataStatline _dataStatline = null;
 
-	public boolean allowCmds(){return true;}
-	public OMUD_MMUDCmd_Statline(){
+	public OMUD_MMUDBlock_Statline(){
 		_dataStatline = new OMUD_MMUD.DataStatline();
 	}
 
-	public int findCmdData(OMUD_IMUDEvents ommme, StringBuilder sbTelnetData, int pos_offset){
+	public int findBlockData(OMUD_IMUDEvents ommme, StringBuilder sbTelnetData, int pos_offset){
 		int pos_data_found_start = -1;
 
 		if ((pos_data_found_start = findData(sbTelnetData, sbTelnetData.length() - 1, false, true, MSTR_STATLINE_PRE, MSTR_STATLINE_END)) > -1){
@@ -39,18 +38,18 @@ public class OMUD_MMUDCmd_Statline extends OMUD_MMUDCmds.Cmd{
 			// Non-MA/KAI chars: if not found above, try inside of the statline...
 			if (_dataStatline.rest == OMUD_MMUD.eRestState.ACTIVE){
 				int pos_rest_start = 0;
-				if ((pos_rest_start = _sbDataFound.indexOf(MSTR_STATLINE_RESTING, 0)) > -1){
-					_sbDataFound.delete(pos_rest_start, pos_rest_start + MSTR_STATLINE_RESTING.length());
+				if ((pos_rest_start = _sbBlockData.indexOf(MSTR_STATLINE_RESTING, 0)) > -1){
+					_sbBlockData.delete(pos_rest_start, pos_rest_start + MSTR_STATLINE_RESTING.length());
 					_dataStatline.rest = OMUD_MMUD.eRestState.RESTING;
 				// not sure if non-MA/KAI chars would ever use meditate?
-				} else if ((pos_rest_start = _sbDataFound.indexOf(MSTR_STATLINE_MEDITATING, 0)) > -1){
-					_sbDataFound.delete(pos_rest_start, pos_rest_start + MSTR_STATLINE_MEDITATING.length());
+				} else if ((pos_rest_start = _sbBlockData.indexOf(MSTR_STATLINE_MEDITATING, 0)) > -1){
+					_sbBlockData.delete(pos_rest_start, pos_rest_start + MSTR_STATLINE_MEDITATING.length());
 					_dataStatline.rest = OMUD_MMUD.eRestState.MEDITATING;
 				}
 			}
 
 			cleanData(false, true); // strip ansi
-			_dataStatline.text = _sbDataFound.toString();
+			_dataStatline.text = _sbBlockData.toString();
 			ommme.notifyMUDDebugStatline(new OMUD_MMUD.DataStatline(_dataStatline));
 
 			// ------------------
@@ -70,4 +69,8 @@ public class OMUD_MMUDCmd_Statline extends OMUD_MMUDCmds.Cmd{
 
 		return pos_data_found_start;
 	}	
+
+	public void resetData(){}
+	public void notifyEvents(OMUD_IMUDEvents ommme){}
+	public boolean waitForStatline(){return false;}
 }

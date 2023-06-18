@@ -1,4 +1,4 @@
-public class OMUD_MMUDCmd_LookRoom extends OMUD_MMUDCmds.Cmd{
+public class OMUD_MMUDBlock_LookRoom extends OMUD_MMUDBlocks.Block{
 	private final String MSTR_PREFIX_RESET = 		"[0m";
 	private final String MSTR_PREFIX_RESET_WHBL =  	"[0;37;40m";
 	private final String MSTR_ROOM_NAME =  			"[79D[K[1;36m";
@@ -14,15 +14,14 @@ public class OMUD_MMUDCmd_LookRoom extends OMUD_MMUDCmds.Cmd{
 
 	private OMUD_MMUD.DataRoom _dataRoom = null;
 
-	public boolean allowCmds(){return false;}
-	public OMUD_MMUDCmd_LookRoom(){
+	public OMUD_MMUDBlock_LookRoom(){
 		_dataRoom = new OMUD_MMUD.DataRoom();
-		_arrlCmdText.add(new CmdText("\n",   		0, false));
-		_arrlCmdText.add(new CmdText("look", 		0, false));
-		_arrlCmdText.add(new CmdText("search", 	0, true));
+		_arrlCmdText.add(new CmdText("", 		0)); // 0 == zero-len is actually a LF/enter but stripped before getting here
+		_arrlCmdText.add(new CmdText("look", 	1)); // 1 == only "l" is required
+		_arrlCmdText.add(new CmdText("search", 	3)); // 3 == only "sea" is required
 	}
 
-	public int findCmdData(OMUD_IMUDEvents ommme, StringBuilder sbTelnetData, int pos_offset){
+	public int findBlockData(OMUD_IMUDEvents ommme, StringBuilder sbTelnetData, int pos_offset){
 		int pos_data_found_start = -1;
 
 		// ------------------
@@ -45,7 +44,7 @@ public class OMUD_MMUDCmd_LookRoom extends OMUD_MMUDCmds.Cmd{
 			// reset the room data here -
 			// mainly need for resetting room description in case it isn't shown...
 			_dataRoom = new OMUD_MMUD.DataRoom();
-			_dataRoom.name = _sbDataFound.toString();
+			_dataRoom.name = _sbBlockData.toString();
 
 		// ------------------
 		// Room: You Notice (Items+Hidden)
@@ -57,11 +56,11 @@ public class OMUD_MMUDCmd_LookRoom extends OMUD_MMUDCmds.Cmd{
 			int pos_data_delete_start_search_check = checkPrefix("You Notice Searched Items", sbTelnetData, pos_data_found_start, MSTR_PREFIX_RESET_WHBL);
 			if (pos_data_found_start > pos_data_delete_start_search_check){
 				pos_data_found_start = pos_data_delete_start_search_check;
-				_dataRoom.items_hidden = _sbDataFound.toString();
+				_dataRoom.items_hidden = _sbBlockData.toString();
 				splitCommaListToArray(_dataRoom.items_hidden, _dataRoom.arrlItemsHidden);
 			// NON-SEARCH / visible item listing...
 			} else {
-				_dataRoom.items = _sbDataFound.toString();						
+				_dataRoom.items = _sbBlockData.toString();						
 				splitCommaListToArray(_dataRoom.items, _dataRoom.arrlItems);
 			}
 
@@ -70,7 +69,7 @@ public class OMUD_MMUDCmd_LookRoom extends OMUD_MMUDCmds.Cmd{
 		// ------------------
 		} else if ((pos_data_found_start = findData(sbTelnetData, pos_offset, true, true, MSTR_ALSO_HERE_PRE, MSTR_ALSO_HERE_END)) > -1){
 			cleanData(true, true); // units (also here) has ANSI
-			_dataRoom.units = _sbDataFound.toString();
+			_dataRoom.units = _sbBlockData.toString();
 			splitCommaListToArray(_dataRoom.units, _dataRoom.arrlUnits);
 
 		// ------------------
@@ -83,7 +82,7 @@ public class OMUD_MMUDCmd_LookRoom extends OMUD_MMUDCmds.Cmd{
 			pos_data_found_start = checkPrefix("Obv Exits After Also Here", sbTelnetData, pos_data_found_start, MSTR_PREFIX_RESET);
 
 			// build the exit data...
-			_dataRoom.exits = _sbDataFound.toString();
+			_dataRoom.exits = _sbBlockData.toString();
 			buildRoomExits();
 
 			// create Megamud RoomID after the exit data is built above...
@@ -109,7 +108,7 @@ public class OMUD_MMUDCmd_LookRoom extends OMUD_MMUDCmds.Cmd{
 		// ------------------
 		// NOTE: not always shown, depends on verbose/brief setting
 		} else if ((pos_data_found_start = findData(sbTelnetData, pos_offset, true, true, MSTR_ROOM_DESCRIPTION, "")) > -1){
-			_dataRoom.desc = _sbDataFound.toString();
+			_dataRoom.desc = _sbBlockData.toString();
 
 		// ------------------
 		// Room Search Revealed None
@@ -168,7 +167,9 @@ public class OMUD_MMUDCmd_LookRoom extends OMUD_MMUDCmds.Cmd{
 		_dataRoom = new OMUD_MMUD.DataRoom();
 	}
 
-	public void notifyRoomData(OMUD_IMUDEvents ommme){
+	public void notifyEvents(OMUD_IMUDEvents ommme){
 		ommme.notifyMUDDebugRoom(new OMUD_MMUD.DataRoom(_dataRoom));
 	}
+
+	public boolean waitForStatline(){return true;}
 }
