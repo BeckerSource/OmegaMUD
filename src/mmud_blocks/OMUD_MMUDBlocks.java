@@ -160,31 +160,38 @@ public class OMUD_MMUDBlocks{
 	// ------------------
 	// OMUD_MMUDBlocks
 	// ------------------
-	private ArrayList<Block> 			_arrlBlocks = 		null;
-	private int _bpos_cmds_start = 		0;
-	private int _bpos_cmds_stop =  		0;
-	private final int BPOS_MUD_MENU = 	0;
-	private final int BPOS_STATLINE = 	1;
-	private final int BPOS_LOOKROOM = 	2;
+	private OMUD_MMUDBlock_MUDMenu 		_blkMUDMenu = null;
+	private ArrayList<Block> 			_arrlBlocks = null;
+	private int _bpos_cmds_stop =  			0;
+	private final int BPOS_STATLINE = 		0;
+	private final int BPOS_CMDS_START = 	1;
+	private final int BPOS_LOOKROOM = 		1;
+	private final int BPOS_TRAIN_STATS = 	2;
 
 	public OMUD_MMUDBlocks(){
 		_arrlBlocks = new ArrayList<Block>();
+		// ==================
 		// ------------------
-		// End-of-Buffer Blocks: MUD Menu + Statline
+		// Statline
 		// ------------------
-		_arrlBlocks.add(new OMUD_MMUDBlock_MUDMenu());		// BPOS_MUD_MENU
 		_arrlBlocks.add(new OMUD_MMUDBlock_Statline()); 	// BPOS_STATLINE
 		// ------------------
 		// Command Blocks
 		// ------------------
-		_bpos_cmds_start = _arrlBlocks.size();
 		_arrlBlocks.add(new OMUD_MMUDBlock_LookRoom()); 	// BPOS_LOOKROOM
-		_arrlBlocks.add(new OMUD_MMUDBlock_TrainStats());
-		_bpos_cmds_stop = _arrlBlocks.size();
+		_arrlBlocks.add(new OMUD_MMUDBlock_TrainStats()); 	// BPOS_TRAIN_STATS
+		_bpos_cmds_stop = _arrlBlocks.size(); // keep this after cmd blocks for an easy dynamic counter/end
 		// ------------------
 		// Other Line Blocks
 		// ------------------
 		_arrlBlocks.add(new OMUD_MMUDBlock_Other());
+		// ==================
+
+		// ------------------
+		// MUD Menu (separate)
+		// ------------------
+		// somewhat unique so keep this separate...
+		_blkMUDMenu = new OMUD_MMUDBlock_MUDMenu();
 	}
 
 	// resetData(): reset internal data for some special commands
@@ -192,12 +199,12 @@ public class OMUD_MMUDBlocks{
 		_arrlBlocks.get(BPOS_LOOKROOM).resetData();
 	}
 
-	public int parseLineBlocks(ActiveBlock ablk, OMUD_IMUDEvents ommme, StringBuilder sbTelnetData, int pos_offset){
+	public int parseLineBlocks(OMUD_IMUDEvents ommme, StringBuilder sbTelnetData, int pos_offset, ActiveBlock ablk){
 		int pos_data_found_start = -1;
 
 		// if current block is the statline or mud menu, just parse all the line blocks...
-		if (ablk.block_pos < _bpos_cmds_start){
-			for (int i = _bpos_cmds_start; i < _arrlBlocks.size() && pos_data_found_start == -1; ++i)
+		if (ablk.block_pos < BPOS_CMDS_START){
+			for (int i = BPOS_CMDS_START; i < _arrlBlocks.size() && pos_data_found_start == -1; ++i)
 				pos_data_found_start = _arrlBlocks.get(i).findBlockData(ommme, sbTelnetData, pos_offset);
 		// else parse only the current line block...
 		} else {
@@ -207,7 +214,7 @@ public class OMUD_MMUDBlocks{
 		return pos_data_found_start;
 	}
 
-	public int parseStatline(ActiveBlock ablk, OMUD_IMUDEvents ommme, StringBuilder sbTelnetData){
+	public int parseStatline(OMUD_IMUDEvents ommme, StringBuilder sbTelnetData, ActiveBlock ablk){
 		int pos_data_found_start = _arrlBlocks.get(BPOS_STATLINE).findBlockData(ommme, sbTelnetData, 0);
 		if (pos_data_found_start > -1){
 			ablk.update(BPOS_STATLINE, _arrlBlocks.get(BPOS_STATLINE).waitForStatline(), "");
@@ -216,20 +223,18 @@ public class OMUD_MMUDBlocks{
 		return pos_data_found_start;
 	}
 
-	public int parseMUDMenu(ActiveBlock ablk, OMUD_IMUDEvents ommme, StringBuilder sbTelnetData){
-		int pos_data_found_start = _arrlBlocks.get(BPOS_MUD_MENU).findBlockData(ommme, sbTelnetData, 0);
-		if (pos_data_found_start > -1)
-			ablk.update(BPOS_MUD_MENU, _arrlBlocks.get(BPOS_MUD_MENU).waitForStatline(), "");
-		return pos_data_found_start;
+	public int parseMUDMenu(OMUD_IMUDEvents ommme, StringBuilder sbTelnetData){
+		return _blkMUDMenu.findBlockData(ommme, sbTelnetData, 0);
 	}
 
-	// findCmd(): main external call to match a user-input command
-	// NOTE: assumes passed in as lower-case...
-	public void findCmd(ActiveBlock ablk, String strCmd){
+	// findCmd(): main external call to match a user-input command (assumes passed in as lower-case)
+	// returns true if at an in-game menu/editor (train stats, etc.)
+	public boolean findCmd(String strCmd, ActiveBlock ablk){
 		String strFoundCmdFull = null;
-		for (int i = _bpos_cmds_start; i < _bpos_cmds_stop && ablk.block_pos == ActiveBlock.BPOS_INVALID; ++i)
+		for (int i = BPOS_CMDS_START; i < _bpos_cmds_stop && ablk.block_pos == ActiveBlock.BPOS_INVALID; ++i)
 			if ((strFoundCmdFull = _arrlBlocks.get(i).matchCmdText(strCmd)) != null)
 				ablk.update(i, _arrlBlocks.get(i).waitForStatline(), strFoundCmdFull);
+		return ablk.block_pos == BPOS_TRAIN_STATS;
 	}	
 }
 

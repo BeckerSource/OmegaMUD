@@ -21,16 +21,17 @@ public class OMUD{
         OFFLINE, 
         BBS,
         MUD_MENU,
-        MUD
+        MUD,
+        MUD_EDITOR
     }
-
     public static final String[] BBS_LOCATION_STRINGS = {
         "Offline",
         "BBS",
         "MUD Menu",
-        "MUD"
+        "MUD",
+        "MUD Editor"
     };
-
+    public static boolean isInsideMUD(eBBSLocation eLoc){return eLoc == eBBSLocation.MUD || eLoc == eBBSLocation.MUD_EDITOR;}
 
     // --------------
     // Terminal Stuff

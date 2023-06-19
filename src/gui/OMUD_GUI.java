@@ -40,8 +40,8 @@ public class OMUD_GUI implements OMUD_ITelnetEvents, OMUD_ITextInputEvents, OMUD
     private JTextField          _txtTelnetConAdr =  null;
     private JTextField          _txtTelnetConPort = null;
     private JTextField          _txtStatusLoc =     null;
-    private JTextField          _txtStatline =      null;
     private JTextField          _txtRoomID =        null;
+    private JTextField          _txtStatline =      null;
     private JTextField          _txtLastCmd =       null;
     private JTextArea 			_txtDbgTerm = 	    null;
     private JTextArea           _txtDbgMUDRoom =    null;
@@ -100,9 +100,9 @@ public class OMUD_GUI implements OMUD_ITelnetEvents, OMUD_ITextInputEvents, OMUD
 		// Optional Auto-Stuff
 		// --------------
         // auto single-mode...
-		SwingUtilities.invokeLater(new Runnable(){public void run(){
-			_tglSingleMode.setSelected(true);
-        }});
+		//SwingUtilities.invokeLater(new Runnable(){public void run(){
+		//	_tglSingleMode.setSelected(true);
+        //}});
         // auto connect...
 		//SwingUtilities.invokeLater(new Runnable(){public void run(){
 		//	_omt.connect(_txtTelnetConAdr.getText(), _txtTelnetConPort.getText());
@@ -153,20 +153,20 @@ public class OMUD_GUI implements OMUD_ITelnetEvents, OMUD_ITextInputEvents, OMUD
         // status...
         _pnlStatus =    new JPanel();
         _txtStatusLoc = new JTextField();
-        _txtStatline =  new JTextField("Statline: ");
         _txtRoomID =    new JTextField("RoomID: ");
+        _txtStatline =  new JTextField("Statline: ");
         _txtLastCmd =   new JTextField("LastCmd: ");
         _txtStatusLoc.setEditable(false);
-        _txtStatline.setEditable(false);
         _txtRoomID.setEditable(false);
+        _txtStatline.setEditable(false);
         _txtLastCmd.setEditable(false);
         _txtStatusLoc.setBackground(OMUD.GUI_BG);
-        _txtStatline.setBackground(OMUD.GUI_BG);
         _txtRoomID.setBackground(OMUD.GUI_BG);
+        _txtStatline.setBackground(OMUD.GUI_BG);
         _txtLastCmd.setBackground(OMUD.GUI_BG);
         _txtStatusLoc.setForeground(OMUD.TERMINAL_LOCAL_INFO_FG);
-        _txtStatline.setForeground(OMUD.TERMINAL_LOCAL_INFO_FG);
         _txtRoomID.setForeground(OMUD.TERMINAL_LOCAL_INFO_FG);
+        _txtStatline.setForeground(OMUD.TERMINAL_LOCAL_INFO_FG);
         _txtLastCmd.setForeground(OMUD.TERMINAL_LOCAL_INFO_FG);
         setStatusLocText(OMUD.BBS_LOCATION_STRINGS[OMUD.eBBSLocation.OFFLINE.ordinal()]);
 
@@ -287,8 +287,8 @@ public class OMUD_GUI implements OMUD_ITelnetEvents, OMUD_ITextInputEvents, OMUD
 
     private void layoutStatus(GridBagLayout gbl, GridBagConstraints gblc){
         _txtStatusLoc.setPreferredSize(new Dimension(50, 25));
-        _txtStatline.setPreferredSize(new Dimension(50, 25));
         _txtRoomID.setPreferredSize(new Dimension(50, 25));
+        _txtStatline.setPreferredSize(new Dimension(50, 25));
         _txtLastCmd.setPreferredSize(new Dimension(50, 25));
         gblc.weightx = 0.5;
         gblc.weighty = 0.0;
@@ -296,11 +296,11 @@ public class OMUD_GUI implements OMUD_ITelnetEvents, OMUD_ITextInputEvents, OMUD
         gblc.fill = GridBagConstraints.BOTH;
         gbl.setConstraints(_txtStatusLoc, gblc);
         _pnlStatus.add(_txtStatusLoc);
+        gbl.setConstraints(_txtRoomID, gblc);
+        _pnlStatus.add(_txtRoomID);
         gblc.weightx = 1.0;
         gbl.setConstraints(_txtStatline, gblc);
         _pnlStatus.add(_txtStatline);
-        gbl.setConstraints(_txtRoomID, gblc);
-        _pnlStatus.add(_txtRoomID);
         gblc.gridwidth = GridBagConstraints.REMAINDER;
         gbl.setConstraints(_txtLastCmd, gblc);
         _pnlStatus.add(_txtLastCmd);
@@ -467,7 +467,7 @@ public class OMUD_GUI implements OMUD_ITelnetEvents, OMUD_ITextInputEvents, OMUD
     public void notifyMUDLocation(final OMUD.eBBSLocation eLoc){
         SwingUtilities.invokeLater(new Runnable(){public void run(){
             setStatusLocText(OMUD.BBS_LOCATION_STRINGS[eLoc.ordinal()]);
-            if (_tabsInfo.getSelectedIndex() == 0 && eLoc == OMUD.eBBSLocation.MUD)
+            if (_tabsInfo.getSelectedIndex() == 0 && OMUD.isInsideMUD(eLoc))
                 _tabsInfo.setSelectedIndex(1);
         }});
     }
