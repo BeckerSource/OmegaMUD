@@ -170,17 +170,32 @@ public class OMUD_MMUD{
 	}
 
 	public static class DataInv{
-		public String keys = 		"";
-		public String carry_items = "";
-		public int carry_runic = 	0;
-		public int carry_plat = 	0; 
-		public int carry_gold = 	0; 
-		public int carry_silver = 	0; 
-		public int carry_copper = 	0; 
 		public int wealth = 		0; // in copper
+		public int coins_runic = 	0;
+		public int coins_plat = 	0; 
+		public int coins_gold = 	0; 
+		public int coins_silver = 	0; 
+		public int coins_copper = 	0; 
 		public int enc_cur = 		0;
 		public int enc_max = 		0;
 		public String enc_level = 	"";
+		public String items = 		"";
+		public String keys =  		"";
+
+		public DataInv(){}
+		public DataInv(DataInv inv){
+			wealth = 		inv.wealth;
+			coins_runic = 	inv.coins_runic;
+			coins_plat = 	inv.coins_plat;
+			coins_gold = 	inv.coins_gold;
+			coins_silver = 	inv.coins_silver;
+			coins_copper = 	inv.coins_copper;
+			enc_cur = 		inv.enc_cur;
+			enc_max =		inv.enc_max;
+			enc_level = 	new String(inv.enc_level);
+			items = 		new String(inv.items);
+			keys = 			new String(inv.keys);
+		}
 	}
 
 	public static class DataParty{

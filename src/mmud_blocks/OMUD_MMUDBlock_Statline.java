@@ -50,7 +50,7 @@ public class OMUD_MMUDBlock_Statline extends OMUD_MMUDBlocks.Block{
 
 			cleanData(false, true); // strip ansi
 			_dataStatline.text = _sbBlockData.toString();
-			ommme.notifyMUDDebugStatline(new OMUD_MMUD.DataStatline(_dataStatline));
+			ommme.notifyMUDStatline(new OMUD_MMUD.DataStatline(_dataStatline));
 
 			// ------------------
 			// Statline: Remove Extra

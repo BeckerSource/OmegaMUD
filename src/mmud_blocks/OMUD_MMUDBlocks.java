@@ -10,6 +10,7 @@ public class OMUD_MMUDBlocks{
 		public boolean 	wait_for_statline = true;
 		public String 	strCmdText = 		"?";
 
+		public ActiveBlock(boolean wfs){wait_for_statline = wfs;}
 		public void update(int bp, boolean wfs, String ct){
 			block_pos =  		bp;
 			wait_for_statline = wfs;

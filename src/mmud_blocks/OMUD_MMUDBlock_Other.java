@@ -23,40 +23,40 @@ public class OMUD_MMUDBlock_Other extends OMUD_MMUDBlocks.Block{
 		// Invalid Move Dir (no exit in that dir)
 		// ------------------
 		if ((pos_data_found_start = findData(sbTelnetData, pos_offset, true, false, MSTR_MOVE_NO_EXIT_DIR, "")) > -1){
-			ommme.notifyMUDDebugOther("[MOVE_NO_EXIT_DIR]\n");
+			ommme.notifyMUDOther("[MOVE_NO_EXIT_DIR]\n");
 
 		// ------------------
 		// Meditate Wake
 		// ------------------
 		} else if ((pos_data_found_start = findData(sbTelnetData, pos_offset, true, false, MSTR_MEDITATE_WAKE, "")) > -1){
-			ommme.notifyMUDDebugOther("[MEDITATE_WAKE]\n");
+			ommme.notifyMUDOther("[MEDITATE_WAKE]\n");
 
 		// ------------------
 		// Meditate Won't Help
 		// ------------------
 		} else if ((pos_data_found_start = findData(sbTelnetData, pos_offset, true, false, MSTR_MEDITATE_WONT_HELP, "")) > -1){
-			ommme.notifyMUDDebugOther("[MEDITATE_WONT_HELP]\n");
+			ommme.notifyMUDOther("[MEDITATE_WONT_HELP]\n");
 
 		// ------------------
 		// Invalid Command (command has no effect)
 		// ------------------
 		} else if ((pos_data_found_start = findData(sbTelnetData, pos_offset, true, false, MSTR_CMD_NO_EFFECT, "")) > -1){
-			ommme.notifyMUDDebugOther("[CMD_NO_EFFECT]\n");
+			ommme.notifyMUDOther("[CMD_NO_EFFECT]\n");
 
 		// ------------------
 		// Regular/Non-ANSI Strings
 		// ------------------
 		// capture the text so that it's deleted correctly from the buffer (maybe do stuff with it later?)
 		} else if ((pos_data_found_start = findData(sbTelnetData, pos_offset, true, false, MSTR_REG_RESTING, "")) > -1){
-			ommme.notifyMUDDebugOther("[REG_RESTING]\n");
+			ommme.notifyMUDOther("[REG_RESTING]\n");
 			// PREFIX: can have a clear white/black prefix if was already resting
 			pos_data_found_start = checkPrefix("Rest Cmd When Already Resting", sbTelnetData, pos_data_found_start, MSTR_PREFIX_RESET_WHBL);
 		} else if ((pos_data_found_start = findData(sbTelnetData, pos_offset, true, false, MSTR_REG_MEDITATING, "")) > -1){
-			ommme.notifyMUDDebugOther("[REG_MEDITATING]\n");
+			ommme.notifyMUDOther("[REG_MEDITATING]\n");
 			// PREFIX: can have a clear white/black prefix if was already resting
 			pos_data_found_start = checkPrefix("Med Cmd When Already Meditating", sbTelnetData, pos_data_found_start, MSTR_PREFIX_RESET_WHBL);
 		} else if ((pos_data_found_start = findData(sbTelnetData, pos_offset, true, false, MSTR_REG_SPELL_ALREADY_CAST, "")) > -1){
-			ommme.notifyMUDDebugOther("[REG_SPELL_ALREADY_CAST]\n");
+			ommme.notifyMUDOther("[REG_SPELL_ALREADY_CAST]\n");
 
 		// ------------------
 		// Various ANSI Color-Prefix Strings (LAST)
@@ -67,7 +67,7 @@ public class OMUD_MMUDBlock_Other extends OMUD_MMUDBlocks.Block{
 			(pos_data_found_start = findData(sbTelnetData, pos_offset, true, true, MSTR_COLOR_CYAN, "")) 	> -1 ||
 			(pos_data_found_start = findData(sbTelnetData, pos_offset, true, true, MSTR_COLOR_WHITE, "")) 	> -1 ||
 			(pos_data_found_start = findData(sbTelnetData, pos_offset, true, true, MSTR_COLOR_OTHER, "")) 	> -1){
-			ommme.notifyMUDDebugOther("[COLOR_TEXT]\n" + _sbBlockData.toString() + "\n");
+			ommme.notifyMUDOther("[COLOR_TEXT]\n" + _sbBlockData.toString() + "\n");
 		}
 
 		return pos_data_found_start;

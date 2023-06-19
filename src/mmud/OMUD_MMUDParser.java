@@ -1,18 +1,18 @@
 import java.util.ArrayList;
 
 interface OMUD_IMUDEvents{
-	public void notifyMUDExp();
+	public void notifyMUDLocation(final OMUD.eBBSLocation eLoc);
+	public void notifyMUDStatline(final OMUD_MMUD.DataStatline dataStatline);
+	public void notifyMUDCombatToggle(boolean is_on);
+	public void notifyMUDCmd(final String strText);
+	public void notifyMUDOther(final String strText);
+	public void notifyMUDWelcome(final String strText);
+	public void notifyMUDRoom(final OMUD_MMUD.DataRoom dataRoom);
+	public void notifyMUDInv(final OMUD_MMUD.DataInv dataInv);
 	public void notifyMUDStats();
-	public void notifyMUDInv();
+	public void notifyMUDExp();
 	public void notifyMUDParty();
 	public void notifyMUDSpells();
-	public void notifyMUDCombatToggle(boolean is_on);
-	public void notifyMUDLocation(final OMUD.eBBSLocation eLoc);
-	public void notifyMUDWelcome(final String strText);
-	public void notifyMUDDebugCmd(final String strText);
-	public void notifyMUDDebugStatline(final OMUD_MMUD.DataStatline dataStatline);
-	public void notifyMUDDebugRoom(final OMUD_MMUD.DataRoom dataRoom);
-	public void notifyMUDDebugOther(final String strText);
 }
 
 public class OMUD_MMUDParser{
@@ -29,12 +29,12 @@ public class OMUD_MMUDParser{
 	public OMUD_MMUDParser(OMUD_IMUDEvents ommme){
 		_ommme = ommme;
 		_sbDataTelnet = new StringBuilder();
-		_ablk = new OMUD_MMUDBlocks.ActiveBlock();
 		resetData(OMUD.eBBSLocation.BBS);
 	}
 
-	public void resetData(OMUD.eBBSLocation eBBSLoc){
+	private void resetData(OMUD.eBBSLocation eBBSLoc){
 		_eBBSLoc = eBBSLoc;
+		_ablk = new OMUD_MMUDBlocks.ActiveBlock(false);
 		_s_blocks.resetData();
 	}
 
@@ -69,7 +69,7 @@ public class OMUD_MMUDParser{
 				// ------------------
 				// sbCmd can be null if there are no current commands in the telnet array...
 				if (sbCmd != null && sbCmd.length() > 0 && _sbDataTelnet.length() > 0){
-					_ablk = new OMUD_MMUDBlocks.ActiveBlock();
+					_ablk = new OMUD_MMUDBlocks.ActiveBlock(true);
 					if (OMUD.getNextLF(_sbDataTelnet, 0) == sbCmd.length() - 1){
 						_sbDataTelnet.delete(0, sbCmd.length());
 
@@ -81,11 +81,11 @@ public class OMUD_MMUDParser{
 
 						// if we just had a single linefeed/enter (length would be zero here),
 						// translate that to something visible...
-						if (_ablk.strCmdText.length() == 0)
+						if (sbCmd.length() == 0)
 							sbCmd.append("<ENTER>");
 						sbCmd.append(" (" + _ablk.strCmdText + ")");
 
-						_ommme.notifyMUDDebugCmd(sbCmd.toString());		
+						_ommme.notifyMUDCmd(sbCmd.toString());		
 						sbCmd.setLength(0); // clear to show as processed
 					}
 				}
@@ -125,10 +125,10 @@ public class OMUD_MMUDParser{
 			// Keep mud buffer clean by removing extra data that we didn't match.
 			// (also helps to find new/unprocessed mud strings)
 			if (pos_buf_delete_len > 0){
-				_ommme.notifyMUDDebugOther("[UNKNOWN DATA #1] [LEN: " + pos_buf_delete_len + "]\n--------\n" + _sbDataTelnet.substring(0, pos_buf_delete_len) + "\n--------\n");
+				_ommme.notifyMUDOther("[UNKNOWN DATA #1] [LEN: " + pos_buf_delete_len + "]\n--------\n" + _sbDataTelnet.substring(0, pos_buf_delete_len) + "\n--------\n");
 				_sbDataTelnet.delete(0, pos_buf_delete_len);
 				if (_sbDataTelnet.length() > 0){
-					_ommme.notifyMUDDebugOther("[UNKNOWN DATA #2] [LEN: "     + _sbDataTelnet.length() + "]\n--------\n" + _sbDataTelnet.substring(0, _sbDataTelnet.length()) + "\n--------\n");
+					_ommme.notifyMUDOther("[UNKNOWN DATA #2] [LEN: "     + _sbDataTelnet.length() + "]\n--------\n" + _sbDataTelnet.substring(0, _sbDataTelnet.length()) + "\n--------\n");
 					OMUD.logError("Error parsing MUD: extra buffer: length: " + _sbDataTelnet.length() + ":\n--------\n" + _sbDataTelnet.substring(0, _sbDataTelnet.length()) + "\n--------\n");
 					_sbDataTelnet.setLength(0);
 				}

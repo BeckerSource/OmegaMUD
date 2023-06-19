@@ -17,8 +17,9 @@ OMUD_MMUDParser
 OMUD_MMUDBlocks
 OMUD_MMUDBlock_Other
 OMUD_MMUDBlock_MUDMenu
+OMUD_MMUDBlock_TrainStats
 OMUD_MMUDBlock_Statline
 OMUD_MMUDBlock_LookRoom
-OMUD_MMUDBlock_TrainStats
+OMUD_MMUDBlock_Inv
 OMUD_Telnet
 OMUD_TelnetParser

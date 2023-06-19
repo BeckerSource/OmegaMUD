@@ -44,10 +44,11 @@ public class OMUD_GUI implements OMUD_ITelnetEvents, OMUD_ITextInputEvents, OMUD
     private JTextField          _txtStatline =      null;
     private JTextField          _txtLastCmd =       null;
     private JTextArea 			_txtDbgTerm = 	    null;
-    private JTextArea           _txtDbgMUDRoom =    null;
-    private JTextArea           _txtDbgMUDCmds =    null;
-    private JTextArea           _txtDbgMUDWelcome = null;
-    private JTextArea           _txtDbgMUDOther =   null;
+    private JTextArea           _txtMUDCmds =       null;
+    private JTextArea           _txtMUDOther =      null;
+    private JTextArea           _txtMUDWelcome =    null;
+    private JTextArea           _txtMUDRoom =       null;
+    private JTextArea           _txtMUDInv =        null;
     private JPanel              _pnlTelnet =        null;
     private JPanel              _pnlStatus =        null;
     private JPanel              _pnlInput =         null;
@@ -186,17 +187,19 @@ public class OMUD_GUI implements OMUD_ITelnetEvents, OMUD_ITextInputEvents, OMUD
         _tabsView.add("Fun View 2", null);
 
         // tabs: char info...
-        _txtDbgTerm =       createGUI_DebugTab();
-        _txtDbgMUDRoom =    createGUI_DebugTab();
-        _txtDbgMUDWelcome = createGUI_DebugTab();
-        _txtDbgMUDCmds =    createGUI_DebugTab();
-        _txtDbgMUDOther =   createGUI_DebugTab();
-        _tabsInfo = new JTabbedPane();
+        _txtDbgTerm =    createGUI_DebugTab();
+        _txtMUDCmds =    createGUI_DebugTab();
+        _txtMUDOther =   createGUI_DebugTab();
+        _txtMUDWelcome = createGUI_DebugTab();
+        _txtMUDRoom =    createGUI_DebugTab();
+        _txtMUDInv =     createGUI_DebugTab();
+        _tabsInfo = new JTabbedPane(JTabbedPane.TOP, JTabbedPane.WRAP_TAB_LAYOUT);
         _tabsInfo.add("DbgTerm",        _txtDbgTerm);
-        _tabsInfo.add("DbgMUDRoom",     new JScrollPane(_txtDbgMUDRoom));
-        _tabsInfo.add("DbgMUDWelcome",  new JScrollPane(_txtDbgMUDWelcome));
-        _tabsInfo.add("DbgMUDCmds",     new JScrollPane(_txtDbgMUDCmds));
-        _tabsInfo.add("DbgMUDOther",    new JScrollPane(_txtDbgMUDOther));
+        _tabsInfo.add("MUDCmds",     new JScrollPane(_txtMUDCmds));
+        _tabsInfo.add("MUDOther",    new JScrollPane(_txtMUDOther));
+        _tabsInfo.add("MUDWelcome",  new JScrollPane(_txtMUDWelcome));
+        _tabsInfo.add("MUDRoom",     new JScrollPane(_txtMUDRoom));
+        _tabsInfo.add("MUDInv",      new JScrollPane(_txtMUDInv));
         _fInfo.add(_tabsInfo);
 
         // chars table...
@@ -458,8 +461,6 @@ public class OMUD_GUI implements OMUD_ITelnetEvents, OMUD_ITextInputEvents, OMUD
     // MUD Events
     // --------------
     public void notifyMUDExp(){}
-    public void notifyMUDStats(){}
-    public void notifyMUDInv(){}
     public void notifyMUDParty(){}
     public void notifyMUDSpells(){}
     public void notifyMUDCombatToggle(boolean is_on){}
@@ -467,39 +468,38 @@ public class OMUD_GUI implements OMUD_ITelnetEvents, OMUD_ITextInputEvents, OMUD
     public void notifyMUDLocation(final OMUD.eBBSLocation eLoc){
         SwingUtilities.invokeLater(new Runnable(){public void run(){
             setStatusLocText(OMUD.BBS_LOCATION_STRINGS[eLoc.ordinal()]);
-            if (_tabsInfo.getSelectedIndex() == 0 && OMUD.isInsideMUD(eLoc))
-                _tabsInfo.setSelectedIndex(1);
         }});
     }
 
-    public void notifyMUDWelcome(final String strText){
-        SwingUtilities.invokeLater(new Runnable(){public void run(){
-            _txtDbgMUDWelcome.setText(strText);
-        }});
-    }    
-
-    public void notifyMUDDebugCmd(final String strText){
+    public void notifyMUDCmd(final String strText){
         SwingUtilities.invokeLater(new Runnable(){public void run(){
             _txtLastCmd.setText("LastCmd: " + strText);
-            _txtDbgMUDCmds.setText(_txtDbgMUDCmds.getText() + _sdf.format(new Date()) + ": " + strText + "\n");
-        }});
-    }    
-
-    public void notifyMUDDebugOther(final String strText){
-        SwingUtilities.invokeLater(new Runnable(){public void run(){
-            _txtDbgMUDOther.setText(_txtDbgMUDOther.getText() + _sdf.format(new Date()) + ": " + strText + "\n");
-            _txtDbgMUDOther.setCaretPosition(_txtDbgMUDOther.getText().length());
+            _txtMUDCmds.setText(_txtMUDCmds.getText() + _sdf.format(new Date()) + ": " + strText + "\n");
         }});
     }
 
-    public void notifyMUDDebugStatline(final OMUD_MMUD.DataStatline dataStatline){
+    public void notifyMUDOther(final String strText){
+        SwingUtilities.invokeLater(new Runnable(){public void run(){
+            _txtMUDOther.setText(_txtMUDOther.getText() + _sdf.format(new Date()) + ": " + strText + "\n");
+            _txtMUDOther.setCaretPosition(_txtMUDOther.getText().length());
+        }});
+    }
+
+    public void notifyMUDStatline(final OMUD_MMUD.DataStatline dataStatline){
         SwingUtilities.invokeLater(new Runnable(){public void run(){
             _txtStatline.setText(dataStatline.text + " " + OMUD_MMUD.REST_STATE_STRINGS[dataStatline.rest.ordinal()]);
         }});
     }
 
-    public void notifyMUDDebugRoom(final OMUD_MMUD.DataRoom dataRoom){
+    public void notifyMUDWelcome(final String strText){
         SwingUtilities.invokeLater(new Runnable(){public void run(){
+            _txtMUDWelcome.setText(strText);
+        }});
+    }
+
+    public void notifyMUDRoom(final OMUD_MMUD.DataRoom dataRoom){
+        SwingUtilities.invokeLater(new Runnable(){public void run(){
+            _tabsInfo.setSelectedIndex(4);
             _txtRoomID.setText("RoomID: " + dataRoom.roomID);
 
             StringBuilder sb = new StringBuilder();
@@ -510,8 +510,31 @@ public class OMUD_GUI implements OMUD_ITelnetEvents, OMUD_ITextInputEvents, OMUD
             sb.append("[RoomUnits]\n"       + dataRoom.units        + "\n\n");
             sb.append("[RoomExits]\n"       + dataRoom.exits        + "\n\n");
             sb.append("[RoomDesc]\n"        + dataRoom.desc);
-            _txtDbgMUDRoom.setText(sb.toString());
-            _txtDbgMUDRoom.setCaretPosition(0);
+            _txtMUDRoom.setText(sb.toString());
+            _txtMUDRoom.setCaretPosition(0);
         }});
+    }
+
+    public void notifyMUDInv(final OMUD_MMUD.DataInv dataInv){
+        SwingUtilities.invokeLater(new Runnable(){public void run(){
+            _tabsInfo.setSelectedIndex(5);
+
+            StringBuilder sb = new StringBuilder();
+            sb.append("[InvEnc]: "      + dataInv.enc_cur + "/" + dataInv.enc_max + " [" + dataInv.enc_level + "]\n\n");
+            sb.append("[InvWealth]: "   + dataInv.wealth  + "\n\n");
+            sb.append("[InvCoins]\n"    + 
+                "Run: " + dataInv.coins_runic     + "\n"  + 
+                "Plt: " + dataInv.coins_plat      + "\n"  + 
+                "Gld: " + dataInv.coins_gold      + "\n"  + 
+                "Sil: " + dataInv.coins_silver    + "\n"  + 
+                "Cop: " + dataInv.coins_copper    + "\n\n");
+            sb.append("[InvItems]\n"    + dataInv.items   + "\n\n");
+            sb.append("[InvKeys]\n"     + dataInv.keys    + "\n\n");
+            _txtMUDInv.setText(sb.toString());
+            _txtMUDInv.setCaretPosition(0);
+        }});
+    }
+
+    public void notifyMUDStats(){
     }
 }

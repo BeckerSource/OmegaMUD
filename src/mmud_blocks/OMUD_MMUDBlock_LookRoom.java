@@ -16,8 +16,7 @@ public class OMUD_MMUDBlock_LookRoom extends OMUD_MMUDBlocks.Block{
 
 	public OMUD_MMUDBlock_LookRoom(){
 		_dataRoom = new OMUD_MMUD.DataRoom();
-		_arrlCmdText.add(new CmdText("", 		0)); // 0 == zero-len is actually a LF/enter but stripped before getting here
-		_arrlCmdText.add(new CmdText("look", 	1)); // 1 == only "l" is required
+		_arrlCmdText.add(new CmdText("look", 	0)); // 0 == covers LF/enter only (zero-len) and all chars as part of look
 		_arrlCmdText.add(new CmdText("search", 	3)); // 3 == only "sea" is required
 	}
 
@@ -25,7 +24,7 @@ public class OMUD_MMUDBlock_LookRoom extends OMUD_MMUDBlocks.Block{
 		int pos_data_found_start = -1;
 
 		// ------------------
-		// Room: Name
+		// Room Name
 		// ------------------
 		if ((pos_data_found_start = findData(sbTelnetData, pos_offset, true, true, MSTR_ROOM_NAME, "")) > -1){
 			cleanData(true, false);
@@ -47,7 +46,7 @@ public class OMUD_MMUDBlock_LookRoom extends OMUD_MMUDBlocks.Block{
 			_dataRoom.name = _sbBlockData.toString();
 
 		// ------------------
-		// Room: You Notice (Items+Hidden)
+		// Items + Hidden (You Notice)
 		// ------------------
 		} else if ((pos_data_found_start = findData(sbTelnetData, pos_offset, true, true, MSTR_YOU_NOTICE_PRE, MSTR_YOU_NOTICE_END)) > -1){
 			cleanData(true, false);
@@ -65,7 +64,7 @@ public class OMUD_MMUDBlock_LookRoom extends OMUD_MMUDBlocks.Block{
 			}
 
 		// ------------------
-		// Room: Also Here (Units)
+		// Also Here (Units)
 		// ------------------
 		} else if ((pos_data_found_start = findData(sbTelnetData, pos_offset, true, true, MSTR_ALSO_HERE_PRE, MSTR_ALSO_HERE_END)) > -1){
 			cleanData(true, true); // units (also here) has ANSI
@@ -73,7 +72,7 @@ public class OMUD_MMUDBlock_LookRoom extends OMUD_MMUDBlocks.Block{
 			splitCommaListToArray(_dataRoom.units, _dataRoom.arrlUnits);
 
 		// ------------------
-		// Room: Obvious Exits
+		// Obvious Exits
 		// ------------------
 		} else if ((pos_data_found_start = findData(sbTelnetData, pos_offset, true, true, MSTR_OBVIOUS_EXITS, "")) > -1){
 			cleanData(true, false);
@@ -91,30 +90,30 @@ public class OMUD_MMUDBlock_LookRoom extends OMUD_MMUDBlocks.Block{
 				OMUD_MEGA.getRoomExitsCode(_dataRoom.arrlExits);
 
 		// ------------------
-		// Room: Light: Dim
+		// Light: Dim
 		// ------------------
 		} else if ((pos_data_found_start = findData(sbTelnetData, pos_offset, true, false, MSTR_ROOM_DIMLY_LIT, "")) > -1){
 			_dataRoom.light = OMUD_MMUD.eRoomLight.DIMLY_LIT;
 
 		// ------------------
-		// Room: Light: Pitch Black
+		// Light: Pitch Black
 		// ------------------
 		// NOTE: **UNTESTED**
 		} else if ((pos_data_found_start = findData(sbTelnetData, pos_offset, true, false, MSTR_ROOM_PITCH_BLACK, "")) > -1){
 			_dataRoom.light = OMUD_MMUD.eRoomLight.PITCH_BLACK;
 
 		// ------------------
-		// Room: Description
+		// Room Description
 		// ------------------
 		// NOTE: not always shown, depends on verbose/brief setting
 		} else if ((pos_data_found_start = findData(sbTelnetData, pos_offset, true, true, MSTR_ROOM_DESCRIPTION, "")) > -1){
 			_dataRoom.desc = _sbBlockData.toString();
 
 		// ------------------
-		// Room Search Revealed None
+		// Search Revealed None
 		// ------------------
 		} else if ((pos_data_found_start = findData(sbTelnetData, pos_offset, true, false, MSTR_ROOM_SEARCH_NONE, "")) > -1){
-			ommme.notifyMUDDebugOther("[ROOM_SEARCH_NONE]\n");
+			ommme.notifyMUDOther("[ROOM_SEARCH_NONE]\n");
 		}
 
 		return pos_data_found_start;
@@ -168,7 +167,7 @@ public class OMUD_MMUDBlock_LookRoom extends OMUD_MMUDBlocks.Block{
 	}
 
 	public void notifyEvents(OMUD_IMUDEvents ommme){
-		ommme.notifyMUDDebugRoom(new OMUD_MMUD.DataRoom(_dataRoom));
+		ommme.notifyMUDRoom(new OMUD_MMUD.DataRoom(_dataRoom));
 	}
 
 	public boolean waitForStatline(){return true;}
