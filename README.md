@@ -43,7 +43,7 @@ Command line run example for Java 1.6 version of OmegaMUD:
 * MegaMUD RoomID generation for backward MegaMUD support.
 * MajorMUD string parsing:
   * BBS Menu Detection
-  * Menu/Prompt Detection
+  * Editor/Prompt Detection
   * Statline
   * Rooms
   * Inventory
