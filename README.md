@@ -42,11 +42,11 @@ Command line run example for Java 1.6 version of OmegaMUD:
 * Command throttling/queueing. Helpful for commands like search, pick, and bash.
 * MegaMUD RoomID generation for backward MegaMUD support.
 * MajorMUD string parsing:
-** BBS Menu Detection
-** Menu/Prompt Detection
-** Statline
-** Rooms
-** Inventory
+  * BBS Menu Detection
+  * Menu/Prompt Detection
+  * Statline
+  * Rooms
+  * Inventory
 
 ## Tested Systems
 WinXP, Win7, Win8, Win10\
