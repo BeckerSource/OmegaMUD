@@ -35,13 +35,18 @@ Command line run example for Java 1.6 version of OmegaMUD:
 *NOTE: the JAR filename will be different depending on which Java version it was built for.*
 
 ## What Works
-* Telnet connections.
-* Basic terminal with ANSI support (adding more CSI/commands as they are found).
-* Basic MajorMUD string (ANSI) parsing (room data, etc.).
-* MegaMUD RoomID generation (for MegaMUD path backward support).
+* Telnet connectivity.
+* Basic ANSI/terminal support (adding more CSI/commands as they are found).
 * Debug frame with various tabs to show debug info.
 * Toggle between single and multi-char input (send) type.
 * Command throttling/queueing. Helpful for commands like search, pick, and bash.
+* MegaMUD RoomID generation for backward MegaMUD support.
+* MajorMUD string parsing:
+** BBS Menu Detection
+** Menu/Prompt Detection
+** Statline
+** Rooms
+** Inventory
 
 ## Tested Systems
 WinXP, Win7, Win8, Win10\
