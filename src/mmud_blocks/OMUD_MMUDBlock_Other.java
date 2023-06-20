@@ -15,8 +15,12 @@ public class OMUD_MMUDBlock_Other extends OMUD_MMUDBlocks.Block{
 	private final String MSTR_COLOR_OTHER =  			"[79D[K";
 
 	public OMUD_MMUDBlock_Other(){}
+
+	public void updateActiveBlock(int pos_block, String strFoundCmdFull, OMUD_MMUDChar.ActiveBlock ablk){
+		ablk.update(pos_block, strFoundCmdFull, false);
+	}
 		
-	public int findBlockData(OMUD_IMUDEvents ommme, StringBuilder sbTelnetData, int pos_offset){
+	public int findBlockData(OMUD_IMUDEvents ommme, OMUD_MMUDChar mmc, StringBuilder sbTelnetData, int pos_offset){
 		int pos_data_found_start = -1;
 
 		// ------------------
@@ -72,8 +76,4 @@ public class OMUD_MMUDBlock_Other extends OMUD_MMUDBlocks.Block{
 
 		return pos_data_found_start;
 	}
-
-	public void resetData(){}
-	public void notifyEvents(OMUD_IMUDEvents ommme){}
-	public boolean waitForStatline(){return false;}
 }

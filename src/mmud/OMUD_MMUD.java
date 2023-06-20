@@ -84,7 +84,40 @@ public class OMUD_MMUD{
 	// ------------------
 	// Containers
 	// ------------------
-	public static class DataRoom{
+	public static abstract class Data{
+		public enum eDataType{
+			DT_STATLINE,
+			DT_ROOM,
+			DT_INV,
+			DT_STATS,
+			DT_EXP,
+			DT_SPELL,
+			DT_PARTY
+		}
+		public abstract eDataType getType();
+	}
+
+	public static class DataStatline extends Data{
+		public String text = 		"";
+		public int hp = 			0;
+		public int ma = 			0;
+		public int hp_max = 		0;
+		public int ma_max = 		0;
+		public eRestState rest = 	eRestState.ACTIVE;
+
+		public eDataType getType(){return eDataType.DT_STATLINE;}
+		public DataStatline(){}
+		public DataStatline(DataStatline dsl){
+			text =   new String(dsl.text);
+			hp = 	 dsl.hp;
+			ma = 	 dsl.ma;
+			hp_max = dsl.hp_max;
+			ma_max = dsl.ma_max;
+			rest = 	 dsl.rest;
+		}
+	}
+
+	public static class DataRoom extends Data{
 		public String roomID = 			""; // MegaMUD RoomID
 		public String name = 			"";
 		public String desc = 			"";
@@ -98,6 +131,7 @@ public class OMUD_MMUD{
 		public ArrayList<String> 		arrlUnits = 		new ArrayList<String>();
 		public ArrayList<RoomExit> 		arrlExits = 		new ArrayList<RoomExit>();
 
+		public eDataType getType(){return eDataType.DT_ROOM;}
 		public DataRoom(){}
 		public DataRoom(DataRoom room){
 			roomID = 			new String(room.roomID);
@@ -116,33 +150,38 @@ public class OMUD_MMUD{
 		}
 	}
 
-	public static class DataStatline{
-		public String text = 		"";
-		public int hp = 			0;
-		public int ma = 			0;
-		public int hp_max = 		0;
-		public int ma_max = 		0;
-		public eRestState rest = 	eRestState.ACTIVE;
+	public static class DataInv extends Data{
+		public int wealth = 		0; // in copper
+		public int coins_runic = 	0;
+		public int coins_plat = 	0; 
+		public int coins_gold = 	0; 
+		public int coins_silver = 	0; 
+		public int coins_copper = 	0; 
+		public int enc_cur = 		0;
+		public int enc_max = 		0;
+		public String enc_level = 	"";
+		public String items = 		"";
+		public String keys =  		"";
 
-		public DataStatline(){}
-		public DataStatline(DataStatline dsl){
-			text =   new String(dsl.text);
-			hp = 	 dsl.hp;
-			ma = 	 dsl.ma;
-			hp_max = dsl.hp_max;
-			ma_max = dsl.ma_max;
-			rest = 	 dsl.rest;
+		public eDataType getType(){return eDataType.DT_INV;}
+		public DataInv(){}
+		public DataInv(DataInv inv){
+			wealth = 		inv.wealth;
+			coins_runic = 	inv.coins_runic;
+			coins_plat = 	inv.coins_plat;
+			coins_gold = 	inv.coins_gold;
+			coins_silver = 	inv.coins_silver;
+			coins_copper = 	inv.coins_copper;
+			enc_cur = 		inv.enc_cur;
+			enc_max =		inv.enc_max;
+			enc_level = 	new String(inv.enc_level);
+			items = 		new String(inv.items);
+			keys = 			new String(inv.keys);
 		}
 	}
 
-	public static class DataExp{
-		public int exp_total = 	0;
-		public int exp_remain = 0;
-		public int exp_per_hr = 0;
-	}
-
 	// DataStats(): note: putting max HP/MA in statline data for now, prob change later
-	public static class DataStats{
+	public static class DataStats extends Data{
 		public String 	name_first = 	"";
 		public String 	name_last = 	"";
 		public String 	stats_race = 	""; // (see note below) -
@@ -167,38 +206,25 @@ public class OMUD_MMUD{
 		public int 		track = 		0;
 		public int 		martial = 		0;
 		public int 		mr = 			0;
+		public eDataType getType(){return eDataType.DT_STATS;}
 	}
 
-	public static class DataInv{
-		public int wealth = 		0; // in copper
-		public int coins_runic = 	0;
-		public int coins_plat = 	0; 
-		public int coins_gold = 	0; 
-		public int coins_silver = 	0; 
-		public int coins_copper = 	0; 
-		public int enc_cur = 		0;
-		public int enc_max = 		0;
-		public String enc_level = 	"";
-		public String items = 		"";
-		public String keys =  		"";
-
-		public DataInv(){}
-		public DataInv(DataInv inv){
-			wealth = 		inv.wealth;
-			coins_runic = 	inv.coins_runic;
-			coins_plat = 	inv.coins_plat;
-			coins_gold = 	inv.coins_gold;
-			coins_silver = 	inv.coins_silver;
-			coins_copper = 	inv.coins_copper;
-			enc_cur = 		inv.enc_cur;
-			enc_max =		inv.enc_max;
-			enc_level = 	new String(inv.enc_level);
-			items = 		new String(inv.items);
-			keys = 			new String(inv.keys);
-		}
+	public static class DataExp extends Data{
+		public int exp_total = 	0;
+		public int exp_remain = 0;
+		public int exp_per_hr = 0;
+		public eDataType getType(){return eDataType.DT_EXP;}
 	}
 
-	public static class DataParty{
+	public static class DataSpell extends Data{
+		public ArrayList<Integer> 	level = 	 	new ArrayList<Integer>();
+		public ArrayList<Integer> 	mana  = 	 	new ArrayList<Integer>();
+		public ArrayList<String> 	name_short = 	new ArrayList<String>();
+		public ArrayList<String> 	name_long =  	new ArrayList<String>();
+		public eDataType getType(){return eDataType.DT_SPELL;}
+	}
+
+	public static class DataParty extends Data{
 		public ArrayList<String> 	name = 			new ArrayList<String>();
 		public ArrayList<String> 	party_class = 	new ArrayList<String>();
 		public ArrayList<Integer>   hp_cur = 		new ArrayList<Integer>();
@@ -206,12 +232,6 @@ public class OMUD_MMUD{
 		public ArrayList<Integer>   hp_max = 		new ArrayList<Integer>();
 		public ArrayList<Integer>   ma_max = 		new ArrayList<Integer>();
 		public ArrayList<String>  	rank = 			new ArrayList<String>();
-	}
-
-	public static class DataSpell{
-		public ArrayList<Integer> 	level = 	 	new ArrayList<Integer>();
-		public ArrayList<Integer> 	mana  = 	 	new ArrayList<Integer>();
-		public ArrayList<String> 	name_short = 	new ArrayList<String>();
-		public ArrayList<String> 	name_long =  	new ArrayList<String>();
+		public eDataType getType(){return eDataType.DT_PARTY;}
 	}
 }

@@ -12,15 +12,16 @@ public class OMUD_MMUDBlock_LookRoom extends OMUD_MMUDBlocks.Block{
 	private final String MSTR_ROOM_DESCRIPTION =  	"[79D[K[0;37;40m    ";
 	private final String MSTR_ROOM_SEARCH_NONE = 	"[0;36mYour search revealed nothing.";
 
-	private OMUD_MMUD.DataRoom _dataRoom = null;
-
 	public OMUD_MMUDBlock_LookRoom(){
-		_dataRoom = new OMUD_MMUD.DataRoom();
-		_arrlCmdText.add(new CmdText("look", 	0)); // 0 == covers LF/enter only (zero-len) and all chars as part of look
-		_arrlCmdText.add(new CmdText("search", 	3)); // 3 == only "sea" is required
+		_arrlCmdText.add(new CmdText("look", 	0)); // 0-len covers LF/enter only (zero-len) and all chars as part of look
+		_arrlCmdText.add(new CmdText("search", 	3)); // only "sea" is required
 	}
 
-	public int findBlockData(OMUD_IMUDEvents ommme, StringBuilder sbTelnetData, int pos_offset){
+	public void updateActiveBlock(int pos_block, String strFoundCmdFull, OMUD_MMUDChar.ActiveBlock ablk){
+		ablk.update(pos_block, strFoundCmdFull, true, OMUD_MMUD.Data.eDataType.DT_ROOM);
+	}
+
+	public int findBlockData(OMUD_IMUDEvents ommme, OMUD_MMUDChar mmc, StringBuilder sbTelnetData, int pos_offset){
 		int pos_data_found_start = -1;
 
 		// ------------------
@@ -34,7 +35,7 @@ public class OMUD_MMUDBlock_LookRoom extends OMUD_MMUDBlocks.Block{
 
 			// if no room name yet, process as the welcome msg -
 			// we should always have a previous mud room name when inside the game...
-			if (_dataRoom.name.length() == 0){
+			if (mmc.dataRoom.name.length() == 0){
 				ommme.notifyMUDWelcome(sbTelnetData.substring(0, pos_data_found_start));
 				sbTelnetData.delete(0, pos_data_found_start);
 				pos_data_found_start = 0;
@@ -42,8 +43,8 @@ public class OMUD_MMUDBlock_LookRoom extends OMUD_MMUDBlocks.Block{
 
 			// reset the room data here -
 			// mainly need for resetting room description in case it isn't shown...
-			_dataRoom = new OMUD_MMUD.DataRoom();
-			_dataRoom.name = _sbBlockData.toString();
+			mmc.dataRoom = new OMUD_MMUD.DataRoom();
+			mmc.dataRoom.name = _sbBlockData.toString();
 
 		// ------------------
 		// Items + Hidden (You Notice)
@@ -55,12 +56,12 @@ public class OMUD_MMUDBlock_LookRoom extends OMUD_MMUDBlocks.Block{
 			int pos_data_delete_start_search_check = checkPrefix("You Notice Searched Items", sbTelnetData, pos_data_found_start, MSTR_PREFIX_RESET_WHBL);
 			if (pos_data_found_start > pos_data_delete_start_search_check){
 				pos_data_found_start = pos_data_delete_start_search_check;
-				_dataRoom.items_hidden = _sbBlockData.toString();
-				splitCommaListToArray(_dataRoom.items_hidden, _dataRoom.arrlItemsHidden);
+				mmc.dataRoom.items_hidden = _sbBlockData.toString();
+				splitCommaListToArray(mmc.dataRoom.items_hidden, mmc.dataRoom.arrlItemsHidden);
 			// NON-SEARCH / visible item listing...
 			} else {
-				_dataRoom.items = _sbBlockData.toString();						
-				splitCommaListToArray(_dataRoom.items, _dataRoom.arrlItems);
+				mmc.dataRoom.items = _sbBlockData.toString();						
+				splitCommaListToArray(mmc.dataRoom.items, mmc.dataRoom.arrlItems);
 			}
 
 		// ------------------
@@ -68,8 +69,8 @@ public class OMUD_MMUDBlock_LookRoom extends OMUD_MMUDBlocks.Block{
 		// ------------------
 		} else if ((pos_data_found_start = findData(sbTelnetData, pos_offset, true, true, MSTR_ALSO_HERE_PRE, MSTR_ALSO_HERE_END)) > -1){
 			cleanData(true, true); // units (also here) has ANSI
-			_dataRoom.units = _sbBlockData.toString();
-			splitCommaListToArray(_dataRoom.units, _dataRoom.arrlUnits);
+			mmc.dataRoom.units = _sbBlockData.toString();
+			splitCommaListToArray(mmc.dataRoom.units, mmc.dataRoom.arrlUnits);
 
 		// ------------------
 		// Obvious Exits
@@ -81,33 +82,33 @@ public class OMUD_MMUDBlock_LookRoom extends OMUD_MMUDBlocks.Block{
 			pos_data_found_start = checkPrefix("Obv Exits After Also Here", sbTelnetData, pos_data_found_start, MSTR_PREFIX_RESET);
 
 			// build the exit data...
-			_dataRoom.exits = _sbBlockData.toString();
-			buildRoomExits();
+			mmc.dataRoom.exits = _sbBlockData.toString();
+			buildRoomExits(mmc);
 
 			// create Megamud RoomID after the exit data is built above...
-			_dataRoom.roomID = 
-				OMUD_MEGA.getRoomNameHash(_dataRoom.name) + 
-				OMUD_MEGA.getRoomExitsCode(_dataRoom.arrlExits);
+			mmc.dataRoom.roomID = 
+				OMUD_MEGA.getRoomNameHash(mmc.dataRoom.name) + 
+				OMUD_MEGA.getRoomExitsCode(mmc.dataRoom.arrlExits);
 
 		// ------------------
 		// Light: Dim
 		// ------------------
 		} else if ((pos_data_found_start = findData(sbTelnetData, pos_offset, true, false, MSTR_ROOM_DIMLY_LIT, "")) > -1){
-			_dataRoom.light = OMUD_MMUD.eRoomLight.DIMLY_LIT;
+			mmc.dataRoom.light = OMUD_MMUD.eRoomLight.DIMLY_LIT;
 
 		// ------------------
 		// Light: Pitch Black
 		// ------------------
 		// NOTE: **UNTESTED**
 		} else if ((pos_data_found_start = findData(sbTelnetData, pos_offset, true, false, MSTR_ROOM_PITCH_BLACK, "")) > -1){
-			_dataRoom.light = OMUD_MMUD.eRoomLight.PITCH_BLACK;
+			mmc.dataRoom.light = OMUD_MMUD.eRoomLight.PITCH_BLACK;
 
 		// ------------------
 		// Room Description
 		// ------------------
 		// NOTE: not always shown, depends on verbose/brief setting
 		} else if ((pos_data_found_start = findData(sbTelnetData, pos_offset, true, true, MSTR_ROOM_DESCRIPTION, "")) > -1){
-			_dataRoom.desc = _sbBlockData.toString();
+			mmc.dataRoom.desc = _sbBlockData.toString();
 
 		// ------------------
 		// Search Revealed None
@@ -119,8 +120,8 @@ public class OMUD_MMUDBlock_LookRoom extends OMUD_MMUDBlocks.Block{
 		return pos_data_found_start;
 	}
 
-	private void buildRoomExits(){
-        String[] dirs = _dataRoom.exits.split(",");
+	private void buildRoomExits(OMUD_MMUDChar mmc){
+        String[] dirs = mmc.dataRoom.exits.split(",");
         for (String dir : dirs){
 
         	// split again, for now just use the last token to get the direction...
@@ -157,18 +158,8 @@ public class OMUD_MMUDBlock_LookRoom extends OMUD_MMUDBlocks.Block{
 	        		}
 	        	}
 
-				_dataRoom.arrlExits.add(new OMUD_MMUD.RoomExit(edir, edoor));
+				mmc.dataRoom.arrlExits.add(new OMUD_MMUD.RoomExit(edir, edoor));
         	}
         }
 	}
-
-	public void resetData(){
-		_dataRoom = new OMUD_MMUD.DataRoom();
-	}
-
-	public void notifyEvents(OMUD_IMUDEvents ommme){
-		ommme.notifyMUDRoom(new OMUD_MMUD.DataRoom(_dataRoom));
-	}
-
-	public boolean waitForStatline(){return true;}
 }

@@ -21,6 +21,7 @@ public class OMUD{
         OFFLINE, 
         BBS,
         MUD_MENU,
+        MUD_ENTER,
         MUD,
         MUD_EDITOR
     }
@@ -28,6 +29,7 @@ public class OMUD{
         "Offline",
         "BBS",
         "MUD Menu",
+        "MUD Enter",
         "MUD",
         "MUD Editor"
     };

@@ -1,20 +1,29 @@
 import java.util.ArrayList;
 
 public class OMUD_MMUDChar{
-	private OMUD_MMUD.DataRoom 				_dataRoom = 	null;
-	private OMUD_MMUD.DataExp 				_dataExp = 		null;
-	private OMUD_MMUD.DataStats 			_dataStats = 	null;
-	private OMUD_MMUD.DataStatline 			_dataStatline = null;
-	private OMUD_MMUD.DataInv 				_dataInv = 		null;
-	private OMUD_MMUD.DataParty 			_dataParty = 	null;
-	private ArrayList<OMUD_MMUD.DataSpell> 	_dataSpells = 	null;
-	public OMUD_MMUDChar(){
-		_dataRoom = 	new OMUD_MMUD.DataRoom();
-		_dataExp = 		new OMUD_MMUD.DataExp();
-		_dataStats = 	new OMUD_MMUD.DataStats();
-		_dataStatline = new OMUD_MMUD.DataStatline();
-		_dataInv = 		new OMUD_MMUD.DataInv();
-		_dataParty = 	new OMUD_MMUD.DataParty();
-		_dataSpells = 	new ArrayList<OMUD_MMUD.DataSpell>();
+	public class ActiveBlock{
+		public static final int BPOS_INVALID = -1;
+		public int 				block_pos = 	BPOS_INVALID;
+		public String 			strCmdText = 	"?";
+		public boolean 			statline_wait = false;
+		public OMUD_MMUD.Data.eDataType data_type = OMUD_MMUD.Data.eDataType.DT_ROOM;
+
+		public void update(int bp, String ct, boolean wfs){update(bp, ct, wfs, data_type);}
+		public void update(int bp, String ct, boolean wfs, OMUD_MMUD.Data.eDataType dt){
+			block_pos =  	bp;
+			strCmdText = 	ct;
+			statline_wait = wfs;
+			data_type = 	dt;
+		}
 	}
+
+	public OMUD_MMUD.DataRoom 				dataRoom = 		new OMUD_MMUD.DataRoom();
+	public OMUD_MMUD.DataExp 				dataExp = 		new OMUD_MMUD.DataExp();
+	public OMUD_MMUD.DataStats 				dataStats = 	new OMUD_MMUD.DataStats();
+	public OMUD_MMUD.DataStatline 			dataStatline = 	new OMUD_MMUD.DataStatline();
+	public OMUD_MMUD.DataInv 				dataInv = 		new OMUD_MMUD.DataInv();
+	public OMUD_MMUD.DataParty 				dataParty = 	new OMUD_MMUD.DataParty();
+	public ArrayList<OMUD_MMUD.DataSpell> 	dataSpells = 	new ArrayList<OMUD_MMUD.DataSpell>();
+
+	public ActiveBlock ablk = new ActiveBlock();
 }

@@ -2,23 +2,6 @@ import java.util.ArrayList;
 
 public class OMUD_MMUDBlocks{
 	// ------------------
-	// ActiveBlock
-	// ------------------	
-	public static class ActiveBlock{
-		public static final int BPOS_INVALID = 	-1;
-		public int 		block_pos = 		BPOS_INVALID;
-		public boolean 	wait_for_statline = true;
-		public String 	strCmdText = 		"?";
-
-		public ActiveBlock(boolean wfs){wait_for_statline = wfs;}
-		public void update(int bp, boolean wfs, String ct){
-			block_pos =  		bp;
-			wait_for_statline = wfs;
-			strCmdText = 		ct;
-		}
-	}
-
-	// ------------------
 	// Block
 	// ------------------	
 	public static abstract class Block{
@@ -31,9 +14,7 @@ public class OMUD_MMUDBlocks{
 		protected ArrayList<CmdText> _arrlCmdText = new ArrayList<CmdText>();
 		protected StringBuilder 	 _sbBlockData = new StringBuilder();
 
-		public abstract void resetData();
-		public abstract void notifyEvents(OMUD_IMUDEvents ommme);
-		public abstract boolean waitForStatline();
+		public abstract void updateActiveBlock(int pos_block, String strFoundCmdFull, OMUD_MMUDChar.ActiveBlock ablk);
 
 		public String matchCmdText(String strCmd){
 			String strFoundCmdFull = null;
@@ -53,7 +34,7 @@ public class OMUD_MMUDBlocks{
 			return strFoundCmdFull;
 		}
 
-		public abstract int findBlockData(OMUD_IMUDEvents ommme, StringBuilder sbTelnetData, int pos_offset);
+		public abstract int findBlockData(OMUD_IMUDEvents ommme, OMUD_MMUDChar mmc, StringBuilder sbTelnetData, int pos_offset);
 		protected int findData(StringBuilder sbTelnetData, int pos_offset, boolean offset_is_lf, boolean has_dynamic_text, String strStartSeq, String strEndSeq){
 			int pos_endseq_left =  	 -1;
 			int pos_endseq_right = 	 -1;
@@ -163,11 +144,11 @@ public class OMUD_MMUDBlocks{
 	// ------------------
 	private OMUD_MMUDBlock_MUDMenu 		_blkMUDMenu = null;
 	private ArrayList<Block> 			_arrlBlocks = null;
-	private int _bpos_cmds_stop =  			0;
-	private final int BPOS_STATLINE = 		0;
-	private final int BPOS_CMDS_START = 	1;
-	private final int BPOS_LOOKROOM = 		1;
-	private final int BPOS_TRAIN_STATS = 	2;
+	private int _bpos_cmds_stop =  		0;
+	private final int BPOS_STATLINE = 	0;
+	private final int BPOS_CMDS_START = 1;
+	private final int BPOS_EDITOR = 	1;
+	private final int BPOS_LOOKROOM = 	2;
 
 	public OMUD_MMUDBlocks(){
 		_arrlBlocks = new ArrayList<Block>();
@@ -175,12 +156,13 @@ public class OMUD_MMUDBlocks{
 		// ------------------
 		// Statline
 		// ------------------
-		_arrlBlocks.add(new OMUD_MMUDBlock_Statline()); 	// BPOS_STATLINE
+		_arrlBlocks.add(new OMUD_MMUDBlock_Statline()); // BPOS_STATLINE
 		// ------------------
 		// Command Blocks
 		// ------------------
+		_arrlBlocks.add(new OMUD_MMUDBlock_Editor()); 		// BPOS_EDITOR
 		_arrlBlocks.add(new OMUD_MMUDBlock_LookRoom()); 	// BPOS_LOOKROOM
-		_arrlBlocks.add(new OMUD_MMUDBlock_TrainStats()); 	// BPOS_TRAIN_STATS
+		_arrlBlocks.add(new OMUD_MMUDBlock_Inventory());
 		_bpos_cmds_stop = _arrlBlocks.size(); // keep this after cmd blocks for an easy dynamic counter/end
 		// ------------------
 		// Other Line Blocks
@@ -195,143 +177,47 @@ public class OMUD_MMUDBlocks{
 		_blkMUDMenu = new OMUD_MMUDBlock_MUDMenu();
 	}
 
-	// resetData(): reset internal data for some special commands
-	public void resetData(){
-		_arrlBlocks.get(BPOS_LOOKROOM).resetData();
-	}
-
-	public int parseLineBlocks(OMUD_IMUDEvents ommme, StringBuilder sbTelnetData, int pos_offset, ActiveBlock ablk){
+	public int parseLineBlocks(OMUD_IMUDEvents ommme, OMUD_MMUDChar mmc, StringBuilder sbTelnetData, int pos_offset){
 		int pos_data_found_start = -1;
 
 		// if current block is the statline or mud menu, just parse all the line blocks...
-		if (ablk.block_pos < BPOS_CMDS_START){
+		if (mmc.ablk.block_pos < BPOS_CMDS_START){
 			for (int i = BPOS_CMDS_START; i < _arrlBlocks.size() && pos_data_found_start == -1; ++i)
-				pos_data_found_start = _arrlBlocks.get(i).findBlockData(ommme, sbTelnetData, pos_offset);
+				pos_data_found_start = _arrlBlocks.get(i).findBlockData(ommme, mmc, sbTelnetData, pos_offset);
 		// else parse only the current line block...
 		} else {
-			pos_data_found_start = _arrlBlocks.get(ablk.block_pos).findBlockData(ommme, sbTelnetData, pos_offset);			
+			pos_data_found_start = _arrlBlocks.get(mmc.ablk.block_pos).findBlockData(ommme, mmc, sbTelnetData, pos_offset);			
 		}
 
 		return pos_data_found_start;
 	}
 
-	public int parseStatline(OMUD_IMUDEvents ommme, StringBuilder sbTelnetData, ActiveBlock ablk){
-		int pos_data_found_start = _arrlBlocks.get(BPOS_STATLINE).findBlockData(ommme, sbTelnetData, 0);
-		if (pos_data_found_start > -1){
-			ablk.update(BPOS_STATLINE, _arrlBlocks.get(BPOS_STATLINE).waitForStatline(), "");
-			_arrlBlocks.get(BPOS_LOOKROOM).notifyEvents(ommme);
-		}
+	public int parseStatline(OMUD_IMUDEvents ommme, OMUD_MMUDChar mmc, StringBuilder sbTelnetData){
+		int pos_data_found_start = _arrlBlocks.get(BPOS_STATLINE).findBlockData(ommme, mmc, sbTelnetData, 0);
+		if (pos_data_found_start > -1)
+			_arrlBlocks.get(BPOS_STATLINE).updateActiveBlock(BPOS_STATLINE, "", mmc.ablk);
 		return pos_data_found_start;
 	}
 
-	public int parseMUDMenu(OMUD_IMUDEvents ommme, StringBuilder sbTelnetData){
-		return _blkMUDMenu.findBlockData(ommme, sbTelnetData, 0);
+	public int parseMUDEditor(OMUD_IMUDEvents ommme, OMUD_MMUDChar mmc, StringBuilder sbTelnetData){
+		return _arrlBlocks.get(BPOS_EDITOR).findBlockData(ommme, mmc, sbTelnetData, 0);
+	}
+
+	public int parseMUDMenu(OMUD_IMUDEvents ommme, OMUD_MMUDChar mmc, StringBuilder sbTelnetData){
+		return _blkMUDMenu.findBlockData(ommme, mmc, sbTelnetData, 0);
 	}
 
 	// findCmd(): main external call to match a user-input command (assumes passed in as lower-case)
 	// returns true if at an in-game menu/editor (train stats, etc.)
-	public boolean findCmd(String strCmd, ActiveBlock ablk){
+	public boolean findCmd(String strCmd, OMUD_MMUDChar.ActiveBlock ablk){
+		// reset some active block stuff...
+		ablk.block_pos = OMUD_MMUDChar.ActiveBlock.BPOS_INVALID;
+		ablk.data_type = OMUD_MMUD.Data.eDataType.DT_STATLINE;
+
 		String strFoundCmdFull = null;
-		for (int i = BPOS_CMDS_START; i < _bpos_cmds_stop && ablk.block_pos == ActiveBlock.BPOS_INVALID; ++i)
+		for (int i = BPOS_CMDS_START; i < _bpos_cmds_stop && strFoundCmdFull == null; ++i)
 			if ((strFoundCmdFull = _arrlBlocks.get(i).matchCmdText(strCmd)) != null)
-				ablk.update(i, _arrlBlocks.get(i).waitForStatline(), strFoundCmdFull);
-		return ablk.block_pos == BPOS_TRAIN_STATS;
+				_arrlBlocks.get(i).updateActiveBlock(i, strFoundCmdFull, ablk);
+		return ablk.block_pos == BPOS_EDITOR;
 	}	
 }
-
-
-
-	/* INV_CARRY_PRE */
-	/* INV_KEYS */
-	/* INV_WEALTH */ 
-	/* INV_ENC */
-	/* WEALTH */
-	/* BANKS */
-	/* LOOK_DESC */ 
-	/* LOOK_EQUIPPED */
-	/* LOOK_ITEM */
-	/* EXP */ 
-	/* STAT_L1 */ 
-	/* STAT_L2 */ 
-	/* STAT_L3 */ 
-	/* STAT_L4 */ 
-	/* STAT_L5 */ 
-	/* STAT_L6 */
-	/* STAT_L7 */
-	/* STAT_L8 */ 
-	/* PARTY_NONE */ 
-	/* PARTY_CHAR */
-	/* TRAIN */ 
-
-	/*
-	public enum eCmdList{
-		CMD_LOOK_ROOM,
-		CMD_LOOK_UNIT,
-		CMD_MOVE,
-		CMD_INVENTORY,
-		CMD_STATS,
-		CMD_PARTY,
-		CMD_REST,
-		CMD_MEDITATE,
-		CMD_TRAIN,
-		CMD_TRAIN_STATS,
-		CMD_LIST_STOCK,
-	}
-	*/
-
-
-
-/* SLINE_HP */ 				//"[79D[K[0;37m[HP=56[0;37m]:",
-/* SLINE_HP_MA */ 			//"[79D[K[0;37m[HP=26[0;37m/MA=12[0;37m]:",
-/* SLINE_HP_KAI */ 			//"[79D[K[0;37m[HP=57[0;37m/KAI=1[0;37m]:",
-/* SLINE_HP_RESTING */ 		//"[79D[K[0;37m[HP=56[0;37m (Resting) ]:",
-/* SLINE_HP_MA_RESTING */ 	//"[79D[K[0;37m[HP=26[0;37m/MA=12[0;37m]: (Resting)",
-/* SLINE_HP_KAI_RESTING */ 	//"[79D[K[0;37m[HP=57[0;37m/KAI=1[0;37m]: (Resting)",
-/*
---------------
-Important ANSI Lines
---------------
-> also here (monsters 1):
-[0;35mAlso here: [1;35mbig baby green dragon[0m[0;35m.
-> also here (players):
-[0;35mAlso here: [1;35mCosma, ZedsDead, BobLemon[0;35m.
-> room exits:
-[0;32mObvious exits: nCorth, eJast, wTest, dNown
-> generic text (player enter realm, city PR spam, etc):
-[79D[KTrelic just entered the Realm.
-[79D[KA cheer of many voices can be heard in the distance.
-[79D[KChildren rush past you hopping around in youthful glee.
-[79D[KA voice shouts aloud "Read the bulletin in the Adventurer's Guild!"
-[79D[KA dog barks off in the distance.
-> hear movement:
-[79D[K[0;35mYou hear movement to the sBouth.
-> player name prefixed action lines:
-[79D[K[1;31mPoopship[0;32m walks into the room from the sBouth.
-> player hung up:
-[79D[K[1;37mBaseNote just hung up!!!
-> room description (has ansi + 4 spaces prefix, ends when next ANSI ESC sequence hits):
-[79D[K[0;37;40m    
-> resting (no ansi):
-You are now resting.
-> gossips:
-[0;37;40m[79D[KTestChar gossips: [0;35mwell boys
-[0;37;40m[79D[KTestChar gossips: [0;35mand ladies
-> player looking at someone:
-[79D[K[0;36mSolace is looking at you.
-> Bank Rates
-[79D[K[0;36m
-The currency conversion rates are:
-100 platinum pieces == 1 Adamantite Pieces
-100 gold crowns == 1 platinum piece
-10 silver nobles == 1 gold crown
-10 copper farthings == 1 silver noble
-> searching items:
-[0;37;40m[0;36mYou notice vorpal sword here.
-[0;36mYour search revealed nothing.
-> searching directions:
-[79D[KYou notice nothing different to the eLast.
-> dimly lit:
-[0;37mThe room is dimly lit
-> unit (mob) moves into the room:
-[79D[K[1;33mtownsman[0;32m moves into the room from the eSast.
-*/

@@ -31,7 +31,6 @@ public class OMUD_GUI implements OMUD_ITelnetEvents, OMUD_ITextInputEvents, OMUD
     private OMUD_GUIScrollPane  _scroll =           null;
     private OMUD_GUITerminal    _term =             null;
     private OMUD_GUITextInput   _txtInput =         null;
-    private OMUD_MMUDChar       _mmc =              null;
     private JFrame              _fMain =            null;
     private JFrame              _fView =            null;
     private JFrame              _fInfo =            null;
@@ -91,11 +90,6 @@ public class OMUD_GUI implements OMUD_ITelnetEvents, OMUD_ITextInputEvents, OMUD
             _txtInput.requestFocus();
         }});
         OMUD.logInfo("GUI Created");
-
-        // --------------
-        // MUD Stuff
-        // --------------
-        _mmc = new OMUD_MMUDChar();
 
 		// --------------
 		// Optional Auto-Stuff
@@ -410,7 +404,6 @@ public class OMUD_GUI implements OMUD_ITelnetEvents, OMUD_ITextInputEvents, OMUD
     public void notifyTelnetDisconnected(){
         SwingUtilities.invokeLater(new Runnable(){public void run(){
             _btnTelnetConnect.setText("Connect");
-            _mmc = new OMUD_MMUDChar();
             setStatusLocText(OMUD.BBS_LOCATION_STRINGS[OMUD.eBBSLocation.OFFLINE.ordinal()]);
         }});
     }
@@ -520,8 +513,9 @@ public class OMUD_GUI implements OMUD_ITelnetEvents, OMUD_ITextInputEvents, OMUD
             _tabsInfo.setSelectedIndex(5);
 
             StringBuilder sb = new StringBuilder();
-            sb.append("[InvEnc]: "      + dataInv.enc_cur + "/" + dataInv.enc_max + " [" + dataInv.enc_level + "]\n\n");
-            sb.append("[InvWealth]: "   + dataInv.wealth  + "\n\n");
+            //sb.append("[InvEnc]: "      + dataInv.enc_cur + "/" + dataInv.enc_max + " [" + dataInv.enc_level + "]\n\n");
+            sb.append("[InvEnc]: "      + dataInv.enc_level + "\n\n");
+            sb.append("[InvWealth]: "   + dataInv.wealth  + " (copper)\n\n");
             sb.append("[InvCoins]\n"    + 
                 "Run: " + dataInv.coins_runic     + "\n"  + 
                 "Plt: " + dataInv.coins_plat      + "\n"  + 

@@ -4,18 +4,18 @@ public class OMUD_MMUDBlock_Statline extends OMUD_MMUDBlocks.Block{
 	private final String MSTR_STATLINE_RESTING = 	" (Resting) ";
 	private final String MSTR_STATLINE_MEDITATING = " (Meditating) ";
 
-	private OMUD_MMUD.DataStatline _dataStatline = null;
+	public OMUD_MMUDBlock_Statline(){}
 
-	public OMUD_MMUDBlock_Statline(){
-		_dataStatline = new OMUD_MMUD.DataStatline();
+	public void updateActiveBlock(int pos_block, String strFoundCmdFull, OMUD_MMUDChar.ActiveBlock ablk){
+		ablk.update(pos_block, strFoundCmdFull, false);
 	}
 
-	public int findBlockData(OMUD_IMUDEvents ommme, StringBuilder sbTelnetData, int pos_offset){
+	public int findBlockData(OMUD_IMUDEvents ommme, OMUD_MMUDChar mmc, StringBuilder sbTelnetData, int pos_offset){
 		int pos_data_found_start = -1;
 
 		if ((pos_data_found_start = findData(sbTelnetData, sbTelnetData.length() - 1, false, true, MSTR_STATLINE_PRE, MSTR_STATLINE_END)) > -1){
 			// default to active first...
-			_dataStatline.rest = OMUD_MMUD.eRestState.ACTIVE;
+			mmc.dataStatline.rest = OMUD_MMUD.eRestState.ACTIVE;
 
 			// ------------------
 			// Statline: Resting/Meditation: MA/KAI Chars
@@ -25,10 +25,10 @@ public class OMUD_MMUDBlock_Statline extends OMUD_MMUDBlocks.Block{
 				int pos_rest_start = 0;
 				if ((pos_rest_start = sbTelnetData.indexOf(MSTR_STATLINE_MEDITATING, pos_data_found_start)) > -1){
 					sbTelnetData.delete(pos_rest_start, pos_rest_start + MSTR_STATLINE_MEDITATING.length());
-					_dataStatline.rest = OMUD_MMUD.eRestState.MEDITATING;
+					mmc.dataStatline.rest = OMUD_MMUD.eRestState.MEDITATING;
 				} else if ((pos_rest_start = sbTelnetData.indexOf(MSTR_STATLINE_RESTING, pos_data_found_start)) > -1){
 					sbTelnetData.delete(pos_rest_start, pos_rest_start + MSTR_STATLINE_RESTING.length());
-					_dataStatline.rest = OMUD_MMUD.eRestState.RESTING;
+					mmc.dataStatline.rest = OMUD_MMUD.eRestState.RESTING;
 				}
 			}
 
@@ -36,21 +36,20 @@ public class OMUD_MMUDBlock_Statline extends OMUD_MMUDBlocks.Block{
 			// Statline: Resting/Meditation: Non-MA/KAI Chars
 			// ------------------
 			// Non-MA/KAI chars: if not found above, try inside of the statline...
-			if (_dataStatline.rest == OMUD_MMUD.eRestState.ACTIVE){
+			if (mmc.dataStatline.rest == OMUD_MMUD.eRestState.ACTIVE){
 				int pos_rest_start = 0;
 				if ((pos_rest_start = _sbBlockData.indexOf(MSTR_STATLINE_RESTING, 0)) > -1){
 					_sbBlockData.delete(pos_rest_start, pos_rest_start + MSTR_STATLINE_RESTING.length());
-					_dataStatline.rest = OMUD_MMUD.eRestState.RESTING;
+					mmc.dataStatline.rest = OMUD_MMUD.eRestState.RESTING;
 				// not sure if non-MA/KAI chars would ever use meditate?
 				} else if ((pos_rest_start = _sbBlockData.indexOf(MSTR_STATLINE_MEDITATING, 0)) > -1){
 					_sbBlockData.delete(pos_rest_start, pos_rest_start + MSTR_STATLINE_MEDITATING.length());
-					_dataStatline.rest = OMUD_MMUD.eRestState.MEDITATING;
+					mmc.dataStatline.rest = OMUD_MMUD.eRestState.MEDITATING;
 				}
 			}
 
 			cleanData(false, true); // strip ansi
-			_dataStatline.text = _sbBlockData.toString();
-			ommme.notifyMUDStatline(new OMUD_MMUD.DataStatline(_dataStatline));
+			mmc.dataStatline.text = _sbBlockData.toString();
 
 			// ------------------
 			// Statline: Remove Extra
@@ -69,8 +68,4 @@ public class OMUD_MMUDBlock_Statline extends OMUD_MMUDBlocks.Block{
 
 		return pos_data_found_start;
 	}	
-
-	public void resetData(){}
-	public void notifyEvents(OMUD_IMUDEvents ommme){}
-	public boolean waitForStatline(){return false;}
 }

@@ -3,11 +3,11 @@ public class OMUD_MMUDBlock_MUDMenu extends OMUD_MMUDBlocks.Block{
 
 	public OMUD_MMUDBlock_MUDMenu(){}
 
-	public int findBlockData(OMUD_IMUDEvents ommme, StringBuilder sbTelnetData, int pos_offset){
-		return findData(sbTelnetData, sbTelnetData.length() - 1, false, false, MSTR_MUD_MENU, "");
+	public void updateActiveBlock(int pos_block, String strFoundCmdFull, OMUD_MMUDChar.ActiveBlock ablk){
+		ablk.update(pos_block, strFoundCmdFull, false);
 	}
 
-	public void resetData(){}
-	public void notifyEvents(OMUD_IMUDEvents ommme){}
-	public boolean waitForStatline(){return false;}
+	public int findBlockData(OMUD_IMUDEvents ommme, OMUD_MMUDChar mmc, StringBuilder sbTelnetData, int pos_offset){
+		return findData(sbTelnetData, sbTelnetData.length() - 1, false, false, MSTR_MUD_MENU, "");
+	}
 }
