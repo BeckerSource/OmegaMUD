@@ -9,8 +9,7 @@ public class OMUD_TelnetParser{
     private StringBuilder               _sbEscSeq =     null;
     private StringBuilder               _sbNewData =    null;
     private boolean                     _gui_busy =     false;
-    private final int       MAX_BUFFER_LINES = 150;
-    private final String    NONSTOP_QUIT_CONTINUE = "[0m(N)onstop, (Q)uit, or (C)ontinue?";
+    private final int MAX_BUFFER_LINES = 150;
 
     public OMUD_TelnetParser(OMUD_ITelnetEvents omte, OMUD_IMUDEvents ommme){
         _omte = omte;

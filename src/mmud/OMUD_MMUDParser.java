@@ -68,9 +68,17 @@ public class OMUD_MMUDParser{
 				// ------------------
 				// sbCmd can be null if there are no current commands in the telnet array...
 				if (sbCmd != null && sbCmd.length() > 0 && _sbDataTelnet.length() > 0){
-					_mmc.ablk.statline_wait = true; // always wait for statline after new command
+
+					// always wait for statline if we have a command -
+					// this may hit multiple times because
+					// we don't know when the linefeed will be sent from telnet...
+					_mmc.ablk.statline_wait = true;
+
 					if (OMUD.getNextLF(_sbDataTelnet, 0) == sbCmd.length() - 1){
 						_sbDataTelnet.delete(0, sbCmd.length());
+
+						// reset all values with statline forced as last data type...
+						_mmc.ablk = new OMUD_MMUDChar.ActiveBlock(true, OMUD_MMUD.Data.eDataType.DT_STATLINE);
 
 						sbCmd.deleteCharAt(sbCmd.length() - 1); // delete the trailing LF
 						if (_s_blocks.findCmd(sbCmd.toString().toLowerCase(), _mmc.ablk))

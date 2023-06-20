@@ -1,18 +1,23 @@
 import java.util.ArrayList;
 
 public class OMUD_MMUDChar{
-	public class ActiveBlock{
+	public static class ActiveBlock{
 		public static final int BPOS_INVALID = -1;
-		public int 				block_pos = 	BPOS_INVALID;
-		public String 			strCmdText = 	"?";
-		public boolean 			statline_wait = false;
+		public int 		block_pos = 	BPOS_INVALID;
+		public String 	strCmdText = 	"?";
+		public boolean 	statline_wait = false;
 		public OMUD_MMUD.Data.eDataType data_type = OMUD_MMUD.Data.eDataType.DT_ROOM;
 
-		public void update(int bp, String ct, boolean wfs){update(bp, ct, wfs, data_type);}
-		public void update(int bp, String ct, boolean wfs, OMUD_MMUD.Data.eDataType dt){
+		public ActiveBlock(boolean sw, OMUD_MMUD.Data.eDataType dt){
+			statline_wait = sw;
+			data_type = 	dt;
+		}
+
+		public void update(int bp, String ct, boolean sw){update(bp, ct, sw, data_type);}
+		public void update(int bp, String ct, boolean sw, OMUD_MMUD.Data.eDataType dt){
 			block_pos =  	bp;
 			strCmdText = 	ct;
-			statline_wait = wfs;
+			statline_wait = sw;
 			data_type = 	dt;
 		}
 	}
@@ -25,5 +30,5 @@ public class OMUD_MMUDChar{
 	public OMUD_MMUD.DataParty 				dataParty = 	new OMUD_MMUD.DataParty();
 	public ArrayList<OMUD_MMUD.DataSpell> 	dataSpells = 	new ArrayList<OMUD_MMUD.DataSpell>();
 
-	public ActiveBlock ablk = new ActiveBlock();
+	public ActiveBlock ablk = new ActiveBlock(false, OMUD_MMUD.Data.eDataType.DT_ROOM);
 }

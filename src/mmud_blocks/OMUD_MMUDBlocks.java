@@ -209,10 +209,6 @@ public class OMUD_MMUDBlocks{
 	// findCmd(): main external call to match a user-input command (assumes passed in as lower-case)
 	// returns true if at an in-game menu/editor (train stats, etc.)
 	public boolean findCmd(String strCmd, OMUD_MMUDChar.ActiveBlock ablk){
-		// reset some active block stuff...
-		ablk.block_pos = OMUD_MMUDChar.ActiveBlock.BPOS_INVALID;
-		ablk.data_type = OMUD_MMUD.Data.eDataType.DT_STATLINE;
-
 		String strFoundCmdFull = null;
 		for (int i = BPOS_CMDS_START; i <= _bpos_cmd_editor && strFoundCmdFull == null; ++i)
 			if ((strFoundCmdFull = _arrlBlocks.get(i).matchCmdText(strCmd)) != null)
