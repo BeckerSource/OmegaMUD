@@ -53,9 +53,26 @@ WinXP, Win7, Win8, Win10\
 Slackware Linux 15.0 x64\
 Mac: Untested
 
-## Screenshots
+## Screenshot: BBS Login
 ![BBS Login](./screenshots/omegamud-bbs_login.png)
+
+## Screenshot: BBS Main Menu
 ![BBS Main Menu](./screenshots/omegamud-bbs_main_menu.png)
+
+## Screenshot: BBS Account Edit
 ![BBS Account Edit](./screenshots/omegamud-bbs_account_edit.png)
-![MajorMUD Newhaven Arena](./screenshots/omegamud-mud_newhaven_arena.png)
-![MajorMUD Train Stats](./screenshots/omegamud-mud_train_stats.png)
+
+## Screenshot: MUD Train Stats
+![MUD Train Stats](./screenshots/omegamud-mud_train_stats.png)
+
+## Screenshot: MUD Welcome
+![MUD Welcome](./screenshots/omegamud-mud_welcome.pngg)
+
+## Screenshot: MUD Newhaven Arena
+![MUD Newhaven Arena](./screenshots/omegamud-mud_newhaven_arena.png)
+
+## Screenshot: MUD Inventory
+![MUD Inventory](./screenshots/omegamud-mud_inventory.png)
+
+## Screenshot: MUD CMD History
+![MUD CMD History](./screenshots/omegamud-mud_cmd_history.png)
