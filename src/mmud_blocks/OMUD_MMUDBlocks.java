@@ -144,11 +144,10 @@ public class OMUD_MMUDBlocks{
 	// ------------------
 	private OMUD_MMUDBlock_MUDMenu 		_blkMUDMenu = null;
 	private ArrayList<Block> 			_arrlBlocks = null;
-	private int _bpos_cmds_stop =  		0;
+	private int _bpos_cmd_editor =  	0;
 	private final int BPOS_STATLINE = 	0;
 	private final int BPOS_CMDS_START = 1;
-	private final int BPOS_EDITOR = 	1;
-	private final int BPOS_LOOKROOM = 	2;
+	private final int BPOS_LOOKROOM = 	1;
 
 	public OMUD_MMUDBlocks(){
 		_arrlBlocks = new ArrayList<Block>();
@@ -156,14 +155,14 @@ public class OMUD_MMUDBlocks{
 		// ------------------
 		// Statline
 		// ------------------
-		_arrlBlocks.add(new OMUD_MMUDBlock_Statline()); // BPOS_STATLINE
+		_arrlBlocks.add(new OMUD_MMUDBlock_Statline()); 	// BPOS_STATLINE
 		// ------------------
 		// Command Blocks
 		// ------------------
-		_arrlBlocks.add(new OMUD_MMUDBlock_Editor()); 		// BPOS_EDITOR
 		_arrlBlocks.add(new OMUD_MMUDBlock_LookRoom()); 	// BPOS_LOOKROOM
 		_arrlBlocks.add(new OMUD_MMUDBlock_Inventory());
-		_bpos_cmds_stop = _arrlBlocks.size(); // keep this after cmd blocks for an easy dynamic counter/end
+		_arrlBlocks.add(new OMUD_MMUDBlock_Editor()); 		// NOTE: should always be at the end!
+		_bpos_cmd_editor = _arrlBlocks.size() - 1; 			// 
 		// ------------------
 		// Other Line Blocks
 		// ------------------
@@ -200,7 +199,7 @@ public class OMUD_MMUDBlocks{
 	}
 
 	public int parseMUDEditor(OMUD_IMUDEvents ommme, OMUD_MMUDChar mmc, StringBuilder sbTelnetData){
-		return _arrlBlocks.get(BPOS_EDITOR).findBlockData(ommme, mmc, sbTelnetData, 0);
+		return _arrlBlocks.get(_bpos_cmd_editor).findBlockData(ommme, mmc, sbTelnetData, 0);
 	}
 
 	public int parseMUDMenu(OMUD_IMUDEvents ommme, OMUD_MMUDChar mmc, StringBuilder sbTelnetData){
@@ -215,9 +214,9 @@ public class OMUD_MMUDBlocks{
 		ablk.data_type = OMUD_MMUD.Data.eDataType.DT_STATLINE;
 
 		String strFoundCmdFull = null;
-		for (int i = BPOS_CMDS_START; i < _bpos_cmds_stop && strFoundCmdFull == null; ++i)
+		for (int i = BPOS_CMDS_START; i <= _bpos_cmd_editor && strFoundCmdFull == null; ++i)
 			if ((strFoundCmdFull = _arrlBlocks.get(i).matchCmdText(strCmd)) != null)
 				_arrlBlocks.get(i).updateActiveBlock(i, strFoundCmdFull, ablk);
-		return ablk.block_pos == BPOS_EDITOR;
+		return ablk.block_pos == _bpos_cmd_editor;
 	}	
 }
