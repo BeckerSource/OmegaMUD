@@ -62,8 +62,11 @@ Mac: Untested
 ## Screenshot: BBS Account Edit
 ![BBS Account Edit](./screenshots/omegamud-bbs_account_edit.png)
 
-## Screenshot: MUD Train Stats
+## Screenshot: MUD Edit Stats
 ![MUD Train Stats](./screenshots/omegamud-mud_train_stats.png)
+
+## Screenshot: MUD Show Stats
+![MUD CMD History](./screenshots/omegamud-mud_stats.png)
 
 ## Screenshot: MUD Welcome
 ![MUD Welcome](./screenshots/omegamud-mud_welcome.png)

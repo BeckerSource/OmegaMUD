@@ -14,7 +14,8 @@ public class OMUD_MMUDBlocks{
 		protected ArrayList<CmdText> _arrlCmdText = new ArrayList<CmdText>();
 		protected StringBuilder 	 _sbBlockData = new StringBuilder();
 
-		public abstract void updateActiveBlock(int pos_block, String strFoundCmdFull, OMUD_MMUDChar.ActiveBlock ablk);
+		public abstract boolean getStatlineWait();
+		public abstract OMUD_MMUD.Data.eDataType getDataType();
 
 		public String matchCmdText(String strCmd){
 			String strFoundCmdFull = null;
@@ -161,6 +162,7 @@ public class OMUD_MMUDBlocks{
 		// ------------------
 		_arrlBlocks.add(new OMUD_MMUDBlock_LookRoom()); 	// BPOS_LOOKROOM
 		_arrlBlocks.add(new OMUD_MMUDBlock_Inventory());
+		_arrlBlocks.add(new OMUD_MMUDBlock_Stats());
 		_arrlBlocks.add(new OMUD_MMUDBlock_Editor()); 		// NOTE: should always be at the end!
 		_bpos_cmd_editor = _arrlBlocks.size() - 1; 			// 
 		// ------------------
@@ -194,7 +196,7 @@ public class OMUD_MMUDBlocks{
 	public int parseStatline(OMUD_IMUDEvents ommme, OMUD_MMUDChar mmc, StringBuilder sbTelnetData){
 		int pos_data_found_start = _arrlBlocks.get(BPOS_STATLINE).findBlockData(ommme, mmc, sbTelnetData, 0);
 		if (pos_data_found_start > -1)
-			_arrlBlocks.get(BPOS_STATLINE).updateActiveBlock(BPOS_STATLINE, "", mmc.ablk);
+			mmc.ablk.update(BPOS_STATLINE, "", _arrlBlocks.get(BPOS_STATLINE).getStatlineWait(), _arrlBlocks.get(BPOS_STATLINE).getDataType());
 		return pos_data_found_start;
 	}
 
@@ -212,7 +214,7 @@ public class OMUD_MMUDBlocks{
 		String strFoundCmdFull = null;
 		for (int i = BPOS_CMDS_START; i <= _bpos_cmd_editor && strFoundCmdFull == null; ++i)
 			if ((strFoundCmdFull = _arrlBlocks.get(i).matchCmdText(strCmd)) != null)
-				_arrlBlocks.get(i).updateActiveBlock(i, strFoundCmdFull, ablk);
+				ablk.update(i, strFoundCmdFull, _arrlBlocks.get(i).getStatlineWait(), _arrlBlocks.get(i).getDataType());
 		return ablk.block_pos == _bpos_cmd_editor;
 	}	
 }

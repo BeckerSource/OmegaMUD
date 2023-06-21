@@ -48,6 +48,7 @@ public class OMUD_GUI implements OMUD_ITelnetEvents, OMUD_ITextInputEvents, OMUD
     private JTextArea           _txtMUDWelcome =    null;
     private JTextArea           _txtMUDRoom =       null;
     private JTextArea           _txtMUDInv =        null;
+    private JTextArea           _txtMUDStats =      null;
     private JPanel              _pnlTelnet =        null;
     private JPanel              _pnlStatus =        null;
     private JPanel              _pnlInput =         null;
@@ -187,13 +188,15 @@ public class OMUD_GUI implements OMUD_ITelnetEvents, OMUD_ITextInputEvents, OMUD
         _txtMUDWelcome = createGUI_DebugTab();
         _txtMUDRoom =    createGUI_DebugTab();
         _txtMUDInv =     createGUI_DebugTab();
+        _txtMUDStats =   createGUI_DebugTab();
         _tabsInfo = new JTabbedPane(JTabbedPane.TOP, JTabbedPane.WRAP_TAB_LAYOUT);
-        _tabsInfo.add("DbgTerm",        _txtDbgTerm);
-        _tabsInfo.add("MUDCmds",     new JScrollPane(_txtMUDCmds));
-        _tabsInfo.add("MUDOther",    new JScrollPane(_txtMUDOther));
-        _tabsInfo.add("MUDWelcome",  new JScrollPane(_txtMUDWelcome));
-        _tabsInfo.add("MUDRoom",     new JScrollPane(_txtMUDRoom));
-        _tabsInfo.add("MUDInv",      new JScrollPane(_txtMUDInv));
+        _tabsInfo.add("DbgTerm",  _txtDbgTerm);
+        _tabsInfo.add("MCmds",    new JScrollPane(_txtMUDCmds));
+        _tabsInfo.add("MOther",   new JScrollPane(_txtMUDOther));
+        _tabsInfo.add("MWelcome", new JScrollPane(_txtMUDWelcome));
+        _tabsInfo.add("MRoom",    new JScrollPane(_txtMUDRoom));
+        _tabsInfo.add("MInv",     new JScrollPane(_txtMUDInv));
+        _tabsInfo.add("MStats",   new JScrollPane(_txtMUDStats));
         _fInfo.add(_tabsInfo);
 
         // chars table...
@@ -529,6 +532,11 @@ public class OMUD_GUI implements OMUD_ITelnetEvents, OMUD_ITextInputEvents, OMUD
         }});
     }
 
-    public void notifyMUDStats(){
+    public void notifyMUDStats(final OMUD_MMUD.DataStats dataStats){
+        SwingUtilities.invokeLater(new Runnable(){public void run(){
+            _tabsInfo.setSelectedIndex(6);
+            _txtMUDStats.setText(dataStats.name_first.toString());
+            _txtMUDStats.setCaretPosition(0);            
+        }});
     }
 }

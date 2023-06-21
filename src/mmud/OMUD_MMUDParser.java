@@ -9,7 +9,7 @@ interface OMUD_IMUDEvents{
 	public void notifyMUDWelcome(final String strText);
 	public void notifyMUDRoom(final OMUD_MMUD.DataRoom dataRoom);
 	public void notifyMUDInv(final OMUD_MMUD.DataInv dataInv);
-	public void notifyMUDStats();
+	public void notifyMUDStats(final OMUD_MMUD.DataStats dataStats);
 	public void notifyMUDExp();
 	public void notifyMUDParty();
 	public void notifyMUDSpells();
@@ -177,6 +177,8 @@ public class OMUD_MMUDParser{
 					_ommme.notifyMUDRoom(new OMUD_MMUD.DataRoom(_mmc.dataRoom));
 				else if (_mmc.ablk.data_type == OMUD_MMUD.Data.eDataType.INV)
 					_ommme.notifyMUDInv(new OMUD_MMUD.DataInv(_mmc.dataInv));
+				else if (_mmc.ablk.data_type == OMUD_MMUD.Data.eDataType.STATS)
+					_ommme.notifyMUDStats(new OMUD_MMUD.DataStats(_mmc.dataStats));
 			}
 
 			// ------------------

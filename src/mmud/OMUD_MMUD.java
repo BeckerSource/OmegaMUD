@@ -86,6 +86,7 @@ public class OMUD_MMUD{
 	// ------------------
 	public static abstract class Data{
 		public enum eDataType{
+			NONE,
 			STATLINE,
 			ROOM,
 			INV,
@@ -189,24 +190,51 @@ public class OMUD_MMUD{
 		public int 		level = 		1;
 		public int 		lives = 		9;
 		public int 		cp = 			0;
-		public int 		strength = 		0;
+		public int 		str = 			0;
 		public int 		intel = 		0;
-		public int 		willpower = 	0;
-		public int 		agility = 		0;
-		public int 		health = 		0;
-		public int 		charm = 		0;
+		public int 		wil = 			0;
+		public int 		agi = 			0;
+		public int 		hea = 			0;
+		public int 		cha = 			0;
 		public int 		ac_ac = 		0;
 		public int 		ac_accy = 		0;
 		public int 		sp = 			0;
-		public int 		perception = 	0;
+		public int 		perc = 			0;
 		public int 		stealth = 		0;
 		public int 		thievery = 		0;
 		public int 		traps = 		0;
 		public int 		pick = 			0;
 		public int 		track = 		0;
-		public int 		martial = 		0;
+		public int 		ma = 			0;
 		public int 		mr = 			0;
 		public eDataType getType(){return eDataType.STATS;}
+		public DataStats(){}
+		public DataStats(DataStats stats){
+			name_first = 	stats.name_first;
+			name_last = 	stats.name_last;
+			stats_race = 	stats.stats_race;
+			stats_class = 	stats.stats_class;
+			level = 		stats.level;
+			lives = 		stats.lives;
+			cp = 			stats.cp;
+			str = 			stats.str;
+			intel = 		stats.intel;
+			wil = 			stats.wil;
+			agi = 			stats.agi;
+			hea = 			stats.hea;
+			cha = 			stats.cha;
+			ac_ac = 		stats.ac_ac;
+			ac_accy = 		stats.ac_accy;
+			sp = 			stats.sp;
+			perc = 			stats.perc;
+			stealth = 		stats.stealth;
+			thievery = 		stats.thievery;
+			traps = 		stats.traps;
+			pick = 			stats.pick;
+			track = 		stats.track;
+			ma = 			stats.ma;
+			mr = 			stats.mr;
+		}
 	}
 
 	public static class DataExp extends Data{

@@ -12,13 +12,11 @@ public class OMUD_MMUDBlock_LookRoom extends OMUD_MMUDBlocks.Block{
 	private final String MSTR_ROOM_DESCRIPTION =  	"[79D[K[0;37;40m    ";
 	private final String MSTR_ROOM_SEARCH_NONE = 	"[0;36mYour search revealed nothing.";
 
+	public boolean getStatlineWait()				{return true;}
+	public OMUD_MMUD.Data.eDataType getDataType()	{return OMUD_MMUD.Data.eDataType.ROOM;}
 	public OMUD_MMUDBlock_LookRoom(){
 		_arrlCmdText.add(new CmdText("look", 	0)); // 0-len covers LF/enter only (zero-len) and all chars as part of look
 		_arrlCmdText.add(new CmdText("search", 	3)); // only "sea" is required
-	}
-
-	public void updateActiveBlock(int pos_block, String strFoundCmdFull, OMUD_MMUDChar.ActiveBlock ablk){
-		ablk.update(pos_block, strFoundCmdFull, true, OMUD_MMUD.Data.eDataType.ROOM);
 	}
 
 	public int findBlockData(OMUD_IMUDEvents ommme, OMUD_MMUDChar mmc, StringBuilder sbTelnetData, int pos_offset){

@@ -13,12 +13,11 @@ public class OMUD_MMUDChar{
 			data_type = 	dt;
 		}
 
-		public void update(int bp, String ct, boolean sw){update(bp, ct, sw, data_type);}
 		public void update(int bp, String ct, boolean sw, OMUD_MMUD.Data.eDataType dt){
 			block_pos =  	bp;
 			strCmdText = 	ct;
 			statline_wait = sw;
-			data_type = 	dt;
+			data_type = 	dt == OMUD_MMUD.Data.eDataType.NONE ? data_type : dt; // don't update if the data type is NONE
 		}
 	}
 
