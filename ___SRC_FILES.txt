@@ -15,11 +15,11 @@ OMUD_MMUD
 OMUD_MMUDChar
 OMUD_MMUDParser
 OMUD_MMUDBlocks
-OMUD_MMUDBlock_Other
-OMUD_MMUDBlock_MUDMenu
+OMUD_MMUDBlock_BBSMenu
 OMUD_MMUDBlock_Editor
 OMUD_MMUDBlock_Statline
 OMUD_MMUDBlock_LookRoom
 OMUD_MMUDBlock_Inventory
+OMUD_MMUDBlock_Other
 OMUD_Telnet
 OMUD_TelnetParser

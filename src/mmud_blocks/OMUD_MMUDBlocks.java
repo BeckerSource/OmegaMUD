@@ -142,7 +142,7 @@ public class OMUD_MMUDBlocks{
 	// ------------------
 	// OMUD_MMUDBlocks
 	// ------------------
-	private OMUD_MMUDBlock_MUDMenu 		_blkMUDMenu = null;
+	private OMUD_MMUDBlock_BBSMenu 		_blkBBSMenu = null;
 	private ArrayList<Block> 			_arrlBlocks = null;
 	private int _bpos_cmd_editor =  	0;
 	private final int BPOS_STATLINE = 	0;
@@ -173,7 +173,7 @@ public class OMUD_MMUDBlocks{
 		// MUD Menu (separate)
 		// ------------------
 		// somewhat unique so keep this separate...
-		_blkMUDMenu = new OMUD_MMUDBlock_MUDMenu();
+		_blkBBSMenu = new OMUD_MMUDBlock_BBSMenu();
 	}
 
 	public int parseLineBlocks(OMUD_IMUDEvents ommme, OMUD_MMUDChar mmc, StringBuilder sbTelnetData, int pos_offset){
@@ -198,12 +198,12 @@ public class OMUD_MMUDBlocks{
 		return pos_data_found_start;
 	}
 
-	public int parseMUDEditor(OMUD_IMUDEvents ommme, OMUD_MMUDChar mmc, StringBuilder sbTelnetData){
+	public int parseEditor(OMUD_IMUDEvents ommme, OMUD_MMUDChar mmc, StringBuilder sbTelnetData){
 		return _arrlBlocks.get(_bpos_cmd_editor).findBlockData(ommme, mmc, sbTelnetData, 0);
 	}
 
-	public int parseMUDMenu(OMUD_IMUDEvents ommme, OMUD_MMUDChar mmc, StringBuilder sbTelnetData){
-		return _blkMUDMenu.findBlockData(ommme, mmc, sbTelnetData, 0);
+	public int parseBBSMenu(OMUD_IMUDEvents ommme, OMUD_MMUDChar mmc, StringBuilder sbTelnetData){
+		return _blkBBSMenu.findBlockData(ommme, mmc, sbTelnetData, 0);
 	}
 
 	// findCmd(): main external call to match a user-input command (assumes passed in as lower-case)

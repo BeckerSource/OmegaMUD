@@ -86,13 +86,13 @@ public class OMUD_MMUD{
 	// ------------------
 	public static abstract class Data{
 		public enum eDataType{
-			DT_STATLINE,
-			DT_ROOM,
-			DT_INV,
-			DT_STATS,
-			DT_EXP,
-			DT_SPELL,
-			DT_PARTY
+			STATLINE,
+			ROOM,
+			INV,
+			STATS,
+			EXP,
+			SPELL,
+			PARTY
 		}
 		public abstract eDataType getType();
 	}
@@ -105,7 +105,7 @@ public class OMUD_MMUD{
 		public int ma_max = 		0;
 		public eRestState rest = 	eRestState.ACTIVE;
 
-		public eDataType getType(){return eDataType.DT_STATLINE;}
+		public eDataType getType(){return eDataType.STATLINE;}
 		public DataStatline(){}
 		public DataStatline(DataStatline dsl){
 			text =   new String(dsl.text);
@@ -131,7 +131,7 @@ public class OMUD_MMUD{
 		public ArrayList<String> 		arrlUnits = 		new ArrayList<String>();
 		public ArrayList<RoomExit> 		arrlExits = 		new ArrayList<RoomExit>();
 
-		public eDataType getType(){return eDataType.DT_ROOM;}
+		public eDataType getType(){return eDataType.ROOM;}
 		public DataRoom(){}
 		public DataRoom(DataRoom room){
 			roomID = 			new String(room.roomID);
@@ -163,7 +163,7 @@ public class OMUD_MMUD{
 		public String items = 		"";
 		public String keys =  		"";
 
-		public eDataType getType(){return eDataType.DT_INV;}
+		public eDataType getType(){return eDataType.INV;}
 		public DataInv(){}
 		public DataInv(DataInv inv){
 			wealth = 		inv.wealth;
@@ -206,14 +206,14 @@ public class OMUD_MMUD{
 		public int 		track = 		0;
 		public int 		martial = 		0;
 		public int 		mr = 			0;
-		public eDataType getType(){return eDataType.DT_STATS;}
+		public eDataType getType(){return eDataType.STATS;}
 	}
 
 	public static class DataExp extends Data{
 		public int exp_total = 	0;
 		public int exp_remain = 0;
 		public int exp_per_hr = 0;
-		public eDataType getType(){return eDataType.DT_EXP;}
+		public eDataType getType(){return eDataType.EXP;}
 	}
 
 	public static class DataSpell extends Data{
@@ -221,7 +221,7 @@ public class OMUD_MMUD{
 		public ArrayList<Integer> 	mana  = 	 	new ArrayList<Integer>();
 		public ArrayList<String> 	name_short = 	new ArrayList<String>();
 		public ArrayList<String> 	name_long =  	new ArrayList<String>();
-		public eDataType getType(){return eDataType.DT_SPELL;}
+		public eDataType getType(){return eDataType.SPELL;}
 	}
 
 	public static class DataParty extends Data{
@@ -232,6 +232,6 @@ public class OMUD_MMUD{
 		public ArrayList<Integer>   hp_max = 		new ArrayList<Integer>();
 		public ArrayList<Integer>   ma_max = 		new ArrayList<Integer>();
 		public ArrayList<String>  	rank = 			new ArrayList<String>();
-		public eDataType getType(){return eDataType.DT_PARTY;}
+		public eDataType getType(){return eDataType.PARTY;}
 	}
 }

@@ -6,7 +6,7 @@ public class OMUD_MMUDChar{
 		public int 		block_pos = 	BPOS_INVALID;
 		public String 	strCmdText = 	"?";
 		public boolean 	statline_wait = false;
-		public OMUD_MMUD.Data.eDataType data_type = OMUD_MMUD.Data.eDataType.DT_ROOM;
+		public OMUD_MMUD.Data.eDataType data_type = OMUD_MMUD.Data.eDataType.ROOM;
 
 		public ActiveBlock(boolean sw, OMUD_MMUD.Data.eDataType dt){
 			statline_wait = sw;
@@ -30,5 +30,5 @@ public class OMUD_MMUDChar{
 	public OMUD_MMUD.DataParty 				dataParty = 	new OMUD_MMUD.DataParty();
 	public ArrayList<OMUD_MMUD.DataSpell> 	dataSpells = 	new ArrayList<OMUD_MMUD.DataSpell>();
 
-	public ActiveBlock ablk = new ActiveBlock(false, OMUD_MMUD.Data.eDataType.DT_ROOM);
+	public ActiveBlock ablk = new ActiveBlock(false, OMUD_MMUD.Data.eDataType.ROOM);
 }

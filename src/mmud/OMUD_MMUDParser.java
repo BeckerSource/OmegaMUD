@@ -37,12 +37,17 @@ public class OMUD_MMUDParser{
         _mmc =  new OMUD_MMUDChar();
 	}
 
-	public void clearTelnetData() 			{_sbDataTelnet.setLength(0);}
 	public void appendChar(char c)			{_sbDataTelnet.append(c);}
 	public void appendSB(StringBuilder sb)	{_sbDataTelnet.append(sb);}
 	public void deleteLastChar(){
 		if (_sbDataTelnet.length() > 0) 
 			_sbDataTelnet.deleteCharAt(_sbDataTelnet.length() - 1);
+	}
+
+	// clearTelnetData(): only clear at specific locations
+	public void clearTelnetData(){
+		if (_eBBSLoc == OMUD.eBBSLocation.MUD_EDITOR || _eBBSLoc == OMUD.eBBSLocation.BBS)
+			_sbDataTelnet.setLength(0);
 	}
 
 	// updateParseDeleteLen(): loop helper func -
@@ -53,61 +58,107 @@ public class OMUD_MMUDParser{
 		return pos_buf_delete_len;
 	}
 
+	private void findMenuCmd(StringBuilder sbCmd){
+		if (sbCmd != null && sbCmd.length() > 0){
+
+			int pos_cmd_start = -1;
+			if (_sbDataTelnet.length() > 0)
+				pos_cmd_start = _sbDataTelnet.indexOf(sbCmd.toString(), 0);
+
+			boolean valid_cmd = false;
+			OMUD.eBBSLocation eNewLoc = _eBBSLoc;
+			char cmd_first_lower = Character.toLowerCase(sbCmd.charAt(0));
+        		 if ((valid_cmd = cmd_first_lower == 'e'))
+				eNewLoc = pos_cmd_start > -1 ? OMUD.eBBSLocation.MUD_EDITOR : _eBBSLoc;
+        	else if ((valid_cmd = cmd_first_lower == 'x'))
+    		 	eNewLoc = pos_cmd_start > -1 ? OMUD.eBBSLocation.BBS : _eBBSLoc;
+
+			// valid command and was found in telnet data...
+			if (eNewLoc != _eBBSLoc){
+				_sbDataTelnet.delete(0, pos_cmd_start + sbCmd.length() + 1);
+				sbCmd.setLength(0);
+
+				_ommme.notifyMUDLocation((_eBBSLoc = eNewLoc));
+				_mmc.ablk.statline_wait = false;
+			// else have a valid command and still waiting for it in the telnet data...
+			} else if (valid_cmd){
+				_mmc.ablk.statline_wait = true;
+			}
+		}
+	}
+
 	public boolean threadParseData(StringBuilder sbCmd){
 		int pos_data_found_start =  -1;
 		int pos_buf_delete_len = 	 0;
 
+		// ------------------
+		// BBS MUD Menu
+		// ------------------
+		// find a better way to isolate this check based on a command in the future?...
+		if (_sbDataTelnet.length() > 0 && (pos_data_found_start = _s_blocks.parseBBSMenu(_ommme, _mmc, _sbDataTelnet)) > -1){
+			_sbDataTelnet.delete(0, pos_data_found_start);
+			// reset data and location...
+			resetData(OMUD.eBBSLocation.MUD_MENU);
+			_ommme.notifyMUDLocation(_eBBSLoc);
+		}
+
+		// ------------------
+		// MUD Menu: Enter/Exit
+		// ------------------
+		// user sent a command at the BBS MUD menu...
+		if (_eBBSLoc == OMUD.eBBSLocation.MUD_MENU)
+			findMenuCmd(sbCmd);
+
+		// ------------------
+		// Inside MUD
+		// ------------------
 		if (OMUD.isInsideMUD(_eBBSLoc)){
 
-			// don't process commands and line blocks when training stats
-			// (training stats needs to wait for statline)...
-			if (_eBBSLoc != OMUD.eBBSLocation.MUD_EDITOR){
+			// ------------------
+			// Find User Commands
+			// ------------------
+			// only process commands when not at an editor (training stats, input prompt, etc.) -
+			// sbCmd can be null if there are no current commands in the telnet array...
+			if (_eBBSLoc != OMUD.eBBSLocation.MUD_EDITOR && sbCmd != null && sbCmd.length() > 0 && _sbDataTelnet.length() > 0){
 
-				// ------------------
-				// Find User Commands
-				// ------------------
-				// sbCmd can be null if there are no current commands in the telnet array...
-				if (sbCmd != null && sbCmd.length() > 0 && _sbDataTelnet.length() > 0){
+				// always wait for statline if we have a command -
+				// this may hit multiple times because
+				// we don't know when the linefeed will be sent from telnet...
+				_mmc.ablk.statline_wait = true;
 
-					// always wait for statline if we have a command -
-					// this may hit multiple times because
-					// we don't know when the linefeed will be sent from telnet...
-					_mmc.ablk.statline_wait = true;
+				if (OMUD.getNextLF(_sbDataTelnet, 0) == sbCmd.length() - 1){
+					_sbDataTelnet.delete(0, sbCmd.length());
 
-					if (OMUD.getNextLF(_sbDataTelnet, 0) == sbCmd.length() - 1){
-						_sbDataTelnet.delete(0, sbCmd.length());
+					// reset all values with statline forced as last data type...
+					_mmc.ablk = new OMUD_MMUDChar.ActiveBlock(true, OMUD_MMUD.Data.eDataType.STATLINE);
 
-						// reset all values with statline forced as last data type...
-						_mmc.ablk = new OMUD_MMUDChar.ActiveBlock(true, OMUD_MMUD.Data.eDataType.DT_STATLINE);
+					sbCmd.deleteCharAt(sbCmd.length() - 1); // delete the trailing LF
+					if (_s_blocks.findCmd(sbCmd.toString().toLowerCase(), _mmc.ablk))
+						_ommme.notifyMUDLocation((_eBBSLoc = OMUD.eBBSLocation.MUD_EDITOR));
 
-						sbCmd.deleteCharAt(sbCmd.length() - 1); // delete the trailing LF
-						if (_s_blocks.findCmd(sbCmd.toString().toLowerCase(), _mmc.ablk))
-							_ommme.notifyMUDLocation((_eBBSLoc = OMUD.eBBSLocation.MUD_EDITOR));
-
-						// if we just had a single linefeed/enter (length would be zero here),
-						// translate that to something visible...
-						if (sbCmd.length() == 0)
-							sbCmd.append("<ENTER>");
-						sbCmd.append(" (" + _mmc.ablk.strCmdText + ")");
-							_ommme.notifyMUDCmd(sbCmd.toString());
-						sbCmd.setLength(0); // clear to show as processed
-					}
+					// if we just had a single linefeed/enter (length would be zero here),
+					// translate that to something visible...
+					if (sbCmd.length() == 0)
+						sbCmd.append("<ENTER>");
+					sbCmd.append(" (" + _mmc.ablk.strCmdText + ")");
+						_ommme.notifyMUDCmd(sbCmd.toString());
+					sbCmd.setLength(0); // clear to show as processed
 				}
+			}
 
-				// ------------------
-				// Find Line Blocks (LF+ESC or LF+End)
-				// ------------------
-				// check length again in case above changes...
-				for (int i = 0; i < _sbDataTelnet.length(); ++i){
-					char char_next = i + 1 < _sbDataTelnet.length() ? _sbDataTelnet.charAt(i + 1) : 0; // 0 val is end of bufer
-					if (_sbDataTelnet.charAt(i) == OMUD.ASCII_LF && (char_next == OMUD.ASCII_ESC || char_next == 0)){
-						// parse/strip out line blocks as they are found, reset the iterator to find more until none are found...
-						if ((pos_data_found_start = _s_blocks.parseLineBlocks(_ommme, _mmc, _sbDataTelnet, i)) > -1){
-							pos_buf_delete_len = updateParseDeleteLen(pos_data_found_start, pos_buf_delete_len);
-							i = pos_data_found_start;
-						}						
-					}					
-				}
+			// ------------------
+			// Find Line Blocks (LF+ESC or LF+End)
+			// ------------------
+			// check length again in case above changes...
+			for (int i = 0; i < _sbDataTelnet.length(); ++i){
+				char char_next = i + 1 < _sbDataTelnet.length() ? _sbDataTelnet.charAt(i + 1) : 0; // 0 val is end of bufer
+				if (_sbDataTelnet.charAt(i) == OMUD.ASCII_LF && (char_next == OMUD.ASCII_ESC || char_next == 0)){
+					// parse/strip out line blocks as they are found, reset the iterator to find more until none are found...
+					if ((pos_data_found_start = _s_blocks.parseLineBlocks(_ommme, _mmc, _sbDataTelnet, i)) > -1){
+						pos_buf_delete_len = updateParseDeleteLen(pos_data_found_start, pos_buf_delete_len);
+						i = pos_data_found_start;
+					}						
+				}					
 			}
 
 			// ------------------
@@ -116,11 +167,15 @@ public class OMUD_MMUDParser{
 			if (_sbDataTelnet.length() > 0 && (pos_data_found_start = _s_blocks.parseStatline(_ommme, _mmc, _sbDataTelnet)) > -1){
 				pos_buf_delete_len = updateParseDeleteLen(pos_data_found_start, pos_buf_delete_len);
 
+				// check if returning from trainin stats or at a prompt/input...
+				if (_eBBSLoc == OMUD.eBBSLocation.MUD_EDITOR)
+					_ommme.notifyMUDLocation((_eBBSLoc = OMUD.eBBSLocation.MUD));
+
 				// notify for statline update and other data that was updated...
 				_ommme.notifyMUDStatline(new OMUD_MMUD.DataStatline(_mmc.dataStatline));
-					 if (_mmc.ablk.data_type == OMUD_MMUD.Data.eDataType.DT_ROOM)
+					 if (_mmc.ablk.data_type == OMUD_MMUD.Data.eDataType.ROOM)
 					_ommme.notifyMUDRoom(new OMUD_MMUD.DataRoom(_mmc.dataRoom));
-				else if (_mmc.ablk.data_type == OMUD_MMUD.Data.eDataType.DT_INV)
+				else if (_mmc.ablk.data_type == OMUD_MMUD.Data.eDataType.INV)
 					_ommme.notifyMUDInv(new OMUD_MMUD.DataInv(_mmc.dataInv));
 			}
 
@@ -138,38 +193,8 @@ public class OMUD_MMUDParser{
 					_sbDataTelnet.setLength(0);
 				}
 			}
-
-		// ------------------
-		// MUD Menu Enter/Exit
-		// ------------------
-		// user sent a command at the BBS MUD menu...
-		} else if (_eBBSLoc == OMUD.eBBSLocation.MUD_MENU){
-			if (sbCmd != null && sbCmd.length() > 0 && 
-				_sbDataTelnet.length() > 0 && _sbDataTelnet.charAt(_sbDataTelnet.length() - 1) == OMUD.ASCII_LF){
-				char cmd_first_lower = Character.toLowerCase(sbCmd.charAt(0));
-	        	if (cmd_first_lower == 'e')
-	        		_ommme.notifyMUDLocation((_eBBSLoc = OMUD.eBBSLocation.MUD_ENTER));
-	        	else if (cmd_first_lower == 'x')
-					_ommme.notifyMUDLocation((_eBBSLoc = OMUD.eBBSLocation.BBS));
-			}
-		// special: check for new char creation on enter...
-		} else if (_eBBSLoc == OMUD.eBBSLocation.MUD_ENTER){
-			if (_s_blocks.parseMUDEditor(_ommme, _mmc, _sbDataTelnet) > -1)
-				 _eBBSLoc = OMUD.eBBSLocation.MUD_EDITOR;
-			else _eBBSLoc = OMUD.eBBSLocation.MUD;
-			_ommme.notifyMUDLocation(_eBBSLoc);
 		}
 
-		// ------------------
-		// Check for BBS MUD Menu
-		// ------------------
-		// find a way to isolate this based on a command in the future -
-		// for now just always check for the MUD menu...
-		if (_sbDataTelnet.length() > 0 && _s_blocks.parseMUDMenu(_ommme, _mmc, _sbDataTelnet) > -1){
-			resetData(OMUD.eBBSLocation.MUD_MENU);
-			_ommme.notifyMUDLocation(_eBBSLoc); // loc set by reset above
-		}		
-
-		return OMUD.isInsideMUD(_eBBSLoc) ? !_mmc.ablk.statline_wait : true;
+		return _eBBSLoc == OMUD.eBBSLocation.BBS ? true : !_mmc.ablk.statline_wait;
 	}
 }

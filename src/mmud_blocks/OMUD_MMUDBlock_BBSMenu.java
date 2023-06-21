@@ -1,7 +1,7 @@
-public class OMUD_MMUDBlock_MUDMenu extends OMUD_MMUDBlocks.Block{
+public class OMUD_MMUDBlock_BBSMenu extends OMUD_MMUDBlocks.Block{
 	private final String MSTR_MUD_MENU = "[1;30m[[0mMAJORMUD[1;30m][0m: [0;37;40m";
 
-	public OMUD_MMUDBlock_MUDMenu(){}
+	public OMUD_MMUDBlock_BBSMenu(){}
 
 	public void updateActiveBlock(int pos_block, String strFoundCmdFull, OMUD_MMUDChar.ActiveBlock ablk){
 		ablk.update(pos_block, strFoundCmdFull, false);

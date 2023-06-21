@@ -18,7 +18,7 @@ public class OMUD_MMUDBlock_LookRoom extends OMUD_MMUDBlocks.Block{
 	}
 
 	public void updateActiveBlock(int pos_block, String strFoundCmdFull, OMUD_MMUDChar.ActiveBlock ablk){
-		ablk.update(pos_block, strFoundCmdFull, true, OMUD_MMUD.Data.eDataType.DT_ROOM);
+		ablk.update(pos_block, strFoundCmdFull, true, OMUD_MMUD.Data.eDataType.ROOM);
 	}
 
 	public int findBlockData(OMUD_IMUDEvents ommme, OMUD_MMUDChar mmc, StringBuilder sbTelnetData, int pos_offset){
