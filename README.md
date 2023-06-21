@@ -74,5 +74,5 @@ Mac: Untested
 ## Screenshot: MUD Inventory
 ![MUD Inventory](./screenshots/omegamud-mud_inventory.png)
 
-## Screenshot: MUD CMD History
+## Screenshot: MUD Command History
 ![MUD CMD History](./screenshots/omegamud-mud_cmd_history.png)
