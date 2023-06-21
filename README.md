@@ -66,7 +66,7 @@ Mac: Untested
 ![MUD Train Stats](./screenshots/omegamud-mud_train_stats.png)
 
 ## Screenshot: MUD Welcome
-![MUD Welcome](./screenshots/omegamud-mud_welcome.pngg)
+![MUD Welcome](./screenshots/omegamud-mud_welcome.png)
 
 ## Screenshot: MUD Newhaven Arena
 ![MUD Newhaven Arena](./screenshots/omegamud-mud_newhaven_arena.png)
