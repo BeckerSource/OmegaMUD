@@ -89,22 +89,22 @@ public class OMUD_MMUDBlocks{
 		}
 
 		// cleanData(): trim lf/space and strip ansi as requested...
-		protected void cleanData(boolean trim_lf_spc, boolean strip_ansi){
+		protected void cleanData(StringBuilder sbData, boolean trim_lf_spc, boolean strip_ansi){
 			int pos_first_char = -1;
 			int pos_last_char  = -1;
-			for (int i = 0; i < _sbBlockData.length(); ++i){
-				if (strip_ansi && _sbBlockData.charAt(i) == OMUD.ASCII_ESC){
-					int pos_ansi_end = _sbBlockData.indexOf(OMUD.CSI_GRAPHICS_STR, i);
+			for (int i = 0; i < sbData.length(); ++i){
+				if (strip_ansi && sbData.charAt(i) == OMUD.ASCII_ESC){
+					int pos_ansi_end = sbData.indexOf(OMUD.CSI_GRAPHICS_STR, i);
 					// if matching ansi end is not found, just delete the escape char.
 					if (pos_ansi_end == -1)
 						pos_ansi_end = i + 1; 	// +1 for exclusive end
 					else pos_ansi_end++; 		// 
-					_sbBlockData.delete(i--, pos_ansi_end); // move 'i' back after delete so that we pick up the first char after the delete
+					sbData.delete(i--, pos_ansi_end); // move 'i' back after delete so that we pick up the first char after the delete
 
 				} else if (trim_lf_spc){
-					if (_sbBlockData.charAt(i) == OMUD.ASCII_LF){
-						_sbBlockData.setCharAt(i, OMUD.ASCII_SPC);
-					} else if (_sbBlockData.charAt(i) != OMUD.ASCII_SPC){
+					if (sbData.charAt(i) == OMUD.ASCII_LF){
+						sbData.setCharAt(i, OMUD.ASCII_SPC);
+					} else if (sbData.charAt(i) != OMUD.ASCII_SPC){
 						pos_last_char = i;
 						if (pos_first_char == -1)
 							pos_first_char = i;
@@ -114,10 +114,10 @@ public class OMUD_MMUDBlocks{
 
 			// trim: delete end first...
 			if (trim_lf_spc){
-				if (pos_last_char > pos_first_char && pos_last_char < _sbBlockData.length() - 1)
-					_sbBlockData.delete(pos_last_char + 1, _sbBlockData.length()); // +1 to move forward to begin at space after last char
+				if (pos_last_char > pos_first_char && pos_last_char < sbData.length() - 1)
+					sbData.delete(pos_last_char + 1, sbData.length()); // +1 to move forward to begin at space after last char
 				if (pos_first_char > 0)
-					_sbBlockData.delete(0, pos_first_char);			
+					sbData.delete(0, pos_first_char);			
 			}
 		}
 
@@ -184,7 +184,8 @@ public class OMUD_MMUDBlocks{
 		// if current block is the statline or mud menu, just parse all the line blocks...
 		if (mmc.ablk.block_pos < BPOS_CMDS_START){
 			for (int i = BPOS_CMDS_START; i < _arrlBlocks.size() && pos_data_found_start == -1; ++i)
-				pos_data_found_start = _arrlBlocks.get(i).findBlockData(ommme, mmc, sbTelnetData, pos_offset);
+				if ((pos_data_found_start = _arrlBlocks.get(i).findBlockData(ommme, mmc, sbTelnetData, pos_offset)) > -1)
+					mmc.ablk.update(i, "", _arrlBlocks.get(i).getStatlineWait(), _arrlBlocks.get(i).getDataType());
 		// else parse only the current line block...
 		} else {
 			pos_data_found_start = _arrlBlocks.get(mmc.ablk.block_pos).findBlockData(ommme, mmc, sbTelnetData, pos_offset);			

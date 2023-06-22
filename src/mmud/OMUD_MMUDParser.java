@@ -75,7 +75,7 @@ public class OMUD_MMUDParser{
 
 			// valid command and was found in telnet data...
 			if (eNewLoc != _eBBSLoc){
-				_sbDataTelnet.delete(0, pos_cmd_start + sbCmd.length() + 1);
+				_sbDataTelnet.delete(0, pos_cmd_start + sbCmd.length());
 				sbCmd.setLength(0);
 
 				_ommme.notifyMUDLocation((_eBBSLoc = eNewLoc));
@@ -129,9 +129,6 @@ public class OMUD_MMUDParser{
 				if (OMUD.getNextLF(_sbDataTelnet, 0) == sbCmd.length() - 1){
 					_sbDataTelnet.delete(0, sbCmd.length());
 
-					// reset all values with statline forced as last data type...
-					_mmc.ablk = new OMUD_MMUDChar.ActiveBlock(true, OMUD_MMUD.Data.eDataType.STATLINE);
-
 					sbCmd.deleteCharAt(sbCmd.length() - 1); // delete the trailing LF
 					if (_s_blocks.findCmd(sbCmd.toString().toLowerCase(), _mmc.ablk))
 						_ommme.notifyMUDLocation((_eBBSLoc = OMUD.eBBSLocation.MUD_EDITOR));
@@ -179,6 +176,9 @@ public class OMUD_MMUDParser{
 					_ommme.notifyMUDInv(new OMUD_MMUD.DataInv(_mmc.dataInv));
 				else if (_mmc.ablk.data_type == OMUD_MMUD.Data.eDataType.STATS)
 					_ommme.notifyMUDStats(new OMUD_MMUD.DataStats(_mmc.dataStats));
+
+				// reset active block with statline forced as last data type...
+				_mmc.ablk = new OMUD_MMUDChar.ActiveBlock(false, OMUD_MMUD.Data.eDataType.STATLINE);
 			}
 
 			// ------------------

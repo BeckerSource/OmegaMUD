@@ -1,4 +1,5 @@
 public class OMUD_MMUDBlock_Statline extends OMUD_MMUDBlocks.Block{
+	private final String MSTR_PREFIX_RESET_WHBL =  	"[0;37;40m";
 	private final String MSTR_STATLINE_PRE = 		"[79D[K[0;37m[";
 	private final String MSTR_STATLINE_END = 		"]:";
 	private final String MSTR_STATLINE_RESTING = 	" (Resting) ";
@@ -12,6 +13,10 @@ public class OMUD_MMUDBlock_Statline extends OMUD_MMUDBlocks.Block{
 		int pos_data_found_start = -1;
 
 		if ((pos_data_found_start = findData(sbTelnetData, sbTelnetData.length() - 1, false, true, MSTR_STATLINE_PRE, MSTR_STATLINE_END)) > -1){
+
+			// PREFIX: statline after stats has an ANSI reset prefix...
+			pos_data_found_start = checkPrefix("Statline Stats Prefix", sbTelnetData, pos_data_found_start, MSTR_PREFIX_RESET_WHBL);
+
 			// default to active first...
 			mmc.dataStatline.rest = OMUD_MMUD.eRestState.ACTIVE;
 
@@ -46,7 +51,7 @@ public class OMUD_MMUDBlock_Statline extends OMUD_MMUDBlocks.Block{
 				}
 			}
 
-			cleanData(false, true); // strip ansi
+			cleanData(_sbBlockData, false, true); // strip ansi
 			mmc.dataStatline.text = _sbBlockData.toString();
 
 			// ------------------

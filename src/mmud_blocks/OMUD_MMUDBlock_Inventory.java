@@ -27,7 +27,7 @@ public class OMUD_MMUDBlock_Inventory extends OMUD_MMUDBlocks.Block{
 			if (OMUD.compareSBString(_sbBlockData, "Nothing!")){
 				 mmc.dataInv.items = "(no items carried)";
 			} else {
-				cleanData(true, false);
+				cleanData(_sbBlockData, true, false);
 				mmc.dataInv.items = _sbBlockData.toString();
 			}
 
@@ -38,7 +38,7 @@ public class OMUD_MMUDBlock_Inventory extends OMUD_MMUDBlocks.Block{
 			int pos_keys_start = 0;
 			if ((pos_keys_start = _sbBlockData.indexOf(MSTR_KEYS_YES, 0)) > -1){
 				_sbBlockData.delete(pos_keys_start, MSTR_KEYS_YES.length());
-				cleanData(true, false);
+				cleanData(_sbBlockData, true, false);
 				mmc.dataInv.keys = _sbBlockData.toString();
 			} else /* MSTR_KEYS_NO */ {
 				mmc.dataInv.keys = "(no keys carried)";				
@@ -54,7 +54,7 @@ public class OMUD_MMUDBlock_Inventory extends OMUD_MMUDBlocks.Block{
 		// Encumbrance
 		// ------------------
 		} else if ((pos_data_found_start = findData(sbTelnetData, pos_offset, true, true, MSTR_ENC_PRE, MSTR_ENC_END)) > -1){
-			cleanData(true, true);
+			cleanData(_sbBlockData, true, true);
 			mmc.dataInv.enc_level = _sbBlockData.toString();
 		}
 

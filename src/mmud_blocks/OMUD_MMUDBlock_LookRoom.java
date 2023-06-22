@@ -26,7 +26,7 @@ public class OMUD_MMUDBlock_LookRoom extends OMUD_MMUDBlocks.Block{
 		// Room Name
 		// ------------------
 		if ((pos_data_found_start = findData(sbTelnetData, pos_offset, true, true, MSTR_ROOM_NAME, "")) > -1){
-			cleanData(true, false);
+			cleanData(_sbBlockData, true, false);
 
 			// PREFIX: if room name is shown after a move command, it will have a white/black reset prefix...
 			pos_data_found_start = checkPrefix("Room Name After Move", sbTelnetData, pos_data_found_start, MSTR_PREFIX_RESET_WHBL);
@@ -34,7 +34,9 @@ public class OMUD_MMUDBlock_LookRoom extends OMUD_MMUDBlocks.Block{
 			// if no room name yet, process as the welcome msg -
 			// we should always have a previous mud room name when inside the game...
 			if (mmc.dataRoom.name.length() == 0){
-				ommme.notifyMUDWelcome(sbTelnetData.substring(0, pos_data_found_start));
+				StringBuilder sbWelcome = new StringBuilder(sbTelnetData.substring(0, pos_data_found_start));
+				cleanData(sbWelcome, false, true);
+				ommme.notifyMUDWelcome(sbWelcome.toString());
 				sbTelnetData.delete(0, pos_data_found_start);
 				pos_data_found_start = 0;
 			}
@@ -48,7 +50,7 @@ public class OMUD_MMUDBlock_LookRoom extends OMUD_MMUDBlocks.Block{
 		// Items + Hidden (You Notice)
 		// ------------------
 		} else if ((pos_data_found_start = findData(sbTelnetData, pos_offset, true, true, MSTR_YOU_NOTICE_PRE, MSTR_YOU_NOTICE_END)) > -1){
-			cleanData(true, false);
+			cleanData(_sbBlockData, true, false);
 
 			// PREFIX: seaching: if a prefix is found, this was data from a search...
 			int pos_data_delete_start_search_check = checkPrefix("You Notice Searched Items", sbTelnetData, pos_data_found_start, MSTR_PREFIX_RESET_WHBL);
@@ -66,7 +68,7 @@ public class OMUD_MMUDBlock_LookRoom extends OMUD_MMUDBlocks.Block{
 		// Also Here (Units)
 		// ------------------
 		} else if ((pos_data_found_start = findData(sbTelnetData, pos_offset, true, true, MSTR_ALSO_HERE_PRE, MSTR_ALSO_HERE_END)) > -1){
-			cleanData(true, true); // units (also here) has ANSI
+			cleanData(_sbBlockData, true, true); // units (also here) has ANSI
 			mmc.dataRoom.units = _sbBlockData.toString();
 			splitCommaListToArray(mmc.dataRoom.units, mmc.dataRoom.arrlUnits);
 
@@ -74,7 +76,7 @@ public class OMUD_MMUDBlock_LookRoom extends OMUD_MMUDBlocks.Block{
 		// Obvious Exits
 		// ------------------
 		} else if ((pos_data_found_start = findData(sbTelnetData, pos_offset, true, true, MSTR_OBVIOUS_EXITS, "")) > -1){
-			cleanData(true, false);
+			cleanData(_sbBlockData, true, false);
 
 			// PREFIX: if shown after units/'also here', an ansi reset command will be present...
 			pos_data_found_start = checkPrefix("Obv Exits After Also Here", sbTelnetData, pos_data_found_start, MSTR_PREFIX_RESET);
