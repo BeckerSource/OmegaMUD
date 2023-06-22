@@ -535,7 +535,35 @@ public class OMUD_GUI implements OMUD_ITelnetEvents, OMUD_ITextInputEvents, OMUD
     public void notifyMUDStats(final OMUD_MMUD.DataStats dataStats){
         SwingUtilities.invokeLater(new Runnable(){public void run(){
             _tabsInfo.setSelectedIndex(6);
-            _txtMUDStats.setText(dataStats.name_first.toString());
+
+            StringBuilder sb = new StringBuilder();
+            sb.append("[NameFirst]: "   + dataStats.name_first      + "\n");
+            sb.append("[NameLast]: "    + dataStats.name_last       + "\n");
+            sb.append("[Race]: "        + dataStats.stats_race      + "\n");
+            sb.append("[Class]: "       + dataStats.stats_class     + "\n");
+            sb.append("[Hits]: "        + dataStats.hp_cur + "/" + dataStats.hp_max + "\n");
+            sb.append("[Mana]: "        + dataStats.ma_cur + "/" + dataStats.ma_max + "\n");
+            sb.append("[Level]: "       + dataStats.level           + "\n");
+            sb.append("[Lives]: "       + dataStats.lives           + "\n");
+            sb.append("[CP]: "          + dataStats.cp              + "\n");
+            sb.append("[Str]: "         + dataStats.str             + "\n");
+            sb.append("[Int]: "         + dataStats.intel           + "\n");
+            sb.append("[Wil]: "         + dataStats.wil             + "\n");
+            sb.append("[Agi]: "         + dataStats.agi             + "\n");
+            sb.append("[Hea]: "         + dataStats.hea             + "\n");
+            sb.append("[Cha]: "         + dataStats.cha             + "\n");
+            sb.append("[AC]: "          + dataStats.ac_ac + "/" + dataStats.ac_accy  + "\n");
+            sb.append("[SC]: "          + dataStats.sc              + "\n");
+            sb.append("[Perc]: "        + dataStats.perc            + "\n");
+            sb.append("[Stealth]: "     + dataStats.stealth         + "\n");
+            sb.append("[Thiev]: "       + dataStats.thievery        + "\n");
+            sb.append("[Traps]: "       + dataStats.traps           + "\n");
+            sb.append("[Pick]: "        + dataStats.pick            + "\n");
+            sb.append("[Track]: "       + dataStats.track           + "\n");
+            sb.append("[MA]: "          + dataStats.ma              + "\n");
+            sb.append("[MR]: "          + dataStats.mr              + "\n");
+
+            _txtMUDStats.setText(sb.toString());
             _txtMUDStats.setCaretPosition(0);            
         }});
     }
