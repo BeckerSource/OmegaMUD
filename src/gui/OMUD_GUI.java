@@ -483,7 +483,12 @@ public class OMUD_GUI implements OMUD_ITelnetEvents, OMUD_ITextInputEvents, OMUD
 
     public void notifyMUDStatline(final OMUD_MMUD.DataStatline dataStatline){
         SwingUtilities.invokeLater(new Runnable(){public void run(){
-            _txtStatline.setText(dataStatline.text + " " + OMUD_MMUD.REST_STATE_STRINGS[dataStatline.rest.ordinal()]);
+            StringBuilder sb = new StringBuilder();
+            sb.append("HP=" + dataStatline.hp_cur + "/" + dataStatline.hp_max + (dataStatline.hp_mod ? "*" : ""));
+            if (dataStatline.ma_cur > 0)
+                sb.append(", MA=" + dataStatline.ma_cur + "/" + dataStatline.ma_max + (dataStatline.ma_mod ? "*" : ""));
+            sb.append(" " + OMUD_MMUD.REST_STATE_STRINGS[dataStatline.rest.ordinal()]);
+            _txtStatline.setText(sb.toString());
         }});
     }
 
@@ -541,8 +546,6 @@ public class OMUD_GUI implements OMUD_ITelnetEvents, OMUD_ITextInputEvents, OMUD
             sb.append("[NameLast]: "    + dataStats.name_last       + "\n");
             sb.append("[Race]: "        + dataStats.stats_race      + "\n");
             sb.append("[Class]: "       + dataStats.stats_class     + "\n");
-            sb.append("[Hits]: "        + dataStats.hp_cur + "/" + dataStats.hp_max + "\n");
-            sb.append("[Mana]: "        + dataStats.ma_cur + "/" + dataStats.ma_max + "\n");
             sb.append("[Level]: "       + dataStats.level           + "\n");
             sb.append("[Lives]: "       + dataStats.lives           + "\n");
             sb.append("[CP]: "          + dataStats.cp              + "\n");

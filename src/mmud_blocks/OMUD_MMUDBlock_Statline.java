@@ -4,12 +4,14 @@ public class OMUD_MMUDBlock_Statline extends OMUD_MMUDBlocks.Block{
 	private final String MSTR_STATLINE_END = 		"]:";
 	private final String MSTR_STATLINE_RESTING = 	" (Resting) ";
 	private final String MSTR_STATLINE_MEDITATING = " (Meditating) ";
+	private final String MSTR_HP = 					"HP=";
+	private final String MSTR_MA = 					"/MA=";
 
 	public boolean getStatlineWait()				{return false;}
 	public OMUD_MMUD.Data.eDataType getDataType()	{return OMUD_MMUD.Data.eDataType.NONE;}
 	public OMUD_MMUDBlock_Statline(){}
 
-	public int findBlockData(OMUD_IMUDEvents ommme, OMUD_MMUDChar mmc, StringBuilder sbTelnetData, int pos_offset){
+	public int findBlockData(OMUD_IMUDEvents ommme, OMUD_MMUDChar mmc, StringBuilder sbTelnetData, int pos_offset, boolean is_matched){
 		int pos_data_found_start = -1;
 
 		if ((pos_data_found_start = findData(sbTelnetData, sbTelnetData.length() - 1, false, true, MSTR_STATLINE_PRE, MSTR_STATLINE_END)) > -1){
@@ -51,8 +53,15 @@ public class OMUD_MMUDBlock_Statline extends OMUD_MMUDBlocks.Block{
 				}
 			}
 
-			cleanData(_sbBlockData, false, true); // strip ansi
-			mmc.dataStatline.text = _sbBlockData.toString();
+			// strip ansi...
+			cleanData(_sbBlockData, false, true);
+
+			// get HP/MA values...
+			int pos_ma = 0;
+        	if ((pos_ma = _sbBlockData.indexOf(MSTR_MA, 0)) > -1)
+	        	 mmc.dataStatline.ma_cur = Integer.parseInt(_sbBlockData.substring(pos_ma + MSTR_MA.length(), _sbBlockData.length()));
+        	else pos_ma = _sbBlockData.length();
+        	mmc.dataStatline.hp_cur = Integer.parseInt(_sbBlockData.substring(MSTR_HP.length(), pos_ma));
 
 			// ------------------
 			// Statline: Remove Extra

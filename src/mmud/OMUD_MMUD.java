@@ -99,21 +99,23 @@ public class OMUD_MMUD{
 	}
 
 	public static class DataStatline extends Data{
-		public String text = 		"";
-		public int hp = 			0;
-		public int ma = 			0;
+		public int hp_cur = 		0;
 		public int hp_max = 		0;
+		public int ma_cur = 		0;
 		public int ma_max = 		0;
+		public boolean hp_mod = 	false;
+		public boolean ma_mod = 	false;
 		public eRestState rest = 	eRestState.ACTIVE;
 
 		public eDataType getType(){return eDataType.STATLINE;}
 		public DataStatline(){}
 		public DataStatline(DataStatline dsl){
-			text =   new String(dsl.text);
-			hp = 	 dsl.hp;
-			ma = 	 dsl.ma;
+			hp_cur = dsl.hp_cur;
 			hp_max = dsl.hp_max;
+			ma_cur = dsl.ma_cur;
 			ma_max = dsl.ma_max;
+			hp_mod = dsl.hp_mod;
+			ma_mod = dsl.ma_mod;
 			rest = 	 dsl.rest;
 		}
 	}
@@ -181,16 +183,12 @@ public class OMUD_MMUD{
 		}
 	}
 
-	// DataStats(): note: putting max HP/MA in statline data for now, prob change later
+	// DataStats(): HP/MA in DataStatline, EXP in DataExp
 	public static class DataStats extends Data{
 		public String 	name_first = 	"";
 		public String 	name_last = 	"";
 		public String 	stats_race = 	""; // (see note below) -
 		public String 	stats_class = 	""; // 'stats' prefix because of reserved keyword 'class' (and race for consistency)
-		public int 		hp_cur = 		-1;
-		public int 		hp_max = 		-1;
-		public int 		ma_cur = 		-1;
-		public int 		ma_max = 		-1;
 		public int 		level = 		-1;
 		public int 		lives = 		-1;
 		public int 		cp = 			-1;
@@ -218,10 +216,6 @@ public class OMUD_MMUD{
 			name_last = 	stats.name_last;
 			stats_race = 	stats.stats_race;
 			stats_class = 	stats.stats_class;
-			hp_cur = 		stats.hp_cur;
-			hp_max = 		stats.hp_max;
-			ma_cur = 		stats.ma_cur;
-			ma_max = 		stats.ma_max;
 			level = 		stats.level;
 			lives = 		stats.lives;
 			cp = 			stats.cp;

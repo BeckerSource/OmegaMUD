@@ -16,7 +16,7 @@ public class OMUD_MMUDBlock_Inventory extends OMUD_MMUDBlocks.Block{
 		_arrlCmdText.add(new CmdText("inventory", 4)); // "inve" is min ("in" and "inv" conflict with "invite" so are ignored in mud)
 	}
 
-	public int findBlockData(OMUD_IMUDEvents ommme, OMUD_MMUDChar mmc, StringBuilder sbTelnetData, int pos_offset){
+	public int findBlockData(OMUD_IMUDEvents ommme, OMUD_MMUDChar mmc, StringBuilder sbTelnetData, int pos_offset, boolean is_matched){
 		int pos_data_found_start = -1;
 
 		// ------------------
@@ -31,31 +31,34 @@ public class OMUD_MMUDBlock_Inventory extends OMUD_MMUDBlocks.Block{
 				mmc.dataInv.items = _sbBlockData.toString();
 			}
 
-		// ------------------
-		// Keys 
-		// ------------------
-		} else if ((pos_data_found_start = findData(sbTelnetData, pos_offset, true, true, MSTR_KEYS_PRE, MSTR_KEYS_END)) > -1){
-			int pos_keys_start = 0;
-			if ((pos_keys_start = _sbBlockData.indexOf(MSTR_KEYS_YES, 0)) > -1){
-				_sbBlockData.delete(pos_keys_start, MSTR_KEYS_YES.length());
-				cleanData(_sbBlockData, true, false);
-				mmc.dataInv.keys = _sbBlockData.toString();
-			} else /* MSTR_KEYS_NO */ {
-				mmc.dataInv.keys = "(no keys carried)";				
+		// only check these if this block is matched (found data above already or specific/direct call)...
+		} else if (is_matched){
+			// ------------------
+			// Keys 
+			// ------------------			
+			if ((pos_data_found_start = findData(sbTelnetData, pos_offset, true, true, MSTR_KEYS_PRE, MSTR_KEYS_END)) > -1){
+				int pos_keys_start = 0;
+				if ((pos_keys_start = _sbBlockData.indexOf(MSTR_KEYS_YES, 0)) > -1){
+					_sbBlockData.delete(pos_keys_start, MSTR_KEYS_YES.length());
+					cleanData(_sbBlockData, true, false);
+					mmc.dataInv.keys = _sbBlockData.toString();
+				} else /* MSTR_KEYS_NO */ {
+					mmc.dataInv.keys = "(no keys carried)";				
+				}
+
+			// ------------------
+			// Wealth
+			// ------------------
+			} else if ((pos_data_found_start = findData(sbTelnetData, pos_offset, true, true, MSTR_WEALTH_PRE, MSTR_WEALTH_END)) > -1){
+				mmc.dataInv.wealth = Integer.parseInt(_sbBlockData.toString());
+
+			// ------------------
+			// Encumbrance
+			// ------------------
+			} else if ((pos_data_found_start = findData(sbTelnetData, pos_offset, true, true, MSTR_ENC_PRE, MSTR_ENC_END)) > -1){
+				cleanData(_sbBlockData, true, true);
+				mmc.dataInv.enc_level = _sbBlockData.toString();
 			}
-
-		// ------------------
-		// Wealth
-		// ------------------
-		} else if ((pos_data_found_start = findData(sbTelnetData, pos_offset, true, true, MSTR_WEALTH_PRE, MSTR_WEALTH_END)) > -1){
-			mmc.dataInv.wealth = Integer.parseInt(_sbBlockData.toString());
-
-		// ------------------
-		// Encumbrance
-		// ------------------
-		} else if ((pos_data_found_start = findData(sbTelnetData, pos_offset, true, true, MSTR_ENC_PRE, MSTR_ENC_END)) > -1){
-			cleanData(_sbBlockData, true, true);
-			mmc.dataInv.enc_level = _sbBlockData.toString();
 		}
 
 		return pos_data_found_start;

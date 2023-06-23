@@ -35,7 +35,7 @@ public class OMUD_MMUDBlocks{
 			return strFoundCmdFull;
 		}
 
-		public abstract int findBlockData(OMUD_IMUDEvents ommme, OMUD_MMUDChar mmc, StringBuilder sbTelnetData, int pos_offset);
+		public abstract int findBlockData(OMUD_IMUDEvents ommme, OMUD_MMUDChar mmc, StringBuilder sbTelnetData, int pos_offset, boolean is_matched);
 		protected int findData(StringBuilder sbTelnetData, int pos_offset, boolean offset_is_lf, boolean has_dynamic_text, String strStartSeq, String strEndSeq){
 			int pos_endseq_left =  	 -1;
 			int pos_endseq_right = 	 -1;
@@ -181,32 +181,32 @@ public class OMUD_MMUDBlocks{
 	public int parseLineBlocks(OMUD_IMUDEvents ommme, OMUD_MMUDChar mmc, StringBuilder sbTelnetData, int pos_offset){
 		int pos_data_found_start = -1;
 
-		// if current block is the statline or mud menu, just parse all the line blocks...
+		// if current block is unset or at the statline, check all lineblocks...
 		if (mmc.ablk.block_pos < BPOS_CMDS_START){
 			for (int i = BPOS_CMDS_START; i < _arrlBlocks.size() && pos_data_found_start == -1; ++i)
-				if ((pos_data_found_start = _arrlBlocks.get(i).findBlockData(ommme, mmc, sbTelnetData, pos_offset)) > -1)
+				if ((pos_data_found_start = _arrlBlocks.get(i).findBlockData(ommme, mmc, sbTelnetData, pos_offset, false)) > -1)
 					mmc.ablk.update(i, "", _arrlBlocks.get(i).getStatlineWait(), _arrlBlocks.get(i).getDataType());
 		// else parse only the current line block...
 		} else {
-			pos_data_found_start = _arrlBlocks.get(mmc.ablk.block_pos).findBlockData(ommme, mmc, sbTelnetData, pos_offset);			
+			pos_data_found_start = _arrlBlocks.get(mmc.ablk.block_pos).findBlockData(ommme, mmc, sbTelnetData, pos_offset, true);			
 		}
 
 		return pos_data_found_start;
 	}
 
 	public int parseStatline(OMUD_IMUDEvents ommme, OMUD_MMUDChar mmc, StringBuilder sbTelnetData){
-		int pos_data_found_start = _arrlBlocks.get(BPOS_STATLINE).findBlockData(ommme, mmc, sbTelnetData, 0);
+		int pos_data_found_start = _arrlBlocks.get(BPOS_STATLINE).findBlockData(ommme, mmc, sbTelnetData, 0, true);
 		if (pos_data_found_start > -1)
 			mmc.ablk.update(BPOS_STATLINE, "", _arrlBlocks.get(BPOS_STATLINE).getStatlineWait(), _arrlBlocks.get(BPOS_STATLINE).getDataType());
 		return pos_data_found_start;
 	}
 
 	public int parseEditor(OMUD_IMUDEvents ommme, OMUD_MMUDChar mmc, StringBuilder sbTelnetData){
-		return _arrlBlocks.get(_bpos_cmd_editor).findBlockData(ommme, mmc, sbTelnetData, 0);
+		return _arrlBlocks.get(_bpos_cmd_editor).findBlockData(ommme, mmc, sbTelnetData, 0, true);
 	}
 
 	public int parseBBSMenu(OMUD_IMUDEvents ommme, OMUD_MMUDChar mmc, StringBuilder sbTelnetData){
-		return _blkBBSMenu.findBlockData(ommme, mmc, sbTelnetData, 0);
+		return _blkBBSMenu.findBlockData(ommme, mmc, sbTelnetData, 0, true);
 	}
 
 	// findCmd(): main external call to match a user-input command (assumes passed in as lower-case)
