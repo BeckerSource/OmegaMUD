@@ -49,12 +49,16 @@ public class OMUD_MMUD{
 	public static enum eRoomLight{
 		NORMAL,
 		DIMLY_LIT,
+		VERY_DARK,
+		BARELY_VIS,
 		PITCH_BLACK
 	}
 
 	public static final String[] ROOM_LIGHT_STRINGS = {
 		"Light: Normal",
 		"Light: Dimly Lit",
+		"Light: Very Dark",
+		"Light: Barely Visible",
 		"Light: Pitch Black"
 	};
 
@@ -96,6 +100,10 @@ public class OMUD_MMUD{
 			PARTY
 		}
 		public abstract eDataType getType();
+	}
+
+	public static class DataRealm{
+		public boolean got_welcome = false;
 	}
 
 	public static class DataStatline extends Data{

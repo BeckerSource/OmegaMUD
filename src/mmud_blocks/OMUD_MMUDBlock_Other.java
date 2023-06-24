@@ -12,8 +12,7 @@ public class OMUD_MMUDBlock_Other extends OMUD_MMUDBlocks.Block{
 	private final String MSTR_COLOR_MAGENTA =  			"[79D[K[0;35m";
 	private final String MSTR_COLOR_CYAN =  			"[79D[K[0;36m";
 	private final String MSTR_COLOR_WHITE =  			"[79D[K[1;37m";
-	private final String MSTR_COLOR_OTHER =  			"[79D[K";
-    private final String MSTR_NQC = 					"[0m(N)onstop, (Q)uit, or (C)ontinue?";
+    //private final String MSTR_NQC = 					"[0m(N)onstop, (Q)uit, or (C)ontinue?";
 
 	public boolean getStatlineWait()				{return false;}
 	public OMUD_MMUD.Data.eDataType getDataType()	{return OMUD_MMUD.Data.eDataType.NONE;}
@@ -74,8 +73,7 @@ public class OMUD_MMUDBlock_Other extends OMUD_MMUDBlocks.Block{
 		} else if (
 			(pos_data_found_start = findData(sbTelnetData, pos_offset, true, true, MSTR_COLOR_MAGENTA, ""))	> -1 ||
 			(pos_data_found_start = findData(sbTelnetData, pos_offset, true, true, MSTR_COLOR_CYAN, "")) 	> -1 ||
-			(pos_data_found_start = findData(sbTelnetData, pos_offset, true, true, MSTR_COLOR_WHITE, "")) 	> -1 ||
-			(pos_data_found_start = findData(sbTelnetData, pos_offset, true, true, MSTR_COLOR_OTHER, "")) 	> -1){
+			(pos_data_found_start = findData(sbTelnetData, pos_offset, true, true, MSTR_COLOR_WHITE, "")) 	> -1){
 			ommme.notifyMUDOther("[COLOR_TEXT]\n" + _sbBlockData.toString() + "\n");
 		}
 
