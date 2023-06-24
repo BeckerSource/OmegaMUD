@@ -3,7 +3,8 @@ public class OMUD_MMUDBlock_Stats extends OMUD_MMUDBlocks.Block{
 	private final String MSTR_ROW2 = 	"[32mRace:";
 	private final String MSTR_ROW3 = 	"[32mClass:";
 	private final String MSTR_ROW4 = 	"[32mHits:";
-	private final String MSTR_ROW5 = 	"[32mMana:";
+	private final String MSTR_ROW5_1 = 	"[32mMana:";
+	private final String MSTR_ROW5_2 = 	"[32mKai:";
 	private final String MSTR_ROW6 = 	"[32m                                       Picklocks:";
 	private final String MSTR_ROW7 =	"[32mStrength:";
 	private final String MSTR_ROW8 = 	"[32mIntellect:";
@@ -139,15 +140,26 @@ public class OMUD_MMUDBlock_Stats extends OMUD_MMUDBlocks.Block{
 				}
 
 			// ------------------
-			// Row5: Mana + SC + Traps
+			// Row5: Mana/Kai + SC + Traps
 			// NOTE: for casters only: traps set above for non-casters
 			// ------------------
-			} else if ((pos_data_found_start = findData(sbTelnetData, pos_offset, true, true, MSTR_ROW5, "")) > -1){
+			} else if (
+				(pos_data_found_start = findData(sbTelnetData, pos_offset, true, true, MSTR_ROW5_1, "")) > -1 || 
+				(pos_data_found_start = findData(sbTelnetData, pos_offset, true, true, MSTR_ROW5_2, "")) > -1){
 				cleanData(_sbBlockData, true, true);
 
-				int pos_left  = 0;
-				int pos_right = 0;
-				if ((pos_right = _sbBlockData.indexOf(MSTR_SC, pos_left)) > -1){
+				int pos_left   = 0;
+				int pos_right  = 0;
+				if ((pos_right = _sbBlockData.indexOf(MSTR_TRAPS, pos_left)) > -1){
+					mmc.dataStats.traps = Integer.parseInt(_sbBlockData.substring(pos_right + MSTR_TRAPS.length(), _sbBlockData.length()).trim());
+
+					// kai chars don't have spellcasting...
+					if ((pos_left = _sbBlockData.indexOf(MSTR_SC, pos_left)) > -1){
+						mmc.dataStats.sc = Integer.parseInt(_sbBlockData.substring(pos_left + MSTR_SC.length(), pos_right).trim());
+						pos_right = pos_left;
+					}
+
+					pos_left = 0;
 					String strMana = _sbBlockData.substring(pos_left, pos_right).trim();
 					// check for modifier...
 					if ((mmc.dataStatline.ma_mod = strMana.charAt(0) == '*'))
@@ -156,12 +168,6 @@ public class OMUD_MMUDBlock_Stats extends OMUD_MMUDBlocks.Block{
 			        if (tokens.length == 2){
 						mmc.dataStatline.ma_cur = Integer.parseInt(tokens[0]);
 						mmc.dataStatline.ma_max = Integer.parseInt(tokens[1]);
-					}
-
-					pos_left = pos_right;
-					if ((pos_right = _sbBlockData.indexOf(MSTR_TRAPS, pos_left)) > -1){
-						mmc.dataStats.sc = 		Integer.parseInt(_sbBlockData.substring(pos_left  + MSTR_SC.length(), 	 pos_right).trim());
-						mmc.dataStats.traps = 	Integer.parseInt(_sbBlockData.substring(pos_right + MSTR_TRAPS.length(), _sbBlockData.length()).trim());
 					}
 				}
 

@@ -5,7 +5,6 @@ public class OMUD_MMUDBlock_Statline extends OMUD_MMUDBlocks.Block{
 	private final String MSTR_STATLINE_RESTING = 	" (Resting) ";
 	private final String MSTR_STATLINE_MEDITATING = " (Meditating) ";
 	private final String MSTR_HP = 					"HP=";
-	private final String MSTR_MA = 					"/MA=";
 
 	public boolean getStatlineWait()				{return false;}
 	public OMUD_MMUD.Data.eDataType getDataType()	{return OMUD_MMUD.Data.eDataType.NONE;}
@@ -56,12 +55,14 @@ public class OMUD_MMUDBlock_Statline extends OMUD_MMUDBlocks.Block{
 			// strip ansi...
 			cleanData(_sbBlockData, false, true);
 
-			// get HP/MA values...
-			int pos_ma = 0;
-        	if ((pos_ma = _sbBlockData.indexOf(MSTR_MA, 0)) > -1)
-	        	 mmc.dataStatline.ma_cur = Integer.parseInt(_sbBlockData.substring(pos_ma + MSTR_MA.length(), _sbBlockData.length()));
-        	else pos_ma = _sbBlockData.length();
-        	mmc.dataStatline.hp_cur = Integer.parseInt(_sbBlockData.substring(MSTR_HP.length(), pos_ma));
+			// check for Mana/Kai...
+			int pos_ma_left  = 0;
+			int pos_hp_end   = 0;
+			if ((pos_hp_end  = _sbBlockData.indexOf("/", pos_ma_left)) 	> -1 &&
+				(pos_ma_left = _sbBlockData.indexOf("=", pos_hp_end)) 	> -1)
+				 mmc.dataStatline.ma_cur = Integer.parseInt(_sbBlockData.substring(++pos_ma_left, _sbBlockData.length()));
+			else pos_hp_end = _sbBlockData.length();
+			mmc.dataStatline.hp_cur = Integer.parseInt(_sbBlockData.substring(MSTR_HP.length(), pos_hp_end));
 
 			// ------------------
 			// Statline: Remove Extra
