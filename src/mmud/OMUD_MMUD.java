@@ -105,6 +105,7 @@ public class OMUD_MMUD{
 		public int ma_max = 		0;
 		public boolean hp_mod = 	false;
 		public boolean ma_mod = 	false;
+		public String  ma_str = 	"?";
 		public eRestState rest = 	eRestState.ACTIVE;
 
 		public eDataType getType(){return eDataType.STATLINE;}
@@ -116,6 +117,7 @@ public class OMUD_MMUD{
 			ma_max = dsl.ma_max;
 			hp_mod = dsl.hp_mod;
 			ma_mod = dsl.ma_mod;
+			ma_str = new String(dsl.ma_str);
 			rest = 	 dsl.rest;
 		}
 	}

@@ -1,29 +1,29 @@
 public class OMUD_MMUDBlock_Stats extends OMUD_MMUDBlocks.Block{
-	private final String MSTR_ROW1 = 	"[32mName:";
-	private final String MSTR_ROW2 = 	"[32mRace:";
-	private final String MSTR_ROW3 = 	"[32mClass:";
-	private final String MSTR_ROW4 = 	"[32mHits:";
-	private final String MSTR_ROW5_1 = 	"[32mMana:";
-	private final String MSTR_ROW5_2 = 	"[32mKai:";
-	private final String MSTR_ROW6 = 	"[32m                                       Picklocks:";
-	private final String MSTR_ROW7 =	"[32mStrength:";
-	private final String MSTR_ROW8 = 	"[32mIntellect:";
-	private final String MSTR_ROW9 = 	"[32mWillpower:";
-	private final String MSTR_LIVES = 	"Lives/CP:";
-	private final String MSTR_EXP = 	"Exp:";
-	private final String MSTR_PERC = 	"Perception:";
-	private final String MSTR_LEVEL = 	"Level:";
-	private final String MSTR_STEALTH = "Stealth:";
-	private final String MSTR_AC = 		"Armour Class:";
-	private final String MSTR_THIEV = 	"Thievery:";
-	private final String MSTR_SC = 		"Spellcasting:";
-	private final String MSTR_TRAPS = 	"Traps:";
-	private final String MSTR_AGI = 	"Agility:";
-	private final String MSTR_TRACK = 	"Tracking:";
-	private final String MSTR_HEALTH = 	"Health:";
-	private final String MSTR_MA = 		"Martial Arts:";
-	private final String MSTR_CHA = 	"Charm:";
-	private final String MSTR_MR = 		"MagicRes:";
+	private final String MSTR_NAME = 	"[32mName:";
+	private final String MSTR_LIVES = 	"[32mLives/CP:";
+	private final String MSTR_RACE = 	"[32mRace:";
+	private final String MSTR_EXP = 	"[32mExp:";
+	private final String MSTR_PERC = 	"[32mPerception:";
+	private final String MSTR_CLASS = 	"[32mClass:";
+	private final String MSTR_LEVEL = 	"[32mLevel:";
+	private final String MSTR_STEALTH = "[32mStealth:";
+	private final String MSTR_HITS = 	"[32mHits:";
+	private final String MSTR_AC = 		"[32mArmour Class:";
+	private final String MSTR_THIEV = 	"[32mThievery:";
+	private final String MSTR_MANA = 	"[32mMana:";
+	private final String MSTR_KAI = 	"[32mKai:";
+	private final String MSTR_SC = 		"[32mSpellcasting:";
+	private final String MSTR_TRAPS = 	"[32mTraps:";
+	private final String MSTR_PICK = 	"[32m                                       Picklocks:";
+	private final String MSTR_STR =  	"[32mStrength:";
+	private final String MSTR_AGI =  	"[0;32mAgility:";
+	private final String MSTR_TRACK =  	"[0;32mTracking:";
+	private final String MSTR_INTEL =	"[32mIntellect:";
+	private final String MSTR_HEA =		"[0;32mHealth:";
+	private final String MSTR_MA =		"[0;32mMartial Arts:";
+	private final String MSTR_WIL =		"[32mWillpower:";
+	private final String MSTR_CHA =		"[0;32mCharm:";
+	private final String MSTR_MR =		"[0;32mMagicRes:";
 
 	public boolean getStatlineWait()				{return true;}
 	public OMUD_MMUD.Data.eDataType getDataType()	{return OMUD_MMUD.Data.eDataType.STATS;}
@@ -37,130 +37,92 @@ public class OMUD_MMUDBlock_Stats extends OMUD_MMUDBlocks.Block{
 		// ------------------
 		// Row1: Name + Lives/CP
 		// ------------------
-		if ((pos_data_found_start = findData(sbTelnetData, pos_offset, true, true, MSTR_ROW1, "")) > -1){
+		if ((pos_data_found_start = findData(sbTelnetData, pos_offset, true, true, MSTR_LIVES, "")) > -1){
 			cleanData(_sbBlockData, true, true);
 
 			// reset...
 			mmc.dataStats = new OMUD_MMUD.DataStats();
 
-			int pos_left  = 0;
-			int pos_right = 0;
-			// get first name...
-			if ((pos_right = _sbBlockData.indexOf(" ", pos_left)) > -1){
-				mmc.dataStats.name_first = _sbBlockData.substring(pos_left, pos_right);
+			// get lives/cp...
+	        String[] tokens = _sbBlockData.toString().split("/");
+	        if (tokens.length == 2){
+	        	mmc.dataStats.lives = Integer.parseInt(tokens[0]);
+	        	mmc.dataStats.cp = 	  Integer.parseInt(tokens[1]);
+	        }						
 
-				// get last name...
-				pos_left = pos_right;
-				if ((pos_right = _sbBlockData.indexOf(MSTR_LIVES, pos_right)) > -1){
-					mmc.dataStats.name_last = _sbBlockData.substring(pos_left, pos_right).trim(); // could result in empty for no last name
+	        // get name...
+	        if ((pos_data_found_start = findData(sbTelnetData, --pos_data_found_start, false, true, MSTR_NAME, "")) > -1){
+				cleanData(_sbBlockData, true, true);
 
-					// get lives/cp...
-					String strLivesCP = _sbBlockData.substring(pos_right + MSTR_LIVES.length(), _sbBlockData.length()).trim();
-			        String[] tokens = strLivesCP.split("/");
-			        if (tokens.length == 2){
-			        	mmc.dataStats.lives = Integer.parseInt(tokens[0]);
-			        	mmc.dataStats.cp = 	  Integer.parseInt(tokens[1]);
-			        }						
-				}
-			}
+				// found a last name if split...
+				mmc.dataStats.name_first = _sbBlockData.toString();
+		        tokens = mmc.dataStats.name_first.split(" ");
+		        if (tokens.length == 2){
+		        	mmc.dataStats.name_first = tokens[0];
+		        	mmc.dataStats.name_last  = tokens[1];
+		        }						
+	        }
 
 		// only check these if this block is matched (found data above already or specific/direct call)...
 		} else if (is_matched){
 			// ------------------
 			// Row2: Race + Exp + Perception
 			// ------------------
-			if ((pos_data_found_start = findData(sbTelnetData, pos_offset, true, true, MSTR_ROW2, "")) > -1){
+			if ((pos_data_found_start = findData(sbTelnetData, pos_offset, true, true, MSTR_PERC, "")) > -1){
 				cleanData(_sbBlockData, true, true);
+				mmc.dataStats.perc = Integer.parseInt(_sbBlockData.toString());
 
-				int pos_left  = 0;
-				int pos_right = 0;
-				if ((pos_right = _sbBlockData.indexOf(MSTR_EXP, pos_left)) > -1){
-					mmc.dataStats.stats_race = _sbBlockData.substring(pos_left, pos_right).trim();
+		        if ((pos_data_found_start = findData(sbTelnetData, --pos_data_found_start, false, true, MSTR_EXP, "")) > -1){
+		        	cleanData(_sbBlockData, true, true);
+		        	mmc.dataExp.exp_total = Integer.parseInt(_sbBlockData.toString());
+		        }
 
-					pos_left = pos_right;
-					if ((pos_right = _sbBlockData.indexOf(MSTR_PERC, pos_right)) > -1){
-						//mmc.dataStats.exp =  Integer.parseInt(_sbBlockData.substring(pos_left  + MSTR_EXP.length(),  pos_right).trim());
-						mmc.dataStats.perc = Integer.parseInt(_sbBlockData.substring(pos_right + MSTR_PERC.length(), _sbBlockData.length()).trim());
-					}
-				}
+		        if ((pos_data_found_start = findData(sbTelnetData, --pos_data_found_start, false, true, MSTR_RACE, "")) > -1){
+		        	cleanData(_sbBlockData, true, true);
+		        	mmc.dataStats.stats_race = _sbBlockData.toString();
+		        }
 
 			// ------------------
 			// Row3: Class + Level + Stealth
 			// ------------------
-			} else if ((pos_data_found_start = findData(sbTelnetData, pos_offset, true, true, MSTR_ROW3, "")) > -1){
+			} else if ((pos_data_found_start = findData(sbTelnetData, pos_offset, true, true, MSTR_STEALTH, "")) > -1){
 				cleanData(_sbBlockData, true, true);
+				mmc.dataStats.stealth = Integer.parseInt(_sbBlockData.toString());
 
-				int pos_left  = 0;
-				int pos_right = 0;
-				if ((pos_right = _sbBlockData.indexOf(MSTR_LEVEL, pos_left)) > -1){
-					mmc.dataStats.stats_class = _sbBlockData.substring(pos_left, pos_right).trim();
+		        if ((pos_data_found_start = findData(sbTelnetData, --pos_data_found_start, false, true, MSTR_LEVEL, "")) > -1){
+		        	cleanData(_sbBlockData, true, true);
+		        	mmc.dataStats.level = Integer.parseInt(_sbBlockData.toString());
+		        }
 
-					pos_left = pos_right;
-					if ((pos_right = _sbBlockData.indexOf(MSTR_STEALTH, pos_right)) > -1){
-						mmc.dataStats.level =  	Integer.parseInt(_sbBlockData.substring(pos_left  + MSTR_LEVEL.length(),   pos_right).trim());
-						mmc.dataStats.stealth = Integer.parseInt(_sbBlockData.substring(pos_right + MSTR_STEALTH.length(), _sbBlockData.length()).trim());
-					}
-				}
+		        if ((pos_data_found_start = findData(sbTelnetData, --pos_data_found_start, false, true, MSTR_CLASS, "")) > -1){
+		        	cleanData(_sbBlockData, true, true);
+		        	mmc.dataStats.stats_class = _sbBlockData.toString();
+		        }
 
 			// ------------------
-			// Row4: Hits + AC + Thievery
-			// ------------------
-			} else if ((pos_data_found_start = findData(sbTelnetData, pos_offset, true, true, MSTR_ROW4, "")) > -1){
-				cleanData(_sbBlockData, true, true);
-
-				int pos_left  = 0;
-				int pos_right = 0;
-				if ((pos_right = _sbBlockData.indexOf(MSTR_AC, pos_left)) > -1){
-					String strHits = _sbBlockData.substring(pos_left, pos_right).trim();
-					// check for modifier...
-					if ((mmc.dataStatline.hp_mod = strHits.charAt(0) == '*'))
-						strHits = strHits.substring(1, strHits.length()).trim();
-			        String[] tokens = strHits.split("/");
-			        if (tokens.length == 2){
-						mmc.dataStatline.hp_cur = Integer.parseInt(tokens[0]);
-						mmc.dataStatline.hp_max = Integer.parseInt(tokens[1]);
-					}
-
-					pos_left = pos_right;
-					if ((pos_right = _sbBlockData.indexOf(MSTR_THIEV, pos_right)) > -1){
-						String strAC = _sbBlockData.substring(pos_left + MSTR_AC.length(), pos_right).trim();
-				        tokens = strAC.split("/");
-				        if (tokens.length == 2){
-							mmc.dataStats.ac_ac =   Integer.parseInt(tokens[0]);
-							mmc.dataStats.ac_accy = Integer.parseInt(tokens[1]);
-				        }
-
-				        // NON-CASTERS: check for traps at the end (will be a LF-split without ANSI escape at start of line)...
-				        pos_left = pos_right;
-				        if ((pos_right = _sbBlockData.lastIndexOf(MSTR_TRAPS, _sbBlockData.length() - 1)) > -1)
-				        	mmc.dataStats.traps = Integer.parseInt(_sbBlockData.substring(pos_right + MSTR_TRAPS.length(), _sbBlockData.length()).trim());
-				        else pos_right = _sbBlockData.length();
-						mmc.dataStats.thievery = Integer.parseInt(_sbBlockData.substring(pos_left + MSTR_THIEV.length(), pos_right).trim());
-					}
-				}
-
+		    // Rows 4 + 5
+		    // NOTE: search backwards from Traps because non-casters just have a LF without an ANSI break from Thiev to Traps
 			// ------------------
 			// Row5: Mana/Kai + SC + Traps
-			// NOTE: for casters only: traps set above for non-casters
 			// ------------------
-			} else if (
-				(pos_data_found_start = findData(sbTelnetData, pos_offset, true, true, MSTR_ROW5_1, "")) > -1 || 
-				(pos_data_found_start = findData(sbTelnetData, pos_offset, true, true, MSTR_ROW5_2, "")) > -1){
+			} else if ((pos_data_found_start = findData(sbTelnetData, pos_offset, true, true, MSTR_TRAPS, "")) > -1){
 				cleanData(_sbBlockData, true, true);
+				mmc.dataStats.traps = Integer.parseInt(_sbBlockData.toString());
 
-				int pos_left   = 0;
-				int pos_right  = 0;
-				if ((pos_right = _sbBlockData.indexOf(MSTR_TRAPS, pos_left)) > -1){
-					mmc.dataStats.traps = Integer.parseInt(_sbBlockData.substring(pos_right + MSTR_TRAPS.length(), _sbBlockData.length()).trim());
+				pos_data_found_start--;
+				int pos_data_found_caster = -1;
 
-					// kai chars don't have spellcasting...
-					if ((pos_left = _sbBlockData.indexOf(MSTR_SC, pos_left)) > -1){
-						mmc.dataStats.sc = Integer.parseInt(_sbBlockData.substring(pos_left + MSTR_SC.length(), pos_right).trim());
-						pos_right = pos_left;
-					}
+		        if ((pos_data_found_caster = findData(sbTelnetData, pos_data_found_start, false, true, MSTR_SC, "")) > -1){
+					cleanData(_sbBlockData, true, true);
+					mmc.dataStats.sc = Integer.parseInt(_sbBlockData.toString());
+					pos_data_found_start = --pos_data_found_caster;					
+				}
 
-					pos_left = 0;
-					String strMana = _sbBlockData.substring(pos_left, pos_right).trim();
+				if ((pos_data_found_caster = findData(sbTelnetData, pos_data_found_start, false, true, MSTR_MANA, "")) > -1 ||
+					(pos_data_found_caster = findData(sbTelnetData, pos_data_found_start, false, true, MSTR_KAI,  "")) > -1){
+					cleanData(_sbBlockData, true, true);
+
+					String strMana = _sbBlockData.toString();
 					// check for modifier...
 					if ((mmc.dataStatline.ma_mod = strMana.charAt(0) == '*'))
 						strMana = strMana.substring(1, strMana.length()).trim();
@@ -169,68 +131,98 @@ public class OMUD_MMUDBlock_Stats extends OMUD_MMUDBlocks.Block{
 						mmc.dataStatline.ma_cur = Integer.parseInt(tokens[0]);
 						mmc.dataStatline.ma_max = Integer.parseInt(tokens[1]);
 					}
+					pos_data_found_start = --pos_data_found_caster;
 				}
 
+				// ------------------
+				// Row4: Hits + AC + Thievery
+				// ------------------
+				if ((pos_data_found_start = findData(sbTelnetData, pos_data_found_start, true, true, MSTR_THIEV, "")) > -1){
+					cleanData(_sbBlockData, true, true);
+					mmc.dataStats.thievery = Integer.parseInt(_sbBlockData.toString());
+
+			        if ((pos_data_found_start = findData(sbTelnetData, --pos_data_found_start, false, true, MSTR_AC, "")) > -1){
+						cleanData(_sbBlockData, true, true);
+
+						String strAC = _sbBlockData.toString();
+				        String[] tokens = strAC.split("/");
+				        if (tokens.length == 2){
+							mmc.dataStats.ac_ac =   Integer.parseInt(tokens[0]);
+							mmc.dataStats.ac_accy = Integer.parseInt(tokens[1]);
+				        }
+			        }
+
+			        if ((pos_data_found_start = findData(sbTelnetData, --pos_data_found_start, false, true, MSTR_HITS, "")) > -1){
+						cleanData(_sbBlockData, true, true);
+
+						String strHits = _sbBlockData.toString();
+						// check for modifier...
+						if ((mmc.dataStatline.hp_mod = strHits.charAt(0) == '*'))
+							strHits = strHits.substring(1, strHits.length()).trim();
+				        String[] tokens = strHits.split("/");
+				        if (tokens.length == 2){
+							mmc.dataStatline.hp_cur = Integer.parseInt(tokens[0]);
+							mmc.dataStatline.hp_max = Integer.parseInt(tokens[1]);
+						}
+			        }
+			    }
 			// ------------------
 			// Row6: Picklocks
 			// ------------------
-			} else if ((pos_data_found_start = findData(sbTelnetData, pos_offset, true, true, MSTR_ROW6, "")) > -1){
+			} else if ((pos_data_found_start = findData(sbTelnetData, pos_offset, true, true, MSTR_PICK, "")) > -1){
 				cleanData(_sbBlockData, true, true);
-				mmc.dataStats.pick = Integer.parseInt(_sbBlockData.toString().trim());
+				mmc.dataStats.pick = Integer.parseInt(_sbBlockData.toString());
 
 			// ------------------
 			// Row7: Str + Agil + Tracking
 			// ------------------
-			} else if ((pos_data_found_start = findData(sbTelnetData, pos_offset, true, true, MSTR_ROW7, "")) > -1){
+			} else if ((pos_data_found_start = findData(sbTelnetData, pos_offset, true, true, MSTR_TRACK, "")) > -1){
 				cleanData(_sbBlockData, true, true);
+				mmc.dataStats.track = Integer.parseInt(_sbBlockData.toString());
 
-				int pos_left  = 0;
-				int pos_right = 0;
-				if ((pos_right = _sbBlockData.indexOf(MSTR_AGI, pos_left)) > -1){
-					mmc.dataStats.str = Integer.parseInt(_sbBlockData.substring(pos_left, pos_right).trim());
+		        if ((pos_data_found_start = findData(sbTelnetData, --pos_data_found_start, false, true, MSTR_AGI, "")) > -1){
+		        	cleanData(_sbBlockData, true, true);
+		        	mmc.dataStats.agi = Integer.parseInt(_sbBlockData.toString());
+		        }
 
-					pos_left = pos_right;
-					if ((pos_right = _sbBlockData.indexOf(MSTR_TRACK, pos_right)) > -1){
-						mmc.dataStats.agi =   Integer.parseInt(_sbBlockData.substring(pos_left  + MSTR_AGI.length(),   pos_right).trim());
-						mmc.dataStats.track = Integer.parseInt(_sbBlockData.substring(pos_right + MSTR_TRACK.length(), _sbBlockData.length()).trim());
-					}
-				}
+		        if ((pos_data_found_start = findData(sbTelnetData, --pos_data_found_start, false, true, MSTR_STR, "")) > -1){
+		        	cleanData(_sbBlockData, true, true);
+		        	mmc.dataStats.str = Integer.parseInt(_sbBlockData.toString());
+		        }
 
 			// ------------------
 			// Row8: Int + Health + MA
 			// ------------------
-			} else if ((pos_data_found_start = findData(sbTelnetData, pos_offset, true, true, MSTR_ROW8, "")) > -1){
+			} else if ((pos_data_found_start = findData(sbTelnetData, pos_offset, true, true, MSTR_MA, "")) > -1){
 				cleanData(_sbBlockData, true, true);
+				mmc.dataStats.ma = Integer.parseInt(_sbBlockData.toString());
 
-				int pos_left  = 0;
-				int pos_right = 0;
-				if ((pos_right = _sbBlockData.indexOf(MSTR_HEALTH, pos_left)) > -1){
-					mmc.dataStats.intel = Integer.parseInt(_sbBlockData.substring(pos_left, pos_right).trim());
+		        if ((pos_data_found_start = findData(sbTelnetData, --pos_data_found_start, false, true, MSTR_HEA, "")) > -1){
+		        	cleanData(_sbBlockData, true, true);
+		        	mmc.dataStats.hea = Integer.parseInt(_sbBlockData.toString());
+		        }
 
-					pos_left = pos_right;
-					if ((pos_right = _sbBlockData.indexOf(MSTR_MA, pos_right)) > -1){
-						mmc.dataStats.hea = Integer.parseInt(_sbBlockData.substring(pos_left  + MSTR_HEALTH.length(),	pos_right).trim());
-						mmc.dataStats.ma =  Integer.parseInt(_sbBlockData.substring(pos_right + MSTR_MA.length(), 	    _sbBlockData.length()).trim());
-					}
-				}
+		        if ((pos_data_found_start = findData(sbTelnetData, --pos_data_found_start, false, true, MSTR_INTEL, "")) > -1){
+		        	cleanData(_sbBlockData, true, true);
+		        	mmc.dataStats.intel = Integer.parseInt(_sbBlockData.toString());
+		        }
 
 			// ------------------
 			// Row9: Wil + Charm + MR
 			// ------------------
-			} else if ((pos_data_found_start = findData(sbTelnetData, pos_offset, true, true, MSTR_ROW9, "")) > -1){
+			} else if ((pos_data_found_start = findData(sbTelnetData, pos_offset, true, true, MSTR_MR, "")) > -1){
 				cleanData(_sbBlockData, true, true);
+				mmc.dataStats.mr = Integer.parseInt(_sbBlockData.toString());
 
-				int pos_left  = 0;
-				int pos_right = 0;
-				if ((pos_right = _sbBlockData.indexOf(MSTR_CHA, pos_left)) > -1){
-					mmc.dataStats.wil = Integer.parseInt(_sbBlockData.substring(pos_left, pos_right).trim());
+		        if ((pos_data_found_start = findData(sbTelnetData, --pos_data_found_start, false, true, MSTR_CHA, "")) > -1){
+		        	cleanData(_sbBlockData, true, true);
+		        	mmc.dataStats.cha = Integer.parseInt(_sbBlockData.toString());
+		        }
 
-					pos_left = pos_right;
-					if ((pos_right = _sbBlockData.indexOf(MSTR_MR, pos_right)) > -1){
-						mmc.dataStats.cha = Integer.parseInt(_sbBlockData.substring(pos_left  + MSTR_CHA.length(),	pos_right).trim());
-						mmc.dataStats.mr =  Integer.parseInt(_sbBlockData.substring(pos_right + MSTR_MR.length(), 	_sbBlockData.length()).trim());
-					}
-				}
+		        if ((pos_data_found_start = findData(sbTelnetData, --pos_data_found_start, false, true, MSTR_WIL, "")) > -1){
+		        	cleanData(_sbBlockData, true, true);
+		        	mmc.dataStats.wil = Integer.parseInt(_sbBlockData.toString());
+		        }
 			}
 		}
 

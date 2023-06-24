@@ -114,7 +114,7 @@ public class OMUD_MMUDBlocks{
 
 			// trim: delete end first...
 			if (trim_lf_spc){
-				if (pos_last_char > pos_first_char && pos_last_char < sbData.length() - 1)
+				if (pos_last_char + 1 <= sbData.length() - 1)
 					sbData.delete(pos_last_char + 1, sbData.length()); // +1 to move forward to begin at space after last char
 				if (pos_first_char > 0)
 					sbData.delete(0, pos_first_char);			
