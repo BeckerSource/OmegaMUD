@@ -171,11 +171,11 @@ public class OMUD_MMUD{
 
 	public static class DataInv extends Data{
 		public int wealth = 		-1; // in copper
-		public int coins_runic = 	-1;
-		public int coins_plat = 	-1; 
-		public int coins_gold = 	-1; 
-		public int coins_silver = 	-1; 
-		public int coins_copper = 	-1; 
+		public int coins_runic = 	0;
+		public int coins_plat = 	0; 
+		public int coins_gold = 	0; 
+		public int coins_silver = 	0; 
+		public int coins_copper = 	0; 
 		public int enc_cur = 		-1;
 		public int enc_max = 		-1;
 		public String enc_level = 	"";
