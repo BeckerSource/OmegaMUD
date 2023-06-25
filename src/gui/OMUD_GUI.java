@@ -527,8 +527,7 @@ public class OMUD_GUI implements OMUD_ITelnetEvents, OMUD_ITextInputEvents, OMUD
             _tabsInfo.setSelectedIndex(5);
 
             StringBuilder sb = new StringBuilder();
-            //sb.append("[InvEnc]: "      + dataInv.enc_cur + "/" + dataInv.enc_max + " [" + dataInv.enc_level + "]\n\n");
-            sb.append("[InvEnc]: "      + dataInv.enc_level + "\n\n");
+            sb.append("[InvEnc]: ("     + dataInv.enc_level + ") " + dataInv.enc_cur + "/" + dataInv.enc_max + String.format(" [%.0f", ((float) dataInv.enc_cur / dataInv.enc_max) * 100) + "%]\n\n");
             sb.append("[InvWealth]: "   + dataInv.wealth  + " (copper)\n\n");
             sb.append("[InvCoins]\n"    + 
                 "Run: " + dataInv.coins_runic     + "\n"  + 

@@ -1,13 +1,15 @@
 public class OMUD_MMUDBlock_Inventory extends OMUD_MMUDBlocks.Block{
-	private final String MSTR_ITEMS = 		"[0;37;40m[0;37;40m[79D[KYou are carrying ";
-	private final String MSTR_KEYS_PRE =  	"[79D[K[0;37;40mYou have ";
+	private final String MSTR_INV_PRE = 	"[0;37;40m[0;37;40m[79D[KYou are carrying ";
+	private final String MSTR_INV_END = 	"%][0m";
+	private final String MSTR_NO_ITEMS = 	"Nothing!";
+	private final String MSTR_KEYS_PRE =  	"You have ";
 	private final String MSTR_KEYS_END =  	".";
 	private final String MSTR_KEYS_YES =  	"the following keys:  ";
-	private final String MSTR_KEYS_NO =  	"no keys";
-	private final String MSTR_WEALTH_PRE =  "[0;32mWealth: [36m";
+	private final String MSTR_WEALTH_PRE =  "Wealth: ";
 	private final String MSTR_WEALTH_END =  " copper farthings";
-	private final String MSTR_ENC_PRE =  	"[0;32mEncumbrance: [36m";
-	private final String MSTR_ENC_END =  	"[0m";
+	private final String MSTR_ENC_PRE =  	"Encumbrance: ";
+	private final String MSTR_ENC_MID =  	" - ";
+	private final String MSTR_ENC_END =  	"[";
 
 	public boolean getStatlineWait()				{return true;}
 	public OMUD_MMUD.Data.eDataType getDataType()	{return OMUD_MMUD.Data.eDataType.INV;}
@@ -19,47 +21,57 @@ public class OMUD_MMUDBlock_Inventory extends OMUD_MMUDBlocks.Block{
 	public int findBlockData(OMUD_IMUDEvents ommme, OMUD_MMUDChar mmc, StringBuilder sbTelnetData, int pos_offset, boolean is_matched){
 		int pos_data_found_start = -1;
 
-		// ------------------
-		// Encumbrance
-		// ------------------
-		if (is_matched && (pos_data_found_start = findData(sbTelnetData, pos_offset, true, true, MSTR_ENC_PRE, MSTR_ENC_END)) > -1){
+		if (is_matched && (pos_data_found_start = findData(sbTelnetData, pos_offset, true, true, MSTR_INV_PRE, MSTR_INV_END)) > -1){
+			cleanData(_sbBlockData, true, true);
 			mmc.dataInv = new OMUD_MMUD.DataInv();
 
-			cleanData(_sbBlockData, true, true);
-			mmc.dataInv.enc_level = _sbBlockData.toString();
+			int pos_left =  0;
+			int pos_right = _sbBlockData.length() - 1;
+
+			// ------------------
+			// Encumbrance
+			// ------------------
+			if ((pos_right = _sbBlockData.lastIndexOf(MSTR_ENC_END, pos_right)) > -1 &&
+				(pos_left  = _sbBlockData.lastIndexOf(MSTR_ENC_MID, pos_right)) > -1){
+	        	mmc.dataInv.enc_level = _sbBlockData.substring(pos_left + MSTR_ENC_MID.length(), pos_right).trim();
+	        	pos_right = pos_left - 1;
+
+	        	if ((pos_left = _sbBlockData.lastIndexOf(MSTR_ENC_PRE, pos_right)) > -1){
+			        String[] tokens = _sbBlockData.substring(pos_left + MSTR_ENC_PRE.length(), pos_right + 1).trim().split("/");
+			        if (tokens.length == 2){
+			        	mmc.dataInv.enc_cur = Integer.parseInt(tokens[0]);
+			        	mmc.dataInv.enc_max = Integer.parseInt(tokens[1]);
+			        }						
+		        	pos_right = pos_left - 1;
+	        	}
+	        }
 
 			// ------------------
 			// Wealth
 			// ------------------
-			if ((pos_data_found_start = findData(sbTelnetData, --pos_data_found_start, true, true, MSTR_WEALTH_PRE, MSTR_WEALTH_END)) > -1){
-				mmc.dataInv.wealth = Integer.parseInt(_sbBlockData.toString());
-			}
+			if ((pos_right = _sbBlockData.lastIndexOf(MSTR_WEALTH_END, pos_right)) > -1 &&
+				(pos_left  = _sbBlockData.lastIndexOf(MSTR_WEALTH_PRE, pos_right)) > -1){
+	        	mmc.dataInv.wealth = Integer.parseInt(_sbBlockData.substring(pos_left + MSTR_WEALTH_PRE.length(), pos_right).trim());
+	        	pos_right = pos_left - 1;
+	        }
 
 			// ------------------
 			// Keys 
-			// ------------------			
-			if ((pos_data_found_start = findData(sbTelnetData, --pos_data_found_start, true, true, MSTR_KEYS_PRE, MSTR_KEYS_END)) > -1){
-				int pos_keys_start = 0;
-				if ((pos_keys_start = _sbBlockData.indexOf(MSTR_KEYS_YES, 0)) > -1){
-					_sbBlockData.delete(pos_keys_start, MSTR_KEYS_YES.length());
-					cleanData(_sbBlockData, true, false);
-					mmc.dataInv.keys = _sbBlockData.toString();
-				} else /* MSTR_KEYS_NO */ {
-					mmc.dataInv.keys = "(no keys carried)";				
-				}
-			}
+			// ------------------
+			if ((pos_right = _sbBlockData.lastIndexOf(MSTR_KEYS_END, pos_right)) > -1 &&
+				(pos_left  = _sbBlockData.lastIndexOf(MSTR_KEYS_PRE, pos_right)) > -1){
+	        	if (_sbBlockData.indexOf(MSTR_KEYS_YES, pos_left + MSTR_KEYS_PRE.length()) > -1)
+	        		 mmc.dataInv.keys = _sbBlockData.substring(pos_left + MSTR_KEYS_PRE.length() + MSTR_KEYS_YES.length(), pos_right).trim();
+	        	else mmc.dataInv.keys = "(no keys carried)";
+	        	pos_right = pos_left - 1;
+	        }
 
 			// ------------------
 			// Items (+ Coins)
 			// ------------------
-			if ((pos_data_found_start = findData(sbTelnetData, --pos_data_found_start, true, true, MSTR_ITEMS, "")) > -1){
-				if (OMUD.compareSBString(_sbBlockData, "Nothing!")){
-					 mmc.dataInv.items = "(no items carried)";
-				} else {
-					cleanData(_sbBlockData, true, false);
-					mmc.dataInv.items = _sbBlockData.toString();
-				}
-			}
+			mmc.dataInv.items = _sbBlockData.substring(0, pos_right + 1).trim();
+	        if (mmc.dataInv.items.equals(MSTR_NO_ITEMS))
+	        	mmc.dataInv.items = "(no items carried)";
 		}
 
 		return pos_data_found_start;
