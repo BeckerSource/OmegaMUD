@@ -179,8 +179,9 @@ public class OMUD_MMUDParser{
 						int pos_first_room = _s_blocks.parseRoom(_ommme, _mmc, _sbDataTelnet);
 						if (pos_first_room > -1){
 							pos_data_found_start = pos_first_room;
-							pos_buf_delete_len = updateParseDeleteLen(pos_data_found_start, pos_buf_delete_len);							
-						} else need_room_data = false;
+							pos_buf_delete_len = updateParseDeleteLen(pos_data_found_start, pos_buf_delete_len);
+							need_room_data = false;
+						}
 					}
 
 					// for convenience now, make optional modes later for auto/manual...

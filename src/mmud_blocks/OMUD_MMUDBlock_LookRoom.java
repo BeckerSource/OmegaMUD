@@ -131,6 +131,8 @@ public class OMUD_MMUDBlock_LookRoom extends OMUD_MMUDBlocks.Block{
 	}
 
 	private void buildRoomExits(OMUD_MMUD.DataRoom dr){
+		dr.arrlExits.clear();
+		
         String[] dirs = dr.exits.split(",");
         for (String dir : dirs){
 
