@@ -4,7 +4,6 @@ public class OMUD_MMUDBlock_Statline extends OMUD_MMUDBlocks.Block{
 	private final String MSTR_STATLINE_END = 		"]:";
 	private final String MSTR_STATLINE_RESTING = 	" (Resting) ";
 	private final String MSTR_STATLINE_MEDITATING = " (Meditating) ";
-	private final String MSTR_HP = 					"HP=";
 
 	public boolean getStatlineWait()				{return false;}
 	public OMUD_MMUD.Data.eDataType getDataType()	{return OMUD_MMUD.Data.eDataType.NONE;}
