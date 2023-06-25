@@ -76,13 +76,11 @@ public class OMUD_MMUDBlock_LookRoom extends OMUD_MMUDBlocks.Block{
 			// Room Name
 			// ------------------
 			if ((pos_data_found_start = findData(sbTelnetData, pos_data_found_start, true, true, MSTR_ROOM_NAME, "")) > -1){
-				// if no room name yet, process as the welcome msg -
-				// we should always have a previous mud room name when inside the game...
-				if (!mmc.dataRealm.got_welcome){
-					mmc.dataRealm.got_welcome = true;
+				// if we don't have a statline yet, assume previous is welcome message from entering...
+				if (mmc.dataStatline.hp_cur == -1){
 					StringBuilder sbWelcome = new StringBuilder(sbTelnetData.substring(0, pos_data_found_start));
 					cleanData(sbWelcome, false, true);
-					ommme.notifyMUDWelcome(sbWelcome.toString());
+					ommme.notifyMUDWelcome(sbWelcome.toString().trim());
 					sbTelnetData.delete(0, pos_data_found_start);
 					pos_data_found_start = 0;
 				}
@@ -100,7 +98,7 @@ public class OMUD_MMUDBlock_LookRoom extends OMUD_MMUDBlocks.Block{
 			}
 
 		// ------------------
-		// Non-Mandatory Lines
+		// Optional Lines
 		// ------------------
 		// only check these if this block is matched (found data above already or specific/direct call)...
 		} else if (is_matched){

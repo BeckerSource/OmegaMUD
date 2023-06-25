@@ -21,7 +21,6 @@ public class OMUD_MMUDChar{
 		}
 	}
 
-	public OMUD_MMUD.DataRealm 				dataRealm = 	new OMUD_MMUD.DataRealm();
 	public OMUD_MMUD.DataRoom 				dataRoom = 		new OMUD_MMUD.DataRoom();
 	public OMUD_MMUD.DataExp 				dataExp = 		new OMUD_MMUD.DataExp();
 	public OMUD_MMUD.DataStats 				dataStats = 	new OMUD_MMUD.DataStats();
