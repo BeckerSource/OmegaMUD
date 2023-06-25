@@ -174,13 +174,21 @@ public class OMUD_MMUDParser{
 					// if this is the first time entering mud (no room data):
 					// try to get the room data (room data is not shown on if coming from char creation) 
 					// if room data is not present, send a LF/look to force getting the room data...
+					boolean need_room_data = true;
 					if (_mmc.dataRoom.name.length() == 0){
 						int pos_first_room = _s_blocks.parseRoom(_ommme, _mmc, _sbDataTelnet);
 						if (pos_first_room > -1){
 							pos_data_found_start = pos_first_room;
 							pos_buf_delete_len = updateParseDeleteLen(pos_data_found_start, pos_buf_delete_len);							
-						} else _ommme.notifyMUDAutoCmd("\n");
+						} else need_room_data = false;
 					}
+
+					// for convenience now, make optional modes later for auto/manual...
+					if (need_room_data)
+						_ommme.notifyMUDAutoCmd("\n");
+					_ommme.notifyMUDAutoCmd("stat\n");
+					_ommme.notifyMUDAutoCmd("i\n");
+					_ommme.notifyMUDAutoCmd("exp\n");
 				}
 
 				// notify for statline update and other data that was updated...

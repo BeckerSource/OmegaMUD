@@ -16,7 +16,6 @@ public class OMUD_MMUDBlock_Exp extends OMUD_MMUDBlocks.Block{
 
 		if (is_matched && (pos_data_found_start = findData(sbTelnetData, pos_offset, true, true, MSTR_EXP_PRE, MSTR_EXP_END)) > -1){
 			cleanData(_sbBlockData, false, true);
-
 			mmc.dataExp = new OMUD_MMUD.DataExp();
 
 			int pos_left = 	0;

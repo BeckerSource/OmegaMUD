@@ -202,10 +202,6 @@ public class OMUD_MMUDBlocks{
 		return pos_data_found_start;
 	}
 
-	public int parseEditor(OMUD_IMUDEvents ommme, OMUD_MMUDChar mmc, StringBuilder sbTelnetData){
-		return _arrlBlocks.get(_bpos_cmd_editor).findBlockData(ommme, mmc, sbTelnetData, 0, true);
-	}
-
 	public int parseBBSMenu(OMUD_IMUDEvents ommme, OMUD_MMUDChar mmc, StringBuilder sbTelnetData){
 		return _blkBBSMenu.findBlockData(ommme, mmc, sbTelnetData, 0, true);
 	}
