@@ -59,11 +59,13 @@ public class OMUD_MMUDBlock_Statline extends OMUD_MMUDBlocks.Block{
 			int pos_hp_end  = 0;
 			if ((pos_hp_end = _sbBlockData.indexOf("/", pos_equals)) > -1 &&
 				(pos_equals = _sbBlockData.indexOf("=", pos_hp_end)) > -1){
-				mmc.dataStatline.ma_str = _sbBlockData.substring(pos_hp_end + 1, pos_equals);
+				if (mmc.dataStatline.ma_str.length() == 0)
+					mmc.dataStatline.ma_str = _sbBlockData.substring(pos_hp_end + 1, pos_equals);
 				mmc.dataStatline.ma_cur = Integer.parseInt(_sbBlockData.substring(++pos_equals, _sbBlockData.length()));
 			} else pos_hp_end = _sbBlockData.length();
 			if ((pos_equals = _sbBlockData.indexOf("=", 0)) > -1){
-				mmc.dataStatline.hp_str = _sbBlockData.substring(0, pos_equals);
+				if (mmc.dataStatline.hp_str.length() == 0)
+					mmc.dataStatline.hp_str = _sbBlockData.substring(0, pos_equals);
 				mmc.dataStatline.hp_cur = Integer.parseInt(_sbBlockData.substring(pos_equals + 1, pos_hp_end));				
 			}
 
