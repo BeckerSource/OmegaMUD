@@ -1,9 +1,10 @@
 import java.util.ArrayList;
 
 interface OMUD_IMUDEvents{
+	public void notifyMUDAutoCmd(final String strCmd);
 	public void notifyMUDLocation(final OMUD.eBBSLocation eLoc);
 	public void notifyMUDStatline(final OMUD_MMUD.DataStatline dataStatline);
-	public void notifyMUDCmd(final String strText);
+	public void notifyMUDUserCmd(final String strText);
 	public void notifyMUDOther(final String strText);
 	public void notifyMUDWelcome(final String strText);
 	public void notifyMUDRoom(final OMUD_MMUD.DataRoom dataRoom);
@@ -114,48 +115,50 @@ public class OMUD_MMUDParser{
 		// ------------------
 		if (OMUD.isInsideMUD(_eBBSLoc)){
 
-			// ------------------
-			// Find User Commands
-			// ------------------
-			// only process commands when not at an editor (training stats, input prompt, etc.) -
-			// sbCmd can be null if there are no current commands in the telnet array...
-			if (_eBBSLoc != OMUD.eBBSLocation.MUD_EDITOR && sbCmd != null && sbCmd.length() > 0 && _sbDataTelnet.length() > 0){
+			// only process commands and line blocks when not inside an editor (training stats, input prompt, etc.)...
+			if (_eBBSLoc != OMUD.eBBSLocation.MUD_EDITOR){
 
-				// always wait for statline if we have a command -
-				// this may hit multiple times because
-				// we don't know when the linefeed will be sent from telnet...
-				_mmc.ablk.statline_wait = true;
+				// ------------------
+				// Find User Commands
+				// ------------------
+				// sbCmd can be null if there are no current commands in the telnet array...
+				if (sbCmd != null && sbCmd.length() > 0 && _sbDataTelnet.length() > 0){
+					// always wait for statline if we have a command -
+					// this may hit multiple times because
+					// we don't know when the linefeed will be sent from telnet...
+					_mmc.ablk.statline_wait = true;
 
-				if (OMUD.getNextLF(_sbDataTelnet, 0) == sbCmd.length() - 1){
-					_sbDataTelnet.delete(0, sbCmd.length());
+					if (OMUD.getNextLF(_sbDataTelnet, 0) == sbCmd.length() - 1){
+						_sbDataTelnet.delete(0, sbCmd.length());
 
-					sbCmd.deleteCharAt(sbCmd.length() - 1); // delete the trailing LF
-					if (_s_blocks.findCmd(sbCmd.toString().toLowerCase(), _mmc.ablk))
-						_ommme.notifyMUDLocation((_eBBSLoc = OMUD.eBBSLocation.MUD_EDITOR));
+						sbCmd.deleteCharAt(sbCmd.length() - 1); // delete the trailing LF
+						if (_s_blocks.findCmd(sbCmd.toString().toLowerCase(), _mmc.ablk))
+							_ommme.notifyMUDLocation((_eBBSLoc = OMUD.eBBSLocation.MUD_EDITOR));
 
-					// if we just had a single linefeed/enter (length would be zero here),
-					// translate that to something visible...
-					if (sbCmd.length() == 0)
-						sbCmd.append("<ENTER>");
-					sbCmd.append(" (" + _mmc.ablk.strCmdText + ")");
-						_ommme.notifyMUDCmd(sbCmd.toString());
-					sbCmd.setLength(0); // clear to show as processed
+						// if we just had a single linefeed/enter (length would be zero here),
+						// translate that to something visible...
+						if (sbCmd.length() == 0)
+							sbCmd.append("<ENTER>");
+						sbCmd.append(" (" + _mmc.ablk.strCmdText + ")");
+							_ommme.notifyMUDUserCmd(sbCmd.toString());
+						sbCmd.setLength(0); // clear to show as processed
+					}
 				}
-			}
 
-			// ------------------
-			// Find Line Blocks (LF+ESC or LF+End)
-			// ------------------
-			// check length again in case above changes...
-			for (int i = 0; i < _sbDataTelnet.length(); ++i){
-				char char_next = i + 1 < _sbDataTelnet.length() ? _sbDataTelnet.charAt(i + 1) : 0; // 0 val is end of bufer
-				if (_sbDataTelnet.charAt(i) == OMUD.ASCII_LF && (char_next == OMUD.ASCII_ESC || char_next == 0)){
-					// parse/strip out line blocks as they are found, reset the iterator to find more until none are found...
-					if ((pos_data_found_start = _s_blocks.parseLineBlocks(_ommme, _mmc, _sbDataTelnet, i)) > -1){
-						pos_buf_delete_len = updateParseDeleteLen(pos_data_found_start, pos_buf_delete_len);
-						i = pos_data_found_start;
-					}						
-				}					
+				// ------------------
+				// Find Line Blocks (LF+ESC or LF+End)
+				// ------------------
+				// check length again in case above changes...
+				for (int i = 0; i < _sbDataTelnet.length(); ++i){
+					char char_next = i + 1 < _sbDataTelnet.length() ? _sbDataTelnet.charAt(i + 1) : 0; // 0 val is end of bufer
+					if (_sbDataTelnet.charAt(i) == OMUD.ASCII_LF && (char_next == OMUD.ASCII_ESC || char_next == 0)){
+						// parse/strip out line blocks as they are found, reset the iterator to find more until none are found...
+						if ((pos_data_found_start = _s_blocks.parseLineBlocks(_ommme, _mmc, _sbDataTelnet, i)) > -1){
+							pos_buf_delete_len = updateParseDeleteLen(pos_data_found_start, pos_buf_delete_len);
+							i = pos_data_found_start;
+						}						
+					}					
+				}
 			}
 
 			// ------------------
@@ -164,9 +167,21 @@ public class OMUD_MMUDParser{
 			if (_sbDataTelnet.length() > 0 && (pos_data_found_start = _s_blocks.parseStatline(_ommme, _mmc, _sbDataTelnet)) > -1){
 				pos_buf_delete_len = updateParseDeleteLen(pos_data_found_start, pos_buf_delete_len);
 
-				// check if returning from trainin stats or at a prompt/input...
-				if (_eBBSLoc == OMUD.eBBSLocation.MUD_EDITOR)
+				// check if returning from training stats or at a prompt/input...
+				if (_eBBSLoc == OMUD.eBBSLocation.MUD_EDITOR){
 					_ommme.notifyMUDLocation((_eBBSLoc = OMUD.eBBSLocation.MUD));
+
+					// if this is the first time entering mud (no room data):
+					// try to get the room data (room data is not shown on if coming from char creation) 
+					// if room data is not present, send a LF/look to force getting the room data...
+					if (_mmc.dataRoom.name.length() == 0){
+						int pos_first_room = _s_blocks.parseRoom(_ommme, _mmc, _sbDataTelnet);
+						if (pos_first_room > -1){
+							pos_data_found_start = pos_first_room;
+							pos_buf_delete_len = updateParseDeleteLen(pos_data_found_start, pos_buf_delete_len);							
+						} else _ommme.notifyMUDAutoCmd("\n");
+					}
+				}
 
 				// notify for statline update and other data that was updated...
 				_ommme.notifyMUDStatline(new OMUD_MMUD.DataStatline(_mmc.dataStatline));

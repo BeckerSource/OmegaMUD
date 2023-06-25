@@ -159,6 +159,14 @@ public class OMUD_MMUD{
 	        for (int i = 0; i < room.arrlExits.size(); ++i)
 	            arrlExits.add(new RoomExit(room.arrlExits.get(i)));
 		}
+		
+		public void resetOptional(){
+			desc = "";
+			items = "";
+			items_hidden = "";
+			units = "";
+			light = eRoomLight.NORMAL;
+		}
 	}
 
 	public static class DataInv extends Data{

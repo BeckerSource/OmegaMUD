@@ -25,90 +25,90 @@ public class OMUD_MMUDBlock_LookRoom extends OMUD_MMUDBlocks.Block{
 	public int findBlockData(OMUD_IMUDEvents ommme, OMUD_MMUDChar mmc, StringBuilder sbTelnetData, int pos_offset, boolean is_matched){
 		int pos_data_found_start = -1;
 
-		// ------------------
-		// Obvious Exits
-		// ------------------
-		if ((pos_data_found_start = findData(sbTelnetData, pos_offset, true, true, MSTR_OBVIOUS_EXITS, "")) > -1){
-			mmc.dataRoom = new OMUD_MMUD.DataRoom();
-
-			// build the exit data...
-			cleanData(_sbBlockData, true, false);
-			mmc.dataRoom.exits = _sbBlockData.toString();
-			buildRoomExits(mmc.dataRoom);
-
-			// PREFIX: if shown after units/'also here', an ansi reset command will be present...
-			pos_data_found_start = checkPrefix("Obv Exits After Also Here", sbTelnetData, pos_data_found_start, MSTR_PREFIX_RESET);
-
-			// vars stuff to compensate for optional lines...
-			pos_data_found_start--;
-			int pos_data_found_optional = -1;
+		if (is_matched){
 
 			// ------------------
-			// Also Here (Units)
+			// Obvious Exits
 			// ------------------
-			if ((pos_data_found_optional = findData(sbTelnetData, pos_data_found_start, true, true, MSTR_ALSO_HERE_PRE, MSTR_ALSO_HERE_END)) > -1){
-				cleanData(_sbBlockData, true, true); // units (also here) has ANSI
-				mmc.dataRoom.units = _sbBlockData.toString();
-				splitCommaListToArray(mmc.dataRoom.units, mmc.dataRoom.arrlUnits);
-				pos_data_found_start = --pos_data_found_optional;
-			}
+			if ((pos_data_found_start = findData(sbTelnetData, pos_offset, true, true, MSTR_OBVIOUS_EXITS, "")) > -1){
+				mmc.dataRoom.resetOptional();
 
-			// ------------------
-			// Items (You Notice)
-			// ------------------
-			if ((pos_data_found_optional = findData(sbTelnetData, pos_data_found_start, true, true, MSTR_YOU_NOTICE_PRE, MSTR_YOU_NOTICE_END)) > -1){
+				// build the exit data...
 				cleanData(_sbBlockData, true, false);
-				mmc.dataRoom.items = _sbBlockData.toString();						
-				splitCommaListToArray(mmc.dataRoom.items, mmc.dataRoom.arrlItems);
+				mmc.dataRoom.exits = _sbBlockData.toString();
+				buildRoomExits(mmc.dataRoom);
 
-				pos_data_found_start = --pos_data_found_optional;
-			}
+				// PREFIX: if shown after units/'also here', an ansi reset command will be present...
+				pos_data_found_start = checkPrefix("Obv Exits After Also Here", sbTelnetData, pos_data_found_start, MSTR_PREFIX_RESET);
 
-			// ------------------
-			// Room Description
-			// ------------------
-			if ((pos_data_found_optional = findData(sbTelnetData, pos_data_found_start, true, true, MSTR_ROOM_DESC, "")) > -1){
-				mmc.dataRoom.desc = _sbBlockData.toString();
-				pos_data_found_start = --pos_data_found_optional;
-			}
+				// vars stuff to compensate for optional lines...
+				pos_data_found_start--;
+				int pos_data_found_optional = -1;
 
-			// ------------------
-			// Room Name
-			// ------------------
-			if ((pos_data_found_start = findData(sbTelnetData, pos_data_found_start, true, true, MSTR_ROOM_NAME, "")) > -1){
-				// if we don't have a statline yet, assume previous is welcome message from entering...
-				if (mmc.dataStatline.hp_str.length() == 0){
-					StringBuilder sbWelcome = new StringBuilder(sbTelnetData.substring(0, pos_data_found_start));
-					cleanData(sbWelcome, false, true);
-					ommme.notifyMUDWelcome(sbWelcome.toString().trim());
-					sbTelnetData.delete(0, pos_data_found_start);
-					pos_data_found_start = 0;
+				// ------------------
+				// Also Here (Units)
+				// ------------------
+				if ((pos_data_found_optional = findData(sbTelnetData, pos_data_found_start, true, true, MSTR_ALSO_HERE_PRE, MSTR_ALSO_HERE_END)) > -1){
+					cleanData(_sbBlockData, true, true); // units (also here) has ANSI
+					mmc.dataRoom.units = _sbBlockData.toString();
+					splitCommaListToArray(mmc.dataRoom.units, mmc.dataRoom.arrlUnits);
+					pos_data_found_start = --pos_data_found_optional;
 				}
 
-				cleanData(_sbBlockData, true, false);
-				mmc.dataRoom.name = _sbBlockData.toString();
+				// ------------------
+				// Items (You Notice)
+				// ------------------
+				if ((pos_data_found_optional = findData(sbTelnetData, pos_data_found_start, true, true, MSTR_YOU_NOTICE_PRE, MSTR_YOU_NOTICE_END)) > -1){
+					cleanData(_sbBlockData, true, false);
+					mmc.dataRoom.items = _sbBlockData.toString();						
+					splitCommaListToArray(mmc.dataRoom.items, mmc.dataRoom.arrlItems);
 
-				// create Megamud RoomID after the exit data is built above...
-				mmc.dataRoom.roomID = 
-					OMUD_MEGA.getRoomNameHash(mmc.dataRoom.name) + 
-					OMUD_MEGA.getRoomExitsCode(mmc.dataRoom.arrlExits);
+					pos_data_found_start = --pos_data_found_optional;
+				}
 
-				// PREFIX: if room name is shown after a move command, it will have a white/black reset prefix...
-				pos_data_found_start = checkPrefix("Room Name After Move", sbTelnetData, pos_data_found_start, MSTR_PREFIX_RESET_WHBL);
-			}
+				// ------------------
+				// Room Description
+				// ------------------
+				if ((pos_data_found_optional = findData(sbTelnetData, pos_data_found_start, true, true, MSTR_ROOM_DESC, "")) > -1){
+					mmc.dataRoom.desc = _sbBlockData.toString();
+					pos_data_found_start = --pos_data_found_optional;
+				}
 
-		} else if (is_matched){
+				// ------------------
+				// Room Name
+				// ------------------
+				if ((pos_data_found_start = findData(sbTelnetData, pos_data_found_start, true, true, MSTR_ROOM_NAME, "")) > -1){
+					// get the welcome message if we don't have a room name yet (is above the room name after entering)...
+					if (mmc.dataRoom.name.length() == 0){
+						StringBuilder sbWelcome = new StringBuilder(sbTelnetData.substring(0, pos_data_found_start));
+						cleanData(sbWelcome, false, true);
+						ommme.notifyMUDWelcome(sbWelcome.toString().trim());
+						sbTelnetData.delete(0, pos_data_found_start);
+						pos_data_found_start = 0;
+					}
+
+					cleanData(_sbBlockData, true, false);
+					mmc.dataRoom.name = _sbBlockData.toString();
+
+					// create Megamud RoomID after the exit data is built above...
+					mmc.dataRoom.roomID = 
+						OMUD_MEGA.getRoomNameHash(mmc.dataRoom.name) + 
+						OMUD_MEGA.getRoomExitsCode(mmc.dataRoom.arrlExits);
+
+					// PREFIX: if room name is shown after a move command, it will have a white/black reset prefix...
+					pos_data_found_start = checkPrefix("Room Name After Move", sbTelnetData, pos_data_found_start, MSTR_PREFIX_RESET_WHBL);
+				}
 
 			// ------------------
 			// Optional: Light
 			// ------------------
-				   if ((pos_data_found_start = findData(sbTelnetData, pos_offset, true, false, MSTR_LIGHT_DIM, "")) > -1){
+			} else if ((pos_data_found_start = findData(sbTelnetData, pos_offset, true, false, MSTR_LIGHT_DIM, "")) 	> -1){
 				mmc.dataRoom.light = OMUD_MMUD.eRoomLight.DIMLY_LIT;
-			} else if ((pos_data_found_start = findData(sbTelnetData, pos_offset, true, false, MSTR_LIGHT_DARK, "")) > -1){
+			} else if ((pos_data_found_start = findData(sbTelnetData, pos_offset, true, false, MSTR_LIGHT_DARK, "")) 	> -1){
 				mmc.dataRoom.light = OMUD_MMUD.eRoomLight.VERY_DARK;
-			} else if ((pos_data_found_start = findData(sbTelnetData, pos_offset, true, false, MSTR_LIGHT_BARELY, "")) > -1){
+			} else if ((pos_data_found_start = findData(sbTelnetData, pos_offset, true, false, MSTR_LIGHT_BARELY, "")) 	> -1){
 				mmc.dataRoom.light = OMUD_MMUD.eRoomLight.BARELY_VIS;
-			} else if ((pos_data_found_start = findData(sbTelnetData, pos_offset, true, false, MSTR_LIGHT_BLACK, "")) > -1){
+			} else if ((pos_data_found_start = findData(sbTelnetData, pos_offset, true, false, MSTR_LIGHT_BLACK, "")) 	> -1){
 				mmc.dataRoom.light = OMUD_MMUD.eRoomLight.PITCH_BLACK;
 
 			// ------------------

@@ -210,6 +210,10 @@ public class OMUD_MMUDBlocks{
 		return _blkBBSMenu.findBlockData(ommme, mmc, sbTelnetData, 0, true);
 	}
 
+	public int parseRoom(OMUD_IMUDEvents ommme, OMUD_MMUDChar mmc, StringBuilder sbTelnetData){
+		return _arrlBlocks.get(BPOS_LOOKROOM).findBlockData(ommme, mmc, sbTelnetData, sbTelnetData.length() - 1, true);
+	}
+
 	// findCmd(): main external call to match a user-input command (assumes passed in as lower-case)
 	// returns true if at an in-game menu/editor (train stats, etc.)
 	public boolean findCmd(String strCmd, OMUD_MMUDChar.ActiveBlock ablk){

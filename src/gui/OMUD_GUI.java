@@ -294,7 +294,7 @@ public class OMUD_GUI implements OMUD_ITelnetEvents, OMUD_ITextInputEvents, OMUD
     } 
 
     private void layoutStatus(GridBagLayout gbl, GridBagConstraints gblc){
-        _txtRoomID.setPreferredSize(new Dimension(100, 25));
+        _txtRoomID.setPreferredSize(new Dimension(60, 25));
         _txtStatline.setPreferredSize(new Dimension(150, 25));
         _txtExp.setPreferredSize(new Dimension(150, 25));
         _txtLastCmd.setPreferredSize(new Dimension(150, 25));
@@ -461,13 +461,19 @@ public class OMUD_GUI implements OMUD_ITelnetEvents, OMUD_ITextInputEvents, OMUD
     // --------------
     // MUD Events
     // --------------
+    public void notifyMUDAutoCmd(final String strCmd){
+        SwingUtilities.invokeLater(new Runnable(){public void run(){
+            _omt.sendText(strCmd);
+        }});
+    }
+
     public void notifyMUDLocation(final OMUD.eBBSLocation eLoc){
         SwingUtilities.invokeLater(new Runnable(){public void run(){
             setStatusLocText(OMUD.BBS_LOCATION_STRINGS[eLoc.ordinal()]);
         }});
     }
 
-    public void notifyMUDCmd(final String strText){
+    public void notifyMUDUserCmd(final String strText){
         SwingUtilities.invokeLater(new Runnable(){public void run(){
             _txtLastCmd.setText("CMD: " + strText);
             _txtMUDCmds.setText(_txtMUDCmds.getText() + _sdf.format(new Date()) + ": " + strText + "\n");
@@ -573,7 +579,7 @@ public class OMUD_GUI implements OMUD_ITelnetEvents, OMUD_ITextInputEvents, OMUD
 
     public void notifyMUDExp(final OMUD_MMUD.DataExp dataExp){
         SwingUtilities.invokeLater(new Runnable(){public void run(){
-            _txtExp.setText("XP: " + dataExp.next_rem + " (" + String.valueOf((dataExp.cur_total / dataExp.next_total) * 100) + "%) [" + dataExp.cur_total + "/" + dataExp.next_total + "]");
+            _txtExp.setText("XP: " + dataExp.next_rem + String.format(" (%.0f", ((float) dataExp.cur_total / dataExp.next_total) * 100) + "%) [" + dataExp.cur_total + "/" + dataExp.next_total + "]");
             _txtExp.setCaretPosition(0);
         }});
     }
