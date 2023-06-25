@@ -161,6 +161,7 @@ public class OMUD_MMUDBlocks{
 		// Command Blocks
 		// ------------------
 		_arrlBlocks.add(new OMUD_MMUDBlock_LookRoom()); 	// BPOS_LOOKROOM
+		_arrlBlocks.add(new OMUD_MMUDBlock_Exp());
 		_arrlBlocks.add(new OMUD_MMUDBlock_Inventory());
 		_arrlBlocks.add(new OMUD_MMUDBlock_Stats());
 		_arrlBlocks.add(new OMUD_MMUDBlock_Editor()); 		// NOTE: should always be at the end!

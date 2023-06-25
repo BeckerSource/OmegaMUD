@@ -38,9 +38,10 @@ public class OMUD_GUI implements OMUD_ITelnetEvents, OMUD_ITextInputEvents, OMUD
     private JToggleButton       _tglSingleMode =    null;
     private JTextField          _txtTelnetConAdr =  null;
     private JTextField          _txtTelnetConPort = null;
-    private JTextField          _txtStatusLoc =     null;
+    private JTextField          _txtBBSLoc =        null;
     private JTextField          _txtRoomID =        null;
     private JTextField          _txtStatline =      null;
+    private JTextField          _txtExp =           null;
     private JTextField          _txtLastCmd =       null;
     private JTextArea 			_txtDbgTerm = 	    null;
     private JTextArea           _txtMUDCmds =       null;
@@ -105,7 +106,7 @@ public class OMUD_GUI implements OMUD_ITelnetEvents, OMUD_ITextInputEvents, OMUD
         //}});
     }
 
-    private void setStatusLocText(String text){_txtStatusLoc.setText("BBSLoc: " + text);}
+    private void setStatusLocText(String text){_txtBBSLoc.setText("BBSLoc: " + text);}
 
     // --------------
     // GUI Creation
@@ -132,12 +133,16 @@ public class OMUD_GUI implements OMUD_ITelnetEvents, OMUD_ITextInputEvents, OMUD
         _pnlTelnet =        new JPanel();
         _txtTelnetConAdr =  new JTextField("bbs.bearfather.net");
         _txtTelnetConPort = new JTextField("23");
+        _txtBBSLoc =        new JTextField();
         _btnTelnetConnect = new JButton("Connect");
         _btnTelnetConnect.addActionListener(new AL_BtnConnect());
         _txtTelnetConAdr.setBackground(OMUD.GUI_BG);
         _txtTelnetConPort.setBackground(OMUD.GUI_BG);
+        _txtBBSLoc.setBackground(OMUD.GUI_BG);
         _txtTelnetConAdr.setForeground(OMUD.TERMINAL_LOCAL_INFO_FG);
         _txtTelnetConPort.setForeground(OMUD.TERMINAL_LOCAL_INFO_FG);
+        _txtBBSLoc.setForeground(OMUD.TERMINAL_LOCAL_INFO_FG);
+        _txtBBSLoc.setEditable(false);
 
         // terminal...
         _scroll = new OMUD_GUIScrollPane();
@@ -148,21 +153,21 @@ public class OMUD_GUI implements OMUD_ITelnetEvents, OMUD_ITextInputEvents, OMUD
 
         // status...
         _pnlStatus =    new JPanel();
-        _txtStatusLoc = new JTextField();
-        _txtRoomID =    new JTextField("RoomID: ");
-        _txtStatline =  new JTextField("Statline: ");
-        _txtLastCmd =   new JTextField("LastCmd: ");
-        _txtStatusLoc.setEditable(false);
+        _txtRoomID =    new JTextField("RID: ?");
+        _txtStatline =  new JTextField("Statline: ?");
+        _txtExp =       new JTextField("XP: ?");
+        _txtLastCmd =   new JTextField("CMD: ?");
         _txtRoomID.setEditable(false);
         _txtStatline.setEditable(false);
+        _txtExp.setEditable(false);
         _txtLastCmd.setEditable(false);
-        _txtStatusLoc.setBackground(OMUD.GUI_BG);
         _txtRoomID.setBackground(OMUD.GUI_BG);
         _txtStatline.setBackground(OMUD.GUI_BG);
+        _txtExp.setBackground(OMUD.GUI_BG);
         _txtLastCmd.setBackground(OMUD.GUI_BG);
-        _txtStatusLoc.setForeground(OMUD.TERMINAL_LOCAL_INFO_FG);
         _txtRoomID.setForeground(OMUD.TERMINAL_LOCAL_INFO_FG);
         _txtStatline.setForeground(OMUD.TERMINAL_LOCAL_INFO_FG);
+        _txtExp.setForeground(OMUD.TERMINAL_LOCAL_INFO_FG);
         _txtLastCmd.setForeground(OMUD.TERMINAL_LOCAL_INFO_FG);
         setStatusLocText(OMUD.BBS_LOCATION_STRINGS[OMUD.eBBSLocation.OFFLINE.ordinal()]);
 
@@ -250,10 +255,11 @@ public class OMUD_GUI implements OMUD_ITelnetEvents, OMUD_ITextInputEvents, OMUD
     // --------------    
     private void layoutTelnet(GridBagLayout gbl, GridBagConstraints gblc){
         _txtTelnetConPort.setPreferredSize(new Dimension(50, 25));
+        _txtBBSLoc.setPreferredSize(new Dimension(125, 25));
         _btnTelnetConnect.setPreferredSize(new Dimension(150, 25));
         gblc.weightx = 1.0;
         gblc.weighty = 0.0;
-        gblc.gridwidth = 2;
+        gblc.gridwidth = 3;
         gblc.fill = GridBagConstraints.BOTH;
         gbl.setConstraints(_txtTelnetConAdr, gblc);
         _pnlTelnet.add(_txtTelnetConAdr);
@@ -261,6 +267,8 @@ public class OMUD_GUI implements OMUD_ITelnetEvents, OMUD_ITextInputEvents, OMUD
         gblc.fill = GridBagConstraints.NONE;
         gbl.setConstraints(_txtTelnetConPort, gblc);
         _pnlTelnet.add(_txtTelnetConPort);
+        gbl.setConstraints(_txtBBSLoc, gblc);
+        _pnlTelnet.add(_txtBBSLoc);
         gblc.gridwidth = GridBagConstraints.REMAINDER;
         gbl.setConstraints(_btnTelnetConnect, gblc);
         _pnlTelnet.add(_btnTelnetConnect);
@@ -286,27 +294,24 @@ public class OMUD_GUI implements OMUD_ITelnetEvents, OMUD_ITextInputEvents, OMUD
     } 
 
     private void layoutStatus(GridBagLayout gbl, GridBagConstraints gblc){
-        _txtStatusLoc.setPreferredSize(new Dimension(50, 25));
-        _txtRoomID.setPreferredSize(new Dimension(50, 25));
-        _txtStatline.setPreferredSize(new Dimension(50, 25));
-        _txtLastCmd.setPreferredSize(new Dimension(50, 25));
-        gblc.weightx = 0.5;
+        _txtRoomID.setPreferredSize(new Dimension(100, 25));
+        _txtStatline.setPreferredSize(new Dimension(150, 25));
+        _txtExp.setPreferredSize(new Dimension(150, 25));
+        _txtLastCmd.setPreferredSize(new Dimension(150, 25));
+        gblc.weightx = 1.0;
         gblc.weighty = 0.0;
         gblc.gridwidth = 3;
         gblc.fill = GridBagConstraints.BOTH;
-        gbl.setConstraints(_txtStatusLoc, gblc);
-        _pnlStatus.add(_txtStatusLoc);
         gbl.setConstraints(_txtRoomID, gblc);
         _pnlStatus.add(_txtRoomID);
-        gblc.weightx = 1.0;
         gbl.setConstraints(_txtStatline, gblc);
         _pnlStatus.add(_txtStatline);
+        gbl.setConstraints(_txtExp, gblc);
+        _pnlStatus.add(_txtExp);
         gblc.gridwidth = GridBagConstraints.REMAINDER;
         gbl.setConstraints(_txtLastCmd, gblc);
         _pnlStatus.add(_txtLastCmd);
         // panel/frame...
-        gblc.weightx = 1.0;
-        gblc.weighty = 0.0;
         gblc.gridwidth = GridBagConstraints.REMAINDER;
         gblc.fill = GridBagConstraints.BOTH;
         gbl.setConstraints(_pnlStatus, gblc);
@@ -456,11 +461,6 @@ public class OMUD_GUI implements OMUD_ITelnetEvents, OMUD_ITextInputEvents, OMUD
     // --------------
     // MUD Events
     // --------------
-    public void notifyMUDExp(){}
-    public void notifyMUDParty(){}
-    public void notifyMUDSpells(){}
-    public void notifyMUDCombatToggle(boolean is_on){}
-
     public void notifyMUDLocation(final OMUD.eBBSLocation eLoc){
         SwingUtilities.invokeLater(new Runnable(){public void run(){
             setStatusLocText(OMUD.BBS_LOCATION_STRINGS[eLoc.ordinal()]);
@@ -469,7 +469,7 @@ public class OMUD_GUI implements OMUD_ITelnetEvents, OMUD_ITextInputEvents, OMUD
 
     public void notifyMUDCmd(final String strText){
         SwingUtilities.invokeLater(new Runnable(){public void run(){
-            _txtLastCmd.setText("LastCmd: " + strText);
+            _txtLastCmd.setText("CMD: " + strText);
             _txtMUDCmds.setText(_txtMUDCmds.getText() + _sdf.format(new Date()) + ": " + strText + "\n");
         }});
     }
@@ -501,7 +501,7 @@ public class OMUD_GUI implements OMUD_ITelnetEvents, OMUD_ITextInputEvents, OMUD
     public void notifyMUDRoom(final OMUD_MMUD.DataRoom dataRoom){
         SwingUtilities.invokeLater(new Runnable(){public void run(){
             _tabsInfo.setSelectedIndex(4);
-            _txtRoomID.setText("RoomID: " + dataRoom.roomID);
+            _txtRoomID.setText("RID: " + dataRoom.roomID);
 
             StringBuilder sb = new StringBuilder();
             sb.append("[RoomID]: "          + dataRoom.roomID       + "\n\n");
@@ -570,4 +570,15 @@ public class OMUD_GUI implements OMUD_ITelnetEvents, OMUD_ITextInputEvents, OMUD
             _txtMUDStats.setCaretPosition(0);            
         }});
     }
+
+    public void notifyMUDExp(final OMUD_MMUD.DataExp dataExp){
+        SwingUtilities.invokeLater(new Runnable(){public void run(){
+            _txtExp.setText("XP: " + dataExp.next_rem + " (" + String.valueOf((dataExp.cur_total / dataExp.next_total) * 100) + "%) [" + dataExp.cur_total + "/" + dataExp.next_total + "]");
+            _txtExp.setCaretPosition(0);
+        }});
+    }
+
+    public void notifyMUDParty(){}
+    public void notifyMUDSpells(){}
+    public void notifyMUDCombat(){}
 }

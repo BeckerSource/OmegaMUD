@@ -37,7 +37,7 @@ public class OMUD_MMUDBlock_Stats extends OMUD_MMUDBlocks.Block{
 		// ------------------
 		// Row9: Wil + Charm + MR
 		// ------------------
-		if ((pos_data_found_start = findData(sbTelnetData, pos_offset, true, true, MSTR_MR, "")) > -1){	
+		if (is_matched && (pos_data_found_start = findData(sbTelnetData, pos_offset, true, true, MSTR_MR, "")) > -1){	
 			mmc.dataStats = new OMUD_MMUD.DataStats();
 
 			cleanData(_sbBlockData, true, true);
@@ -194,7 +194,7 @@ public class OMUD_MMUDBlock_Stats extends OMUD_MMUDBlocks.Block{
 
 		        if ((pos_data_found_start = findData(sbTelnetData, --pos_data_found_start, false, true, MSTR_EXP, "")) > -1){
 		        	cleanData(_sbBlockData, true, true);
-		        	mmc.dataExp.exp_total = Integer.parseInt(_sbBlockData.toString());
+		        	mmc.dataExp.cur_total = Integer.parseInt(_sbBlockData.toString());
 		        }
 
 		        if ((pos_data_found_start = findData(sbTelnetData, --pos_data_found_start, false, true, MSTR_RACE, "")) > -1){

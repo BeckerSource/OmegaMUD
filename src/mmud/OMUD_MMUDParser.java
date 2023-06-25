@@ -3,16 +3,16 @@ import java.util.ArrayList;
 interface OMUD_IMUDEvents{
 	public void notifyMUDLocation(final OMUD.eBBSLocation eLoc);
 	public void notifyMUDStatline(final OMUD_MMUD.DataStatline dataStatline);
-	public void notifyMUDCombatToggle(boolean is_on);
 	public void notifyMUDCmd(final String strText);
 	public void notifyMUDOther(final String strText);
 	public void notifyMUDWelcome(final String strText);
 	public void notifyMUDRoom(final OMUD_MMUD.DataRoom dataRoom);
 	public void notifyMUDInv(final OMUD_MMUD.DataInv dataInv);
 	public void notifyMUDStats(final OMUD_MMUD.DataStats dataStats);
-	public void notifyMUDExp();
+	public void notifyMUDExp(final OMUD_MMUD.DataExp dataExp);
 	public void notifyMUDParty();
 	public void notifyMUDSpells();
+	public void notifyMUDCombat();
 }
 
 public class OMUD_MMUDParser{
@@ -172,6 +172,8 @@ public class OMUD_MMUDParser{
 				_ommme.notifyMUDStatline(new OMUD_MMUD.DataStatline(_mmc.dataStatline));
 					 if (_mmc.ablk.data_type == OMUD_MMUD.Data.eDataType.ROOM)
 					_ommme.notifyMUDRoom(new OMUD_MMUD.DataRoom(_mmc.dataRoom));
+				else if (_mmc.ablk.data_type == OMUD_MMUD.Data.eDataType.EXP)
+					_ommme.notifyMUDExp(new OMUD_MMUD.DataExp(_mmc.dataExp));
 				else if (_mmc.ablk.data_type == OMUD_MMUD.Data.eDataType.INV)
 					_ommme.notifyMUDInv(new OMUD_MMUD.DataInv(_mmc.dataInv));
 				else if (_mmc.ablk.data_type == OMUD_MMUD.Data.eDataType.STATS)

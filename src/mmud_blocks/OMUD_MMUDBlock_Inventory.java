@@ -22,7 +22,7 @@ public class OMUD_MMUDBlock_Inventory extends OMUD_MMUDBlocks.Block{
 		// ------------------
 		// Encumbrance
 		// ------------------
-		if ((pos_data_found_start = findData(sbTelnetData, pos_offset, true, true, MSTR_ENC_PRE, MSTR_ENC_END)) > -1){
+		if (is_matched && (pos_data_found_start = findData(sbTelnetData, pos_offset, true, true, MSTR_ENC_PRE, MSTR_ENC_END)) > -1){
 			mmc.dataInv = new OMUD_MMUD.DataInv();
 
 			cleanData(_sbBlockData, true, true);

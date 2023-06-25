@@ -248,10 +248,18 @@ public class OMUD_MMUD{
 	}
 
 	public static class DataExp extends Data{
-		public int exp_total = 	0;
-		public int exp_remain = 0;
-		public int exp_per_hr = 0;
+		public int cur_total = 	-1;
+		public int next_total = -1;
+		public int next_rem = 	-1;
+		public int per_hr =	 	-1;
 		public eDataType getType(){return eDataType.EXP;}
+		public DataExp(){}
+		public DataExp(DataExp exp){
+			cur_total = 	exp.cur_total;
+			next_total = 	exp.next_total;
+			next_rem = 		exp.next_rem;
+			per_hr = 		exp.per_hr;
+		}
 	}
 
 	public static class DataSpell extends Data{

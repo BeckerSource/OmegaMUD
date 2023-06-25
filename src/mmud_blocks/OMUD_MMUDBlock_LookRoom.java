@@ -97,14 +97,10 @@ public class OMUD_MMUDBlock_LookRoom extends OMUD_MMUDBlocks.Block{
 				pos_data_found_start = checkPrefix("Room Name After Move", sbTelnetData, pos_data_found_start, MSTR_PREFIX_RESET_WHBL);
 			}
 
-		// ------------------
-		// Optional Lines
-		// ------------------
-		// only check these if this block is matched (found data above already or specific/direct call)...
 		} else if (is_matched){
 
 			// ------------------
-			// Light
+			// Optional: Light
 			// ------------------
 				   if ((pos_data_found_start = findData(sbTelnetData, pos_offset, true, false, MSTR_LIGHT_DIM, "")) > -1){
 				mmc.dataRoom.light = OMUD_MMUD.eRoomLight.DIMLY_LIT;
@@ -128,9 +124,9 @@ public class OMUD_MMUDBlock_LookRoom extends OMUD_MMUDBlocks.Block{
 			// ------------------
 			} else if ((pos_data_found_start = findData(sbTelnetData, pos_offset, true, false, MSTR_SEARCH_NONE, "")) > -1){
 				ommme.notifyMUDOther("[ROOM_SEARCH_NONE]\n");
-			}
+			}			
 		}
-		
+
 		return pos_data_found_start;
 	}
 
