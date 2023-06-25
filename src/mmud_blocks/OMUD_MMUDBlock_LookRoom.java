@@ -77,7 +77,7 @@ public class OMUD_MMUDBlock_LookRoom extends OMUD_MMUDBlocks.Block{
 			// ------------------
 			if ((pos_data_found_start = findData(sbTelnetData, pos_data_found_start, true, true, MSTR_ROOM_NAME, "")) > -1){
 				// if we don't have a statline yet, assume previous is welcome message from entering...
-				if (mmc.dataStatline.hp_cur == -1){
+				if (mmc.dataStatline.hp_str.length() == 0){
 					StringBuilder sbWelcome = new StringBuilder(sbTelnetData.substring(0, pos_data_found_start));
 					cleanData(sbWelcome, false, true);
 					ommme.notifyMUDWelcome(sbWelcome.toString().trim());

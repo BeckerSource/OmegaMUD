@@ -103,12 +103,13 @@ public class OMUD_MMUD{
 	}
 
 	public static class DataStatline extends Data{
-		public int hp_cur = 		-1;
-		public int hp_max = 		-1;
-		public int ma_cur = 		-1;
-		public int ma_max = 		-1;
+		public int hp_cur = 		0;
+		public int hp_max = 		0;
+		public int ma_cur = 		0;
+		public int ma_max = 		0;
 		public boolean hp_mod = 	false;
 		public boolean ma_mod = 	false;
+		public String  hp_str = 	"";
 		public String  ma_str = 	"";
 		public eRestState rest = 	eRestState.ACTIVE;
 
@@ -121,6 +122,7 @@ public class OMUD_MMUD{
 			ma_max = dsl.ma_max;
 			hp_mod = dsl.hp_mod;
 			ma_mod = dsl.ma_mod;
+			hp_str = new String(dsl.hp_str);
 			ma_str = new String(dsl.ma_str);
 			rest = 	 dsl.rest;
 		}
