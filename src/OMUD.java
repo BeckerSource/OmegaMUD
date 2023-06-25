@@ -178,8 +178,8 @@ public class OMUD{
     // --------------
     // File Logging
     // --------------
-    public static final String LOG_FILENAME_TELNET =   "dump_telnet.txt";
-    public static final String LOG_FILENAME_TERMINAL = "dump_terminal.txt";
+    public static final String LOG_FILENAME_TELNET =   "dump_telnet.log";
+    public static final String LOG_FILENAME_TERMINAL = "dump_terminal.log";
     // file loggers: assume calls are coming from separate threads
     public static void logToFile(String filename, boolean clear_only, char[] data, int data_len){
         try{
