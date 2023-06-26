@@ -47,6 +47,19 @@ public class OMUD_MMUDBlock_Stats extends OMUD_MMUDBlocks.Block{
 			int pos_right = _sbBlockData.length() - 1;
 
 			// ------------------
+			// Row9: MR
+			// ------------------
+			// special: MR is further in the buffer, so get it here separately...
+			if ((pos_left  = sbTelnetData.indexOf(MSTR_MR, pos_data_found_start)) > -1 &&
+				(pos_right = sbTelnetData.indexOf("\n", pos_left)) > -1){
+				StringBuilder sbMR = new StringBuilder(sbTelnetData.substring(pos_left + MSTR_MR.length(), pos_right).trim());
+				cleanData(sbMR, true, true);
+				mmc.dataStats.mr = Integer.parseInt(sbMR.toString());
+				sbTelnetData.delete(pos_data_found_start, pos_right + 1);
+			}
+			pos_right = _sbBlockData.length() - 1;
+
+			// ------------------
 			// Row9: Wil + Charm
 			// ------------------
 			if ((pos_left = _sbBlockData.lastIndexOf(MSTR_CHA, pos_right)) > -1){
@@ -217,16 +230,6 @@ public class OMUD_MMUDBlock_Stats extends OMUD_MMUDBlocks.Block{
 		        	mmc.dataStats.name_first = tokens[0];
 		        	mmc.dataStats.name_last  = tokens[1];
 		        }
-			}
-
-			// ------------------
-			// Row9: MR
-			// ------------------
-			// special: MR is further in the buffer, so do a find here at the end...
-			if ((pos_right = sbTelnetData.indexOf("\n", pos_data_found_start)) > -1 &&
-				findData(sbTelnetData, pos_right, true, true, MSTR_MR, "") > -1){
-				cleanData(_sbBlockData, true, true);
-				mmc.dataStats.mr = Integer.parseInt(_sbBlockData.toString());
 			}
 		}
 
