@@ -48,6 +48,8 @@ Command line run example for Java 1.6 version of OmegaMUD:
   * Rooms
   * Inventory
   * Stats
+  * Exp
+  * Shops
 
 ## Tested Systems
 WinXP, Win7, Win8, Win10\
@@ -66,17 +68,20 @@ Mac: Untested
 ## Screenshot: MUD Edit Stats
 ![MUD Train Stats](./screenshots/omegamud-mud_train_stats.png)
 
-## Screenshot: MUD Show Stats
-![MUD CMD History](./screenshots/omegamud-mud_stats.png)
-
 ## Screenshot: MUD Welcome
 ![MUD Welcome](./screenshots/omegamud-mud_welcome.png)
+
+## Screenshot: MUD Command History
+![MUD CMD History](./screenshots/omegamud-mud_cmd_history.png)
 
 ## Screenshot: MUD Newhaven Arena
 ![MUD Newhaven Arena](./screenshots/omegamud-mud_newhaven_arena.png)
 
+## Screenshot: MUD Show Stats
+![MUD CMD History](./screenshots/omegamud-mud_stats.png)
+
 ## Screenshot: MUD Inventory
 ![MUD Inventory](./screenshots/omegamud-mud_inventory.png)
 
-## Screenshot: MUD Command History
-![MUD CMD History](./screenshots/omegamud-mud_cmd_history.png)
+## Screenshot: MUD Shops
+![MUD Inventory](./screenshots/omegamud-mud_shop.png)
