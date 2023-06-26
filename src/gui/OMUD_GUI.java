@@ -50,6 +50,7 @@ public class OMUD_GUI implements OMUD_ITelnetEvents, OMUD_ITextInputEvents, OMUD
     private JTextArea           _txtMUDRoom =       null;
     private JTextArea           _txtMUDInv =        null;
     private JTextArea           _txtMUDStats =      null;
+    private JTextArea           _txtMUDShop =       null;
     private JPanel              _pnlTelnet =        null;
     private JPanel              _pnlStatus =        null;
     private JPanel              _pnlInput =         null;
@@ -194,6 +195,7 @@ public class OMUD_GUI implements OMUD_ITelnetEvents, OMUD_ITextInputEvents, OMUD
         _txtMUDRoom =    createGUI_DebugTab();
         _txtMUDInv =     createGUI_DebugTab();
         _txtMUDStats =   createGUI_DebugTab();
+        _txtMUDShop =    createGUI_DebugTab();
         _tabsInfo = new JTabbedPane(JTabbedPane.TOP, JTabbedPane.WRAP_TAB_LAYOUT);
         _tabsInfo.add("DbgTerm",  _txtDbgTerm);
         _tabsInfo.add("MCmds",    new JScrollPane(_txtMUDCmds));
@@ -202,6 +204,7 @@ public class OMUD_GUI implements OMUD_ITelnetEvents, OMUD_ITextInputEvents, OMUD
         _tabsInfo.add("MRoom",    new JScrollPane(_txtMUDRoom));
         _tabsInfo.add("MInv",     new JScrollPane(_txtMUDInv));
         _tabsInfo.add("MStats",   new JScrollPane(_txtMUDStats));
+        _tabsInfo.add("MShop",    new JScrollPane(_txtMUDShop));
         _fInfo.add(_tabsInfo);
 
         // chars table...
@@ -583,6 +586,31 @@ public class OMUD_GUI implements OMUD_ITelnetEvents, OMUD_ITextInputEvents, OMUD
             _txtExp.setText("XP: " + dataExp.next_rem + String.format(" (%.0f", ((float) dataExp.cur_total / dataExp.next_total) * 100) + "%) [" + dataExp.cur_total + "/" + dataExp.next_total + "]");
             _txtExp.setCaretPosition(0);
         }});
+    }
+
+    public void notifyMUDShop(final OMUD_MMUD.DataShop dataShop, final String strRoomID, final String strRoomName){
+        SwingUtilities.invokeLater(new Runnable(){public void run(){
+            _tabsInfo.setSelectedIndex(7);
+
+            StringBuilder sb = new StringBuilder();
+            sb.append("[RoomID]: "    + strRoomID   + "\n");
+            sb.append("[RoomName]: "  + strRoomName + "\n\n");
+            sb.append("--------------------\n");
+            sb.append("[Qty] Name: Price\n");
+            sb.append("--------------------\n");
+            for (int i = 0; i < dataShop.items.size(); ++i){
+                
+                String strFill = "";
+                int fill_len = 30 - dataShop.items.get(i).name.length();
+                if (fill_len > 0)
+                    strFill = OMUD.getFillString(" ", fill_len);
+                
+                sb.append("[" + dataShop.items.get(i).qty + "]:\t" + dataShop.items.get(i).name + strFill + dataShop.items.get(i).price + "\n");
+            }
+
+            _txtMUDShop.setText(sb.toString());
+            _txtMUDShop.setCaretPosition(0);
+        }});        
     }
 
     public void notifyMUDParty(){}

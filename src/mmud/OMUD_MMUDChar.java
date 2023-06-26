@@ -1,5 +1,3 @@
-import java.util.ArrayList;
-
 public class OMUD_MMUDChar{
 	public static class ActiveBlock{
 		public static final int BPOS_INVALID = -1;
@@ -21,13 +19,14 @@ public class OMUD_MMUDChar{
 		}
 	}
 
-	public OMUD_MMUD.DataRoom 				dataRoom = 		new OMUD_MMUD.DataRoom();
-	public OMUD_MMUD.DataExp 				dataExp = 		new OMUD_MMUD.DataExp();
-	public OMUD_MMUD.DataStats 				dataStats = 	new OMUD_MMUD.DataStats();
-	public OMUD_MMUD.DataStatline 			dataStatline = 	new OMUD_MMUD.DataStatline();
-	public OMUD_MMUD.DataInv 				dataInv = 		new OMUD_MMUD.DataInv();
-	public OMUD_MMUD.DataParty 				dataParty = 	new OMUD_MMUD.DataParty();
-	public ArrayList<OMUD_MMUD.DataSpell> 	dataSpells = 	new ArrayList<OMUD_MMUD.DataSpell>();
+	public OMUD_MMUD.DataRoom 		dataRoom = 		new OMUD_MMUD.DataRoom();
+	public OMUD_MMUD.DataExp 		dataExp = 		new OMUD_MMUD.DataExp();
+	public OMUD_MMUD.DataStats 		dataStats = 	new OMUD_MMUD.DataStats();
+	public OMUD_MMUD.DataStatline 	dataStatline = 	new OMUD_MMUD.DataStatline();
+	public OMUD_MMUD.DataInv 		dataInv = 		new OMUD_MMUD.DataInv();
+	public OMUD_MMUD.DataSpells 	dataSpells = 	new OMUD_MMUD.DataSpells();
+	public OMUD_MMUD.DataParty 		dataParty = 	new OMUD_MMUD.DataParty();
+	public OMUD_MMUD.DataShop 		dataShop = 		new OMUD_MMUD.DataShop();
 
 	public ActiveBlock ablk = new ActiveBlock(false, OMUD_MMUD.Data.eDataType.ROOM);
 }

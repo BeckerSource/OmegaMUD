@@ -148,7 +148,6 @@ public class OMUD_MMUDBlocks{
 	private int _bpos_cmd_editor =  	0;
 	private final int BPOS_STATLINE = 	0;
 	private final int BPOS_CMDS_START = 1;
-	private final int BPOS_LOOKROOM = 	1;
 
 	public OMUD_MMUDBlocks(){
 		_arrlBlocks = new ArrayList<Block>();
@@ -160,11 +159,12 @@ public class OMUD_MMUDBlocks{
 		// ------------------
 		// Command Blocks
 		// ------------------
-		_arrlBlocks.add(new OMUD_MMUDBlock_LookRoom()); 	// BPOS_LOOKROOM
+		_arrlBlocks.add(new OMUD_MMUDBlock_Room()); 
 		_arrlBlocks.add(new OMUD_MMUDBlock_Exp());
 		_arrlBlocks.add(new OMUD_MMUDBlock_Inventory());
 		_arrlBlocks.add(new OMUD_MMUDBlock_Stats());
-		_arrlBlocks.add(new OMUD_MMUDBlock_Editor()); 		// NOTE: should always be at the end!
+		_arrlBlocks.add(new OMUD_MMUDBlock_Shop());
+		_arrlBlocks.add(new OMUD_MMUDBlock_Editor()); 		// NOTE: editor should always be at the end!
 		_bpos_cmd_editor = _arrlBlocks.size() - 1; 			// 
 		// ------------------
 		// Other Line Blocks

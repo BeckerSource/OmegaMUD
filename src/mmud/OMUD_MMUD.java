@@ -96,8 +96,9 @@ public class OMUD_MMUD{
 			INV,
 			STATS,
 			EXP,
-			SPELL,
-			PARTY
+			SPELLS,
+			PARTY,
+			SHOP
 		}
 		public abstract eDataType getType();
 	}
@@ -270,22 +271,50 @@ public class OMUD_MMUD{
 		}
 	}
 
-	public static class DataSpell extends Data{
-		public ArrayList<Integer> 	level = 	 	new ArrayList<Integer>();
-		public ArrayList<Integer> 	mana  = 	 	new ArrayList<Integer>();
-		public ArrayList<String> 	name_short = 	new ArrayList<String>();
-		public ArrayList<String> 	name_long =  	new ArrayList<String>();
-		public eDataType getType(){return eDataType.SPELL;}
+	public static class DataSpells extends Data{
+		public static class Spell{
+			public int level = 			0;
+			public int mana = 			0;
+			public String name_short = 	"";
+			public String name_long = 	"";
+		}
+		public ArrayList<Spell> spells = new ArrayList<Spell>();
+		public eDataType getType(){return eDataType.SPELLS;}
 	}
 
 	public static class DataParty extends Data{
-		public ArrayList<String> 	name = 			new ArrayList<String>();
-		public ArrayList<String> 	party_class = 	new ArrayList<String>();
-		public ArrayList<Integer>   hp_cur = 		new ArrayList<Integer>();
-		public ArrayList<Integer>   ma_cur = 		new ArrayList<Integer>();
-		public ArrayList<Integer>   hp_max = 		new ArrayList<Integer>();
-		public ArrayList<Integer>   ma_max = 		new ArrayList<Integer>();
-		public ArrayList<String>  	rank = 			new ArrayList<String>();
+		public static class Member{
+			public String name = 		"";
+			public String party_class = "";
+			public int hp_cur = 		0;
+			public int ma_cur = 		0;
+			public int hp_max = 		0;
+			public int ma_max = 		0;
+			public String rank = 		"";
+		}
+		public ArrayList<Member> members = new ArrayList<Member>();
 		public eDataType getType(){return eDataType.PARTY;}
+	}
+
+	public static class DataShop extends Data{
+		public static class Item{
+			public String 	name = 	"";
+			public int 		qty = 	0;
+			public String 	price = ""; // string for now, change later when conversions in place
+			public Item(){}
+			public Item(Item item){
+				name = 	new String(item.name);
+				qty = 	item.qty;
+				price = new String(item.price);
+			}
+		}
+		public ArrayList<Item> items = new ArrayList<Item>();
+		public eDataType getType(){return eDataType.SHOP;}
+		public DataShop(){}
+		public DataShop(DataShop shop){
+			items.clear();
+			for (int i = 0; i < shop.items.size(); ++i)
+				items.add(new Item(shop.items.get(i)));
+		}
 	}
 }

@@ -1,4 +1,4 @@
-public class OMUD_MMUDBlock_LookRoom extends OMUD_MMUDBlocks.Block{
+public class OMUD_MMUDBlock_Room extends OMUD_MMUDBlocks.Block{
 	private final String MSTR_PREFIX_RESET_WHBL =  	"[0;37;40m";
 	private final String MSTR_ROOM_NAME =  			"[79D[K[1;36m";
 	private final String MSTR_OBVIOUS_EXITS =  		"[0;32mObvious exits: ";
@@ -16,7 +16,7 @@ public class OMUD_MMUDBlock_LookRoom extends OMUD_MMUDBlocks.Block{
 
 	public boolean getStatlineWait()				{return true;}
 	public OMUD_MMUD.Data.eDataType getDataType()	{return OMUD_MMUD.Data.eDataType.ROOM;}
-	public OMUD_MMUDBlock_LookRoom(){
+	public OMUD_MMUDBlock_Room(){
 		_arrlCmdText.add(new CmdText("look", 	0)); // 0-len covers LF/enter only (zero-len) and all chars as part of look
 		_arrlCmdText.add(new CmdText("search", 	3)); // only "sea" is required
 	}

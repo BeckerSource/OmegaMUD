@@ -11,6 +11,7 @@ interface OMUD_IMUDEvents{
 	public void notifyMUDInv(final OMUD_MMUD.DataInv dataInv);
 	public void notifyMUDStats(final OMUD_MMUD.DataStats dataStats);
 	public void notifyMUDExp(final OMUD_MMUD.DataExp dataExp);
+	public void notifyMUDShop(final OMUD_MMUD.DataShop dataShop, final String strRoomID, final String strRoomName);
 	public void notifyMUDParty();
 	public void notifyMUDSpells();
 	public void notifyMUDCombat();
@@ -188,6 +189,8 @@ public class OMUD_MMUDParser{
 					_ommme.notifyMUDInv(new OMUD_MMUD.DataInv(_mmc.dataInv));
 				else if (_mmc.ablk.data_type == OMUD_MMUD.Data.eDataType.STATS)
 					_ommme.notifyMUDStats(new OMUD_MMUD.DataStats(_mmc.dataStats));
+				else if (_mmc.ablk.data_type == OMUD_MMUD.Data.eDataType.SHOP)
+					_ommme.notifyMUDShop(new OMUD_MMUD.DataShop(_mmc.dataShop), new String(_mmc.dataRoom.roomID), new String(_mmc.dataRoom.name));
 
 				// reset active block with statline forced as last data type...
 				_mmc.ablk = new OMUD_MMUDChar.ActiveBlock(false, OMUD_MMUD.Data.eDataType.STATLINE);

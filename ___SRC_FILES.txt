@@ -18,10 +18,11 @@ OMUD_MMUDBlocks
 OMUD_MMUDBlock_BBSMenu
 OMUD_MMUDBlock_Editor
 OMUD_MMUDBlock_Statline
-OMUD_MMUDBlock_LookRoom
+OMUD_MMUDBlock_Room
 OMUD_MMUDBlock_Inventory
 OMUD_MMUDBlock_Stats
 OMUD_MMUDBlock_Exp
+OMUD_MMUDBlock_Shop
 OMUD_MMUDBlock_Other
 OMUD_Telnet
 OMUD_TelnetParser
