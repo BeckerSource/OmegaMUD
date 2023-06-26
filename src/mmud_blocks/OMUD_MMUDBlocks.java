@@ -35,7 +35,7 @@ public class OMUD_MMUDBlocks{
 			return strFoundCmdFull;
 		}
 
-		public abstract int findBlockData(OMUD_IMUDEvents ommme, OMUD_MMUDChar mmc, StringBuilder sbTelnetData, int pos_offset, boolean is_matched);
+		public abstract int findBlockData(OMUD_IMUDEvents ommme, OMUD_MMUDChar mmc, StringBuilder sbTelnetData, int pos_offset);
 		protected int findData(StringBuilder sbTelnetData, int pos_offset, boolean offset_is_lf, boolean has_dynamic_text, String strStartSeq, String strEndSeq){
 			int pos_endseq_left =  	 -1;
 			int pos_endseq_right = 	 -1;
@@ -179,35 +179,38 @@ public class OMUD_MMUDBlocks{
 		_blkBBSMenu = new OMUD_MMUDBlock_BBSMenu();
 	}
 
-	public int parseLineBlocks(OMUD_IMUDEvents ommme, OMUD_MMUDChar mmc, StringBuilder sbTelnetData, int pos_offset){
-		int pos_data_found_start = -1;
+	public int parseStatline(OMUD_IMUDEvents ommme, OMUD_MMUDChar mmc, StringBuilder sbTelnetData){
+		int pos_data_found_start = _arrlBlocks.get(BPOS_STATLINE).findBlockData(ommme, mmc, sbTelnetData, 0);
+		if (pos_data_found_start > -1 && sbTelnetData.length() > 0){
 
-		// if current block is unset or at the statline, check all lineblocks...
-		if (mmc.ablk.block_pos < BPOS_CMDS_START){
-			for (int i = BPOS_CMDS_START; i < _arrlBlocks.size() && pos_data_found_start == -1; ++i)
-				if ((pos_data_found_start = _arrlBlocks.get(i).findBlockData(ommme, mmc, sbTelnetData, pos_offset, false)) > -1)
-					mmc.ablk.update(i, "", _arrlBlocks.get(i).getStatlineWait(), _arrlBlocks.get(i).getDataType());
-		// else parse only the current line block...
-		} else {
-			pos_data_found_start = _arrlBlocks.get(mmc.ablk.block_pos).findBlockData(ommme, mmc, sbTelnetData, pos_offset, true);			
+			int pos_cmd_data_found_start = -1;
+
+			// check all blocks if active is unset/statline...
+			if (mmc.ablk.block_pos < BPOS_CMDS_START){
+				for (int i = BPOS_CMDS_START; i <= _bpos_cmd_editor && pos_cmd_data_found_start == -1; ++i)
+					if ((pos_cmd_data_found_start = _arrlBlocks.get(i).findBlockData(ommme, mmc, sbTelnetData, pos_data_found_start)) > -1)
+						mmc.ablk.update(i, "", _arrlBlocks.get(i).getStatlineWait(), _arrlBlocks.get(i).getDataType());
+			// else parse the active block...
+			} else {
+				pos_cmd_data_found_start = _arrlBlocks.get(mmc.ablk.block_pos).findBlockData(ommme, mmc, sbTelnetData, pos_data_found_start);			
+			}
+
+			if (pos_cmd_data_found_start > -1)
+				pos_data_found_start = pos_cmd_data_found_start;
 		}
 
 		return pos_data_found_start;
 	}
 
-	public int parseStatline(OMUD_IMUDEvents ommme, OMUD_MMUDChar mmc, StringBuilder sbTelnetData){
-		int pos_data_found_start = _arrlBlocks.get(BPOS_STATLINE).findBlockData(ommme, mmc, sbTelnetData, 0, true);
-		if (pos_data_found_start > -1)
-			mmc.ablk.update(BPOS_STATLINE, "", _arrlBlocks.get(BPOS_STATLINE).getStatlineWait(), _arrlBlocks.get(BPOS_STATLINE).getDataType());
+	public int parseLineBlocks(OMUD_IMUDEvents ommme, OMUD_MMUDChar mmc, StringBuilder sbTelnetData, int pos_offset){
+		int pos_data_found_start = -1;
+		for (int i = _bpos_cmd_editor + 1; i < _arrlBlocks.size() && pos_data_found_start == -1; ++i)
+			pos_data_found_start = _arrlBlocks.get(i).findBlockData(ommme, mmc, sbTelnetData, pos_offset);
 		return pos_data_found_start;
 	}
 
 	public int parseBBSMenu(OMUD_IMUDEvents ommme, OMUD_MMUDChar mmc, StringBuilder sbTelnetData){
-		return _blkBBSMenu.findBlockData(ommme, mmc, sbTelnetData, 0, true);
-	}
-
-	public int parseRoom(OMUD_IMUDEvents ommme, OMUD_MMUDChar mmc, StringBuilder sbTelnetData){
-		return _arrlBlocks.get(BPOS_LOOKROOM).findBlockData(ommme, mmc, sbTelnetData, sbTelnetData.length() - 1, true);
+		return _blkBBSMenu.findBlockData(ommme, mmc, sbTelnetData, 0);
 	}
 
 	// findCmd(): main external call to match a user-input command (assumes passed in as lower-case)

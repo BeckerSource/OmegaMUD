@@ -11,10 +11,10 @@ public class OMUD_MMUDBlock_Exp extends OMUD_MMUDBlocks.Block{
 		_arrlCmdText.add(new CmdText("experience", 3));
 	}
 
-	public int findBlockData(OMUD_IMUDEvents ommme, OMUD_MMUDChar mmc, StringBuilder sbTelnetData, int pos_offset, boolean is_matched){
+	public int findBlockData(OMUD_IMUDEvents ommme, OMUD_MMUDChar mmc, StringBuilder sbTelnetData, int pos_offset){
 		int pos_data_found_start = -1;
 
-		if (is_matched && (pos_data_found_start = findData(sbTelnetData, pos_offset, true, true, MSTR_EXP_PRE, MSTR_EXP_END)) > -1){
+		if ((pos_data_found_start = findData(sbTelnetData, pos_offset, true, true, MSTR_EXP_PRE, MSTR_EXP_END)) > -1){
 			cleanData(_sbBlockData, false, true);
 			mmc.dataExp = new OMUD_MMUD.DataExp();
 
@@ -23,11 +23,13 @@ public class OMUD_MMUDBlock_Exp extends OMUD_MMUDBlocks.Block{
 			if ((pos_right = _sbBlockData.indexOf(MSTR_LEVEL, pos_left)) > -1){
 				mmc.dataExp.cur_total = Integer.parseInt(_sbBlockData.substring(pos_left, pos_right).trim());
 
-				pos_right = _sbBlockData.length() - 1;
-				if ((pos_right = _sbBlockData.lastIndexOf(MSTR_NEXT_TOTAL_END, pos_right)) > -1 &&
-					(pos_left  = _sbBlockData.lastIndexOf(MSTR_NEXT_TOTAL_PRE, pos_right)) > -1){
+				if ((pos_left  = _sbBlockData.indexOf(MSTR_NEXT_TOTAL_PRE, pos_right)) > -1 &&
+					(pos_right = _sbBlockData.indexOf(MSTR_NEXT_TOTAL_END, pos_left))  > -1){
 					mmc.dataExp.next_total = Integer.parseInt(_sbBlockData.substring(pos_left + MSTR_NEXT_TOTAL_PRE.length(), pos_right).trim());
-					mmc.dataExp.next_rem = mmc.dataExp.next_total - mmc.dataExp.cur_total;
+
+					if (mmc.dataExp.next_total > mmc.dataExp.cur_total)
+						 mmc.dataExp.next_rem = mmc.dataExp.next_total - mmc.dataExp.cur_total;
+					else mmc.dataExp.next_rem = 0;
 				}
 			}
 		}

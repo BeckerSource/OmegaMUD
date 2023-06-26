@@ -1,5 +1,6 @@
 public class OMUD_MMUDBlock_Stats extends OMUD_MMUDBlocks.Block{
-	private final String MSTR_STATS_PRE = 	"[0;37;40m[79D[K[0m[32mName:";
+	private final String MSTR_PREFIX_RESET_WHBL = "[0;37;40m";
+	private final String MSTR_STATS_PRE = 	"[79D[K[0m[32mName:";
 	private final String MSTR_STATS_END = 	"[0;32mMagicRes:";
 	private final String MSTR_LIVES = 		"Lives/CP:";
 	private final String MSTR_RACE = 		"Race:";
@@ -32,12 +33,15 @@ public class OMUD_MMUDBlock_Stats extends OMUD_MMUDBlocks.Block{
 		_arrlCmdText.add(new CmdText("stat", 2));
 	}
 
-	public int findBlockData(OMUD_IMUDEvents ommme, OMUD_MMUDChar mmc, StringBuilder sbTelnetData, int pos_offset, boolean is_matched){
+	public int findBlockData(OMUD_IMUDEvents ommme, OMUD_MMUDChar mmc, StringBuilder sbTelnetData, int pos_offset){
 		int pos_data_found_start = -1;
 
-		if (is_matched && (pos_data_found_start = findData(sbTelnetData, pos_offset, false, true, MSTR_STATS_PRE, MSTR_STATS_END)) > -1){	
+		if ((pos_data_found_start = findData(sbTelnetData, pos_offset, false, true, MSTR_STATS_PRE, MSTR_STATS_END)) > -1){	
 			cleanData(_sbBlockData, true, true);
 			mmc.dataStats = new OMUD_MMUD.DataStats();
+
+			// PREFIX: normal stat command has a prefix, coming from a new char creation does not...
+			pos_data_found_start = checkPrefix("Stat Command (not new char)", sbTelnetData, pos_data_found_start, MSTR_PREFIX_RESET_WHBL);
 
 			int pos_left =  0;
 			int pos_right = _sbBlockData.length() - 1;
@@ -219,8 +223,8 @@ public class OMUD_MMUDBlock_Stats extends OMUD_MMUDBlocks.Block{
 			// Row9: MR
 			// ------------------
 			// special: MR is further in the buffer, so do a find here at the end...
-			if ((pos_data_found_start = sbTelnetData.indexOf("\n", pos_data_found_start)) > -1 &&
-				(pos_data_found_start = findData(sbTelnetData, pos_data_found_start, true, true, MSTR_MR, "")) > -1){
+			if ((pos_right = sbTelnetData.indexOf("\n", pos_data_found_start)) > -1 &&
+				findData(sbTelnetData, pos_right, true, true, MSTR_MR, "") > -1){
 				cleanData(_sbBlockData, true, true);
 				mmc.dataStats.mr = Integer.parseInt(_sbBlockData.toString());
 			}

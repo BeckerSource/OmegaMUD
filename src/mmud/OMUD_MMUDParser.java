@@ -115,9 +115,8 @@ public class OMUD_MMUDParser{
 		// ------------------
 		if (OMUD.isInsideMUD(_eBBSLoc)){
 
-			// only process commands and line blocks when not inside an editor (training stats, input prompt, etc.)...
+			// only process user commands and line blocks when not inside an editor (training stats, input prompt, etc.) -
 			if (_eBBSLoc != OMUD.eBBSLocation.MUD_EDITOR){
-
 				// ------------------
 				// Find User Commands
 				// ------------------
@@ -142,11 +141,11 @@ public class OMUD_MMUDParser{
 						sbCmd.append(" (" + _mmc.ablk.strCmdText + ")");
 							_ommme.notifyMUDUserCmd(sbCmd.toString());
 						sbCmd.setLength(0); // clear to show as processed
-					}
+					}					
 				}
 
 				// ------------------
-				// Find Line Blocks (LF+ESC or LF+End)
+				// Find Other LineBlocks (LF+ESC or LF+End)
 				// ------------------
 				// check length again in case above changes...
 				for (int i = 0; i < _sbDataTelnet.length(); ++i){
@@ -156,8 +155,8 @@ public class OMUD_MMUDParser{
 						if ((pos_data_found_start = _s_blocks.parseLineBlocks(_ommme, _mmc, _sbDataTelnet, i)) > -1){
 							pos_buf_delete_len = updateParseDeleteLen(pos_data_found_start, pos_buf_delete_len);
 							i = pos_data_found_start;
-						}						
-					}					
+						}
+					}
 				}
 			}
 
@@ -170,24 +169,11 @@ public class OMUD_MMUDParser{
 				// check if returning from training stats or at a prompt/input...
 				if (_eBBSLoc == OMUD.eBBSLocation.MUD_EDITOR){
 					_ommme.notifyMUDLocation((_eBBSLoc = OMUD.eBBSLocation.MUD));
-
-					// if this is the first time entering mud (no room data):
-					// try to get the room data (room data is not shown on if coming from char creation) 
-					// if room data is not present, send a LF/look to force getting the room data...
-					boolean need_room_data = true;
-					if (_mmc.dataRoom.name.length() == 0){
-						int pos_first_room = _s_blocks.parseRoom(_ommme, _mmc, _sbDataTelnet);
-						if (pos_first_room > -1){
-							pos_data_found_start = pos_first_room;
-							pos_buf_delete_len = updateParseDeleteLen(pos_data_found_start, pos_buf_delete_len);
-							need_room_data = false;
-						}
-					}
-
-					// for convenience now, make optional modes later for auto/manual...
-					if (need_room_data)
+					// some basic auto commands on enter - can make manual/auto modes for this later...
+					if (_mmc.dataRoom.name.length() == 0)
 						_ommme.notifyMUDAutoCmd("\n");
-					_ommme.notifyMUDAutoCmd("stat\n");
+					if (_mmc.dataStats.name_first.length() == 0)
+						_ommme.notifyMUDAutoCmd("stat\n");
 					_ommme.notifyMUDAutoCmd("i\n");
 					_ommme.notifyMUDAutoCmd("exp\n");
 				}
