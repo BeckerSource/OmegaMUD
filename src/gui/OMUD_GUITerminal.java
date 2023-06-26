@@ -1,10 +1,7 @@
-import java.awt.Font;
 import java.awt.Point;
 import java.awt.Dimension;
-import java.awt.GraphicsEnvironment;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.InputStream;
 import java.util.ArrayList;
 import javax.swing.JTextPane;
 import javax.swing.JViewport;
@@ -25,10 +22,7 @@ public class OMUD_GUITerminal extends JTextPane {
     private StyledDocument                      _docSwap =      null;
     private ArrayList<OMUD_GUIBlinkText>        _arrlBlink =    null;
     private Timer                               _tmrBlink =     null;
-    private Font                                _font =         null;
-    private final int       BLINK_DELAY_MS =    500;
-    private final int       FONT_SIZE =         8;
-    private final String    FONT_FILE =         "fonts/dos437.ttf";
+    private final int BLINK_DELAY_MS = 500;
 
     public OMUD_GUITerminal(OMUD_GUIScrollPane scroll){
         _scroll = scroll;
@@ -43,16 +37,7 @@ public class OMUD_GUITerminal extends JTextPane {
         setBackground(OMUD_ANSI.getDefaultBGColor());
         StyleConstants.setForeground(_attrLocal, OMUD.TERMINAL_LOCAL_INFO_FG);  
         StyleConstants.setBackground(_attrLocal, OMUD.TERMINAL_LOCAL_INFO_BG);
-
-        // font stuff...
-        try{
-            InputStream is = ClassLoader.getSystemClassLoader().getResourceAsStream(FONT_FILE);
-            _font = Font.createFont(Font.TRUETYPE_FONT, is).deriveFont(Font.PLAIN, FONT_SIZE);
-            GraphicsEnvironment.getLocalGraphicsEnvironment().registerFont(_font);
-            setFont(_font);
-        } catch (Exception e){
-            OMUD.logError("Error loading terminal font: " + e.getMessage());
-        }
+        setFont(OMUD.getTerminalFont());
 
         // blink stuff...
         _tmrBlink.setInitialDelay(0);
@@ -62,8 +47,8 @@ public class OMUD_GUITerminal extends JTextPane {
 
     // updateTerminalSize(): get accurate terminal viewing area size based on font and number of rows/cols...
     public void finalizeGUI(){
-        int char_width =    getGraphics().getFontMetrics(_font).stringWidth(" ");
-        int char_height =   getGraphics().getFontMetrics(_font).getHeight();
+        int char_width =    getGraphics().getFontMetrics(OMUD.getTerminalFont()).stringWidth(" ");
+        int char_height =   getGraphics().getFontMetrics(OMUD.getTerminalFont()).getHeight();
         _scroll.getVerticalScrollBar().setUnitIncrement(char_height);
         //char_width * TERMINAL_COLS;
         //char_height * TERMINAL_ROWS;        

@@ -62,7 +62,7 @@ public class OMUD_GUI implements OMUD_ITelnetEvents, OMUD_ITextInputEvents, OMUD
     private static final int FMAIN_MIN_HEIGHT =     150;
     private static final int FVIEW_MIN_WIDTH  =     685;
     private static final int FVIEW_MIN_HEIGHT =     550;
-    private static final int FINFO_MIN_WIDTH  =     550;
+    private static final int FINFO_MIN_WIDTH  =     700;
     private static final int FINFO_MIN_HEIGHT =     550;
     private static final String[] CHARS_COLS = {"Realm", "Name"};
 
@@ -219,9 +219,10 @@ public class OMUD_GUI implements OMUD_ITelnetEvents, OMUD_ITextInputEvents, OMUD
         _fInfo.pack();
         _fMain.setSize(new Dimension(FMAIN_MIN_WIDTH, FMAIN_MIN_HEIGHT)); // needed to get correct size after pack (table/scroll updates)
         //_fView.setLocationRelativeTo(null); // center in main display
-        _fView.setLocation(25, (int) (GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice().getDefaultConfiguration().getBounds().getSize().getHeight() * 0.25));
-        _fInfo.setLocation(_fView.getLocation().x + (int) _fView.getSize().getWidth(), _fView.getLocation().y);
-        _fMain.setLocation(_fView.getLocation().x, _fView.getLocation().y - FMAIN_MIN_HEIGHT);
+        Dimension size = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice().getDefaultConfiguration().getBounds().getSize();
+        _fInfo.setLocation((int) (size.getWidth() - _fInfo.getSize().getWidth()), (int) (size.getHeight() * 0.25));
+        _fView.setLocation((int) (size.getWidth() - (_fView.getSize().getWidth() * 1.5)), _fInfo.getLocation().y + 100);
+        _fMain.setLocation(_fInfo.getLocation().x, _fInfo.getLocation().y - FMAIN_MIN_HEIGHT);
         _fMain.setVisible(true);
         _fView.setVisible(true);
         _fInfo.setVisible(true);
@@ -236,6 +237,7 @@ public class OMUD_GUI implements OMUD_ITelnetEvents, OMUD_ITextInputEvents, OMUD
         txt.setBackground(OMUD.GUI_BG);
         txt.setForeground(OMUD.TERMINAL_LOCAL_INFO_FG);
         txt.setCaretColor(OMUD.TERMINAL_LOCAL_INFO_FG);
+        txt.setFont(OMUD.getTerminalFont());
         return txt;
     }
 

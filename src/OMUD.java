@@ -4,7 +4,10 @@
 // *************************************
 
 import java.awt.Color;
+import java.awt.Font;
+import java.awt.GraphicsEnvironment;
 import java.io.File;
+import java.io.InputStream;
 import java.io.PrintWriter;
 import java.io.FileOutputStream;
 import java.util.ArrayList;
@@ -13,6 +16,23 @@ import java.util.ArrayList;
 // Shared Static Constants
 // ---------------------
 public class OMUD{
+
+    // ------------------
+    // Font
+    // ------------------
+    private static Font _s_font = null;
+    public static Font getTerminalFont(){
+        if (_s_font == null){
+            try{
+                InputStream is = ClassLoader.getSystemClassLoader().getResourceAsStream("fonts/dos437.ttf");
+                _s_font = Font.createFont(Font.TRUETYPE_FONT, is).deriveFont(Font.PLAIN, 8);
+                GraphicsEnvironment.getLocalGraphicsEnvironment().registerFont(_s_font);
+            } catch (Exception e){
+                OMUD.logError("Error creating font: " + e.getMessage());
+            }
+        }
+        return _s_font;
+    }
 
     // ------------------
     // BBS Locations
