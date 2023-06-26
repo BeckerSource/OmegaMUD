@@ -52,7 +52,7 @@ public class OMUD_MMUDBlock_Stats extends OMUD_MMUDBlocks.Block{
 			// special: MR is further in the buffer, so get it here separately...
 			if ((pos_left  = sbTelnetData.indexOf(MSTR_MR, pos_data_found_start)) > -1 &&
 				(pos_right = sbTelnetData.indexOf("\n", pos_left)) > -1){
-				StringBuilder sbMR = new StringBuilder(sbTelnetData.substring(pos_left + MSTR_MR.length(), pos_right).trim());
+				StringBuilder sbMR = new StringBuilder(sbTelnetData.substring(pos_left + MSTR_MR.length(), pos_right));
 				cleanData(sbMR, true, true);
 				mmc.dataStats.mr = Integer.parseInt(sbMR.toString());
 				sbTelnetData.delete(pos_data_found_start, pos_right + 1);
