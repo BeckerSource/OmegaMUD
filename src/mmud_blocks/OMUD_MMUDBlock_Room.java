@@ -1,16 +1,16 @@
 public class OMUD_MMUDBlock_Room extends OMUD_MMUDBlocks.Block{
 	private final String MSTR_PREFIX_RESET_WHBL =  	"[0;37;40m";
 	private final String MSTR_ROOM_NAME =  			"[79D[K[1;36m";
-	private final String MSTR_OBVIOUS_EXITS =  		"[0;32mObvious exits: ";
+	private final String MSTR_OBVIOUS_EXITS =  		"Obvious exits: ";
 	private final String MSTR_ROOM_DESC =  			"    ";
 	private final String MSTR_YOU_NOTICE_PRE =  	"You notice ";
 	private final String MSTR_YOU_NOTICE_END =  	"here.";
 	private final String MSTR_ALSO_HERE_PRE =  		"Also here: ";
 	private final String MSTR_ALSO_HERE_END =  		".";
-	private final String MSTR_LIGHT_DIM =  			"[0;37mThe room is dimly lit\n";
-	private final String MSTR_LIGHT_DARK =  		"[0;37mThe room is very dark\n";
-	private final String MSTR_LIGHT_BARELY =  		"[0;37mThe room is barely visible\n";
-	private final String MSTR_LIGHT_BLACK =  		"[0;37mThe room is pitch black\n";
+	private final String MSTR_LIGHT_DIM =  			"The room is dimly lit";
+	private final String MSTR_LIGHT_DARK =  		"The room is very dark";
+	private final String MSTR_LIGHT_BARELY =  		"The room is barely visible";
+	private final String MSTR_LIGHT_BLACK =  		"The room is pitch black";
 	private final String MSTR_SEARCH_NONE = 		"[0;36mYour search revealed nothing.";
 	private final String MSTR_SEARCH_PRE =  		"[0;37;40m[0;36mYou notice ";
 
@@ -24,45 +24,38 @@ public class OMUD_MMUDBlock_Room extends OMUD_MMUDBlocks.Block{
 	public int findBlockData(OMUD_IMUDEvents ommme, OMUD_MMUDChar mmc, StringBuilder sbTelnetData, int pos_offset){
 		int pos_data_found_start = -1;
 
-		if ((pos_data_found_start = findData(sbTelnetData, pos_offset, false, true, MSTR_ROOM_NAME, MSTR_OBVIOUS_EXITS)) > -1){
-			int pos_left  = 0;
-			int pos_right = pos_offset - (MSTR_ROOM_NAME.length() + _sbBlockData.length() + MSTR_OBVIOUS_EXITS.length()) - 1;
-
+		if ((pos_data_found_start = findData(sbTelnetData, pos_offset, true, true, MSTR_ROOM_NAME, "")) > -1){
 			cleanData(_sbBlockData, true, true);
 			mmc.dataRoom.resetOptional();
 
-			// ------------------
-			// Optional: Light
-			// ------------------
-				 if ((pos_left = sbTelnetData.lastIndexOf(MSTR_LIGHT_DIM, pos_right)) 		> -1)
-				mmc.dataRoom.light = OMUD_MMUD.eRoomLight.DIMLY_LIT;
-			else if ((pos_left = sbTelnetData.lastIndexOf(MSTR_LIGHT_DARK, pos_right)) 		> -1)
-				mmc.dataRoom.light = OMUD_MMUD.eRoomLight.VERY_DARK;
-			else if ((pos_left = sbTelnetData.lastIndexOf(MSTR_LIGHT_BARELY, pos_right)) 	> -1)
-				mmc.dataRoom.light = OMUD_MMUD.eRoomLight.BARELY_VIS;
-			else if ((pos_left = sbTelnetData.lastIndexOf(MSTR_LIGHT_BLACK, pos_right)) 	> -1)
-				mmc.dataRoom.light = OMUD_MMUD.eRoomLight.PITCH_BLACK;
-			if (pos_left > -1){
-				sbTelnetData.delete(pos_left, pos_right + 1);
-				pos_right = pos_left - 1;
-			}
+			int pos_left  = 0;
+			int pos_right = _sbBlockData.length() - 1;
 
 			// ------------------
 			// Obvious Exits
 			// ------------------
-			StringBuilder sbExits = new StringBuilder();
-			sbExits.append(sbTelnetData.substring(pos_data_found_start, pos_right + 1).trim());
-			sbTelnetData.delete(pos_data_found_start, pos_right + 1);
+			if ((pos_left = _sbBlockData.lastIndexOf(MSTR_OBVIOUS_EXITS, pos_right)) > -1){
+				// ------------------
+				// Optional: Light
+				// ------------------
+					 if ((pos_right = _sbBlockData.indexOf(MSTR_LIGHT_DIM, 		pos_left)) 	> -1)
+					mmc.dataRoom.light = OMUD_MMUD.eRoomLight.DIMLY_LIT;
+				else if ((pos_right = _sbBlockData.indexOf(MSTR_LIGHT_DARK, 	pos_left)) 	> -1)
+					mmc.dataRoom.light = OMUD_MMUD.eRoomLight.VERY_DARK;
+				else if ((pos_right = _sbBlockData.indexOf(MSTR_LIGHT_BARELY, 	pos_left)) 	> -1)
+					mmc.dataRoom.light = OMUD_MMUD.eRoomLight.BARELY_VIS;
+				else if ((pos_right = _sbBlockData.indexOf(MSTR_LIGHT_BLACK, 	pos_left)) 	> -1)
+					mmc.dataRoom.light = OMUD_MMUD.eRoomLight.PITCH_BLACK;
+				// if no light string, set right to the end...
+				if (pos_right == -1)
+					 pos_right = _sbBlockData.length() - 1;
+				// else move back one to be at the end of the exits...
+				else pos_right--;
 
-			cleanData(sbExits, true, true);
-			mmc.dataRoom.exits = sbExits.toString();
-			buildRoomExits(mmc.dataRoom);
-
-			// ------------------
-			// Reset Vals
-			// ------------------
-			pos_left = 0;
-			pos_right = _sbBlockData.length() - 1;
+				mmc.dataRoom.exits = _sbBlockData.substring(pos_left + MSTR_OBVIOUS_EXITS.length(), pos_right + 1).trim();
+				buildRoomExits(mmc.dataRoom);
+				pos_right = pos_left - 1;
+			} // else shouldn't happen
 
 			// ------------------
 			// Optional: Also Here (Units)

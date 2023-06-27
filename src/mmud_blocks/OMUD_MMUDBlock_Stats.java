@@ -45,7 +45,7 @@ public class OMUD_MMUDBlock_Stats extends OMUD_MMUDBlocks.Block{
 
 			// split by lines...
 	        String[] lines = _sbBlockData.toString().split("\n");
-	        if (lines.length == MSTR_STAT_ROW_COUNT){
+	        if (lines.length >= MSTR_STAT_ROW_COUNT){
 	        	int row_num = 	0;
 				int pos_left =  0;
 				int pos_right = _sbBlockData.length() - 1;
@@ -236,6 +236,11 @@ public class OMUD_MMUDBlock_Stats extends OMUD_MMUDBlocks.Block{
 						}
 					}
 				}
+
+				// ------------------
+				// Row10+: Buffs
+				// ------------------
+				// todo: parse buffs
 	        }
 		}
 
