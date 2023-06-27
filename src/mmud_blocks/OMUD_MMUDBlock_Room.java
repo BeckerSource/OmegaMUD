@@ -52,6 +52,7 @@ public class OMUD_MMUDBlock_Room extends OMUD_MMUDBlocks.Block{
 				// else move back one to be at the end of the exits...
 				else pos_right--;
 
+				// get exits here...
 				mmc.dataRoom.exits = _sbBlockData.substring(pos_left + MSTR_OBVIOUS_EXITS.length(), pos_right + 1).trim();
 				buildRoomExits(mmc.dataRoom);
 				pos_right = pos_left - 1;
