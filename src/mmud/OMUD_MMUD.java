@@ -74,15 +74,15 @@ public class OMUD_MMUD{
 	// Char Data
 	// ------------------
 	public static enum eRestState{
-		ACTIVE,
-		RESTING,
-		MEDITATING
+		READY,
+		REST,
+		MED
 	}
 
 	public static final String[] REST_STATE_STRINGS = {
-		"[ACTIVE]", // not a real game string, just internal naming of non-rest and non-med state as 'active'
-		"[RESTING]",
-		"[MEDITATING]"
+		"[READY]", // not a real game string, just a state for non-rest and non-med
+		"[REST]",
+		"[MED]"
 	};	
 
 	// ------------------
@@ -112,7 +112,7 @@ public class OMUD_MMUD{
 		public boolean ma_mod = 	false;
 		public String  hp_str = 	"";
 		public String  ma_str = 	"";
-		public eRestState rest = 	eRestState.ACTIVE;
+		public eRestState rest = 	eRestState.READY;
 
 		public eDataType getType(){return eDataType.STATLINE;}
 		public DataStatline(){}
