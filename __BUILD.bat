@@ -33,12 +33,12 @@ REM ------------
 REM Check Class Files
 REM ------------
 set "SRC_FILES="
-for /r %SRC% %%f in (*.java) do (set "SRC_FILES=!SRC_FILES! %%~nf.class")
+for /r %SRC% %%f in (*.java) do (set "SRC_FILES=!SRC_FILES! %BUILD_DIR%\%%~nf.class")
 for %%f in (%SRC_FILES%) do (
-	if not exist %BUILD_DIR%\%%f (
+	if not exist %%f (
 		echo:
 		echo ---------------------------------------------
-	    echo Failed: class file not found: %BUILD_DIR%\%%f
+	    echo Failed: class file not found: %%f
 	    goto :EOF
 	)
 )
