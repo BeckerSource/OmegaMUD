@@ -9,7 +9,7 @@ set "JAR_AC=%2"
 set "JAR_OMUD=%3"
 set "SRC=src"
 set "BUILD_DIR=_BUILD"
-set "FILES_LIST=___SRC_FILES.txt"
+set "FILES_LIST=%BUILD_DIR%\___SRC_FILES.txt"
 
 REM ------------
 REM Create Build Dir Structure
@@ -36,14 +36,9 @@ javac -Xlint:deprecation -d %BUILD_DIR% -cp %BUILD_DIR%/lib/%JAR_AC% ^
     %SRC%/telnet/*.java
 
 REM ------------
-REM Check Class Files
+REM Create File List + Check Class Files
 REM ------------
-if not exist %FILES_LIST% (
-	echo:
-	echo ---------------------------------------------
-    echo Failed: file with required class files list found: %FILES_LIST%
-    goto :EOF
-)
+for /r %SRC% %%f in (*.java) do (echo %%~nf>> %FILES_LIST%)
 for /f "delims=" %%I in (%FILES_LIST%) do (
 	if not exist %BUILD_DIR%\%%I.class (
 		echo:
