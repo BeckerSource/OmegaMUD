@@ -224,7 +224,7 @@ public class OMUD_GUI implements OMUD_ITelnetEvents, OMUD_ITextInputEvents, OMUD
         //_fView.setLocationRelativeTo(null); // center in main display
         Dimension size = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice().getDefaultConfiguration().getBounds().getSize();
         _fInfo.setLocation((int) (size.getWidth() - _fInfo.getSize().getWidth()) - 50, (int) _fMain.getSize().getHeight() + 50);
-        _fView.setLocation((int) (size.getWidth() - (_fView.getSize().getWidth() * 1.25)), _fInfo.getLocation().y + 100);
+        _fView.setLocation((int) (size.getWidth() - (_fView.getSize().getWidth() * 1.5)), _fInfo.getLocation().y + 100);
         _fMain.setLocation(_fInfo.getLocation().x, 50);
         _fMain.setVisible(true);
         _fView.setVisible(true);

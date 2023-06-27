@@ -8,7 +8,6 @@ JAR_AC="$2"
 JAR_OMUD="$3"
 SRC="src"
 BUILD_DIR="_BUILD"
-FILES_LIST="${BUILD_DIR}/___SRC_FILES.txt"
 
 # ------------
 # Create Build Dir Structure
@@ -24,29 +23,21 @@ cp src/$MAN $BUILD_DIR 2>/dev/null
 # ------------
 # Compile
 # ------------
-javac -Xlint:deprecation -d $BUILD_DIR -cp $BUILD_DIR/lib/$JAR_AC \
-    $SRC/*.java \
-    $SRC/ansi/*.java \
-    $SRC/buffer/*.java \
-    $SRC/gui/*.java \
-    $SRC/mega/*.java \
-    $SRC/mmud/*.java \
-    $SRC/mmud_blocks/*.java \
-    $SRC/telnet/*.java
+SRC_DIRS=$(find $SRC -type d -exec printf "{}/*.java " \;)
+javac -Xlint:deprecation -d $BUILD_DIR -cp $BUILD_DIR/lib/$JAR_AC $SRC_DIRS
 
 # ------------
-# Create File List + Check Class Files
+# Check Class Files
 # ------------
-find $SRC -type f -name "*.java" -printf "%f\n" | sed "s/\.java$//" >> $FILES_LIST
-while IFS= read -r CLASS_FILE; do
-	CLASS_FILE="$BUILD_DIR/$CLASS_FILE.class"
+SRC_FILES=$(find $SRC -type f -name *.java | sed "s/.*\//$BUILD_DIR\//; s/\.java/.class/")
+for CLASS_FILE in $SRC_FILES; do
 	if [ ! -f $CLASS_FILE ]; then
 		echo ""
 		echo ---------------------------------------------
 	    echo Failed: class file not found: $CLASS_FILE
 	    exit 0
 	fi
-done < $FILES_LIST
+done
 
 # ------------
 # Create Jar

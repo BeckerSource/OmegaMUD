@@ -1,4 +1,5 @@
 @echo off
+setlocal EnableDelayedExpansion
 cls
 
 REM ------------
@@ -9,7 +10,6 @@ set "JAR_AC=%2"
 set "JAR_OMUD=%3"
 set "SRC=src"
 set "BUILD_DIR=_BUILD"
-set "FILES_LIST=%BUILD_DIR%\___SRC_FILES.txt"
 
 REM ------------
 REM Create Build Dir Structure
@@ -21,29 +21,24 @@ mkdir %BUILD_DIR%\fonts
 copy lib\%JAR_AC% %BUILD_DIR%\lib >NUL
 copy fonts\* %BUILD_DIR%\fonts >NUL
 copy src\%MAN% %BUILD_DIR% >NUL
- 
+
 REM ------------
 REM Compile
 REM ------------
-javac -Xlint:deprecation -d %BUILD_DIR% -cp %BUILD_DIR%/lib/%JAR_AC% ^
-    %SRC%/*.java ^
-    %SRC%/ansi/*.java ^
-    %SRC%/buffer/*.java ^
-    %SRC%/gui/*.java ^
-    %SRC%/mega/*.java ^
-    %SRC%/mmud/*.java ^
-    %SRC%/mmud_blocks/*.java ^
-    %SRC%/telnet/*.java
+set "SRC_DIRS=%SRC%\*.java"
+for /d %%d in (%SRC%\*) do (set "SRC_DIRS=!SRC_DIRS! %%d\*.java")
+javac -Xlint:deprecation -d %BUILD_DIR% -cp %BUILD_DIR%/lib/%JAR_AC% %SRC_DIRS%
 
 REM ------------
-REM Create File List + Check Class Files
+REM Check Class Files
 REM ------------
-for /r %SRC% %%f in (*.java) do (echo %%~nf>> %FILES_LIST%)
-for /f "delims=" %%I in (%FILES_LIST%) do (
-	if not exist %BUILD_DIR%\%%I.class (
+set "SRC_FILES="
+for /r %SRC% %%f in (*.java) do (set "SRC_FILES=!SRC_FILES! %%~nf.class")
+for %%f in (%SRC_FILES%) do (
+	if not exist %BUILD_DIR%\%%f (
 		echo:
 		echo ---------------------------------------------
-	    echo Failed: class file not found: %BUILD_DIR%\%%I.class
+	    echo Failed: class file not found: %BUILD_DIR%\%%f
 	    goto :EOF
 	)
 )
