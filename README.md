@@ -6,7 +6,7 @@ Tested with OpenJDK 1.6 (J6), 1.7 (J7), and 1.8 (J8).\
 I assume equivalent Oracle Java versions should work.
 
 ## Apache Commons Net
-Apache Commons Net telnet class files are built into the JAR during the build process.
+Apache Commons Net telnet class files are built into the JAR during the build process.\
 No external JARs are required.
 
 ## Environment Setup (Building/Running)
