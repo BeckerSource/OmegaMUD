@@ -5,21 +5,20 @@ cls
 REM ------------
 REM Vars
 REM ------------
-set "MAN=%1"
+set "JAR_OMUD=%1"
 set "JAR_AC=%2"
-set "JAR_OMUD=%3"
 set "SRC=src"
 set "BUILD_DIR=_BUILD"
+set "MAN=MANIFEST.MF"
 
 REM ------------
 REM Create Build Dir Structure
 REM ------------
 if exist %JAR_OMUD% 	del %JAR_OMUD%
 if exist %BUILD_DIR% 	rmdir /s /q %BUILD_DIR%
-mkdir %BUILD_DIR%\lib
 mkdir %BUILD_DIR%\fonts
-copy lib\%JAR_AC% %BUILD_DIR%\lib >NUL
 copy fonts\* %BUILD_DIR%\fonts >NUL
+copy lib\%JAR_AC% %BUILD_DIR% >NUL
 copy src\%MAN% %BUILD_DIR% >NUL
 
 REM ------------
@@ -27,7 +26,7 @@ REM Compile
 REM ------------
 set "SRC_DIRS=%SRC%\*.java"
 for /d %%d in (%SRC%\*) do (set "SRC_DIRS=!SRC_DIRS! %%d\*.java")
-javac -Xlint:deprecation -d %BUILD_DIR% -cp %BUILD_DIR%/lib/%JAR_AC% %SRC_DIRS%
+javac -Xlint:deprecation -d %BUILD_DIR% -cp %BUILD_DIR%/%JAR_AC% %SRC_DIRS%
 
 REM ------------
 REM Check Class Files
@@ -47,7 +46,8 @@ REM ------------
 REM Create Jar
 REM ------------
 cd %BUILD_DIR%
-jar cfm %JAR_OMUD% %MAN% *.class fonts/*
+jar xf %JAR_AC%
+jar cfm %JAR_OMUD% %MAN% *.class fonts org
 cd ..\
 
 REM ------------

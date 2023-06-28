@@ -3,28 +3,27 @@
 # ------------
 # Vars
 # ------------
-MAN="$1"
+JAR_OMUD="$1"
 JAR_AC="$2"
-JAR_OMUD="$3"
 SRC="src"
 BUILD_DIR="_BUILD"
+MAN="MANIFEST.MF"
 
 # ------------
 # Create Build Dir Structure
 # ------------
 if [ -f $JAR_OMUD  ]; then rm $JAR_OMUD; fi;
 if [ -d $BUILD_DIR ]; then rm -rf $BUILD_DIR; fi;
-mkdir -p $BUILD_DIR/lib
 mkdir    $BUILD_DIR/fonts
-cp lib/$JAR_AC $BUILD_DIR/lib 2>/dev/null
 cp fonts/* $BUILD_DIR/fonts 2>/dev/null
+cp lib/$JAR_AC $BUILD_DIR 2>/dev/null
 cp src/$MAN $BUILD_DIR 2>/dev/null
 
 # ------------
 # Compile
 # ------------
 SRC_DIRS=$(find $SRC -type d -exec printf "{}/*.java " \;)
-javac -Xlint:deprecation -d $BUILD_DIR -cp $BUILD_DIR/lib/$JAR_AC $SRC_DIRS
+javac -Xlint:deprecation -d $BUILD_DIR -cp $BUILD_DIR/$JAR_AC $SRC_DIRS
 
 # ------------
 # Check Class Files
@@ -43,7 +42,8 @@ done
 # Create Jar
 # ------------
 cd $BUILD_DIR
-jar cfm $JAR_OMUD $MAN *.class fonts/*
+jar xf $JAR_AC
+jar cfm $JAR_OMUD $MAN *.class fonts org
 cd ../
 
 # ------------
