@@ -18,8 +18,8 @@ if exist %JAR_OMUD% 	del %JAR_OMUD%
 if exist %BUILD_DIR% 	rmdir /s /q %BUILD_DIR%
 mkdir %BUILD_DIR%\fonts
 copy fonts\* %BUILD_DIR%\fonts >NUL
-copy lib\%JAR_AC% %BUILD_DIR% >NUL
-copy src\%MAN% %BUILD_DIR% >NUL
+copy lib\%JAR_AC% %BUILD_DIR%  >NUL
+copy src\%MAN% %BUILD_DIR%     >NUL
 
 REM ------------
 REM Compile

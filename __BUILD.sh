@@ -14,10 +14,10 @@ MAN="MANIFEST.MF"
 # ------------
 if [ -f $JAR_OMUD  ]; then rm $JAR_OMUD; fi;
 if [ -d $BUILD_DIR ]; then rm -rf $BUILD_DIR; fi;
-mkdir $BUILD_DIR/fonts
+mkdir -p $BUILD_DIR/fonts
 cp fonts/* $BUILD_DIR/fonts 2>/dev/null
-cp lib/$JAR_AC $BUILD_DIR 2>/dev/null
-cp src/$MAN $BUILD_DIR 2>/dev/null
+cp lib/$JAR_AC $BUILD_DIR   2>/dev/null
+cp src/$MAN $BUILD_DIR      2>/dev/null
 
 # ------------
 # Compile
