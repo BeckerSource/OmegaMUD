@@ -28,7 +28,7 @@ public class OMUD_MMUDBlock_Stats extends OMUD_MMUDBlocks.Block{
 	private final int 	 MSTR_STAT_ROW_COUNT = 9;
 
 	public boolean getStatlineWait()				{return true;}
-	public OMUD_MMUD.Data.eDataType getDataType()	{return OMUD_MMUD.Data.eDataType.STATS;}
+	public OMUD_MMUD.DataBlock.eBlockType getDataType()	{return OMUD_MMUD.DataBlock.eBlockType.STATS;}
 	public OMUD_MMUDBlock_Stats(){
 		_arrlCmdText.add(new CmdText("stat", 2));
 	}

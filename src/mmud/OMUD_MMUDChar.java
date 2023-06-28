@@ -4,18 +4,18 @@ public class OMUD_MMUDChar{
 		public int 		block_pos = 	BPOS_INVALID;
 		public String 	strCmdText = 	"?";
 		public boolean 	statline_wait = false;
-		public OMUD_MMUD.Data.eDataType data_type = OMUD_MMUD.Data.eDataType.ROOM;
+		public OMUD_MMUD.DataBlock.eBlockType data_type = OMUD_MMUD.DataBlock.eBlockType.ROOM;
 
-		public ActiveBlock(boolean sw, OMUD_MMUD.Data.eDataType dt){
+		public ActiveBlock(boolean sw, OMUD_MMUD.DataBlock.eBlockType dt){
 			statline_wait = sw;
 			data_type = 	dt;
 		}
 
-		public void update(int bp, String ct, boolean sw, OMUD_MMUD.Data.eDataType dt){
+		public void update(int bp, String ct, boolean sw, OMUD_MMUD.DataBlock.eBlockType dt){
 			block_pos =  	bp;
 			strCmdText = 	ct;
 			statline_wait = sw;
-			data_type = 	dt == OMUD_MMUD.Data.eDataType.NONE ? data_type : dt; // don't update if the data type is NONE
+			data_type = 	dt == OMUD_MMUD.DataBlock.eBlockType.NONE ? data_type : dt; // don't update if the data type is NONE
 		}
 	}
 
@@ -28,5 +28,5 @@ public class OMUD_MMUDChar{
 	public OMUD_MMUD.DataParty 		dataParty = 	new OMUD_MMUD.DataParty();
 	public OMUD_MMUD.DataShop 		dataShop = 		new OMUD_MMUD.DataShop();
 
-	public ActiveBlock ablk = new ActiveBlock(false, OMUD_MMUD.Data.eDataType.ROOM);
+	public ActiveBlock ablk = new ActiveBlock(false, OMUD_MMUD.DataBlock.eBlockType.ROOM);
 }

@@ -16,7 +16,7 @@ public class OMUD_MMUDBlock_Other extends OMUD_MMUDBlocks.Block{
     //private final String MSTR_NQC = 					"[0m(N)onstop, (Q)uit, or (C)ontinue?";
 
 	public boolean getStatlineWait()				{return false;}
-	public OMUD_MMUD.Data.eDataType getDataType()	{return OMUD_MMUD.Data.eDataType.NONE;}
+	public OMUD_MMUD.DataBlock.eBlockType getDataType()	{return OMUD_MMUD.DataBlock.eBlockType.NONE;}
 	public OMUD_MMUDBlock_Other(){}
 		
 	public int findBlockData(OMUD_IMUDEvents ommme, OMUD_MMUDChar mmc, StringBuilder sbTelnetData, int pos_offset){

@@ -15,7 +15,7 @@ public class OMUD_MMUDBlocks{
 		protected StringBuilder 	 _sbBlockData = new StringBuilder();
 
 		public abstract boolean getStatlineWait();
-		public abstract OMUD_MMUD.Data.eDataType getDataType();
+		public abstract OMUD_MMUD.DataBlock.eBlockType getDataType();
 
 		public String matchCmdText(String strCmd){
 			String strFoundCmdFull = null;

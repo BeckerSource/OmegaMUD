@@ -181,19 +181,19 @@ public class OMUD_MMUDParser{
 
 				// notify for statline update and other data that was updated...
 				_ommme.notifyMUDStatline(new OMUD_MMUD.DataStatline(_mmc.dataStatline));
-					 if (_mmc.ablk.data_type == OMUD_MMUD.Data.eDataType.ROOM)
+					 if (_mmc.ablk.data_type == OMUD_MMUD.DataBlock.eBlockType.ROOM)
 					_ommme.notifyMUDRoom(new OMUD_MMUD.DataRoom(_mmc.dataRoom));
-				else if (_mmc.ablk.data_type == OMUD_MMUD.Data.eDataType.EXP)
+				else if (_mmc.ablk.data_type == OMUD_MMUD.DataBlock.eBlockType.EXP)
 					_ommme.notifyMUDExp(new OMUD_MMUD.DataExp(_mmc.dataExp));
-				else if (_mmc.ablk.data_type == OMUD_MMUD.Data.eDataType.INV)
+				else if (_mmc.ablk.data_type == OMUD_MMUD.DataBlock.eBlockType.INV)
 					_ommme.notifyMUDInv(new OMUD_MMUD.DataInv(_mmc.dataInv));
-				else if (_mmc.ablk.data_type == OMUD_MMUD.Data.eDataType.STATS)
+				else if (_mmc.ablk.data_type == OMUD_MMUD.DataBlock.eBlockType.STATS)
 					_ommme.notifyMUDStats(new OMUD_MMUD.DataStats(_mmc.dataStats));
-				else if (_mmc.ablk.data_type == OMUD_MMUD.Data.eDataType.SHOP)
+				else if (_mmc.ablk.data_type == OMUD_MMUD.DataBlock.eBlockType.SHOP)
 					_ommme.notifyMUDShop(new OMUD_MMUD.DataShop(_mmc.dataShop), new String(_mmc.dataRoom.roomID), new String(_mmc.dataRoom.name));
 
 				// reset active block with statline forced as last data type...
-				_mmc.ablk = new OMUD_MMUDChar.ActiveBlock(false, OMUD_MMUD.Data.eDataType.STATLINE);
+				_mmc.ablk = new OMUD_MMUDChar.ActiveBlock(false, OMUD_MMUD.DataBlock.eBlockType.STATLINE);
 			}
 
 			// ------------------

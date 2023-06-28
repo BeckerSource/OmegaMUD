@@ -4,7 +4,7 @@ public class OMUD_MMUDBlock_Shop extends OMUD_MMUDBlocks.Block{
 	private final String MSTR_ITEM_QTY = 	"[36m";
 
 	public boolean getStatlineWait()				{return true;}
-	public OMUD_MMUD.Data.eDataType getDataType()	{return OMUD_MMUD.Data.eDataType.SHOP;}
+	public OMUD_MMUD.DataBlock.eBlockType getDataType()	{return OMUD_MMUD.DataBlock.eBlockType.SHOP;}
 	public OMUD_MMUDBlock_Shop(){
 		_arrlCmdText.add(new CmdText("list", 3));
 	}
@@ -19,7 +19,7 @@ public class OMUD_MMUDBlock_Shop extends OMUD_MMUDBlocks.Block{
 			int pos_right = 0;
 	        String[] tokens = _sbBlockData.toString().split("\n");
 			for (String token : tokens){
-				OMUD_MMUD.DataShop.Item item = new OMUD_MMUD.DataShop.Item();
+				OMUD_MMUD.DataShop.ShopItem item = new OMUD_MMUD.DataShop.ShopItem();
 
 				// ---------------
 				// Item Name

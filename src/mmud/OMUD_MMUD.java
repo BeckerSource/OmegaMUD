@@ -86,10 +86,73 @@ public class OMUD_MMUD{
 	};	
 
 	// ------------------
-	// Containers
+	// Item / Equipment Data
 	// ------------------
-	public static abstract class Data{
-		public enum eDataType{
+	public static enum eEquipSlot{
+		NONE,
+		HEAD,
+		TORSO,
+		ARMS,
+		WRIST,
+		HANDS,
+		WAIST,
+		LEGS,
+		FEET,
+		BACK,
+		FACE,
+		EYES,
+		EARS,
+		NECK,
+		FINGER,
+		WORN,
+		WEAPON,
+		OFFHAND,
+		NOWHERE
+	}
+
+	public static final String[] EQUIP_SLOT_STRINGS = {
+		"(NONE)", // not a real slot
+		"(Head)",
+		"(Torso)",
+		"(Arms)",
+		"(Wrist)",
+		"(Hands)",
+		"(Waist)",
+		"(Legs)",
+		"(Feet)",
+		"(Back)",
+		"(Face)",
+		"(Eyes)",
+		"(Ears)",
+		"(Neck)",
+		"(Finger)",
+		"(Worn)",
+		"(Weapon)",
+		"(Off-Hand)",
+		"(Nowhere)"
+	};	
+
+	// ------------------
+	// Individual Containers
+	// ------------------
+	public static class DataItem{
+		public int 			id 	= 			-1;
+		public String 		name = 			"";
+		public eEquipSlot 	equip_slot = 	eEquipSlot.NONE;
+	}
+
+	public static class Spell{
+		public int 		level = 		0;
+		public int 		mana = 			0;
+		public String 	name_short = 	"";
+		public String 	name_long = 	"";
+	}
+
+	// ------------------
+	// Block Containers
+	// ------------------
+	public static abstract class DataBlock{
+		public enum eBlockType{
 			NONE,
 			STATLINE,
 			ROOM,
@@ -100,21 +163,21 @@ public class OMUD_MMUD{
 			PARTY,
 			SHOP
 		}
-		public abstract eDataType getType();
+		public abstract eBlockType getType();
 	}
 
-	public static class DataStatline extends Data{
-		public int hp_cur = 		0;
-		public int hp_max = 		0;
-		public int ma_cur = 		0;
-		public int ma_max = 		0;
-		public boolean hp_mod = 	false;
-		public boolean ma_mod = 	false;
-		public String  hp_str = 	"";
-		public String  ma_str = 	"";
+	public static class DataStatline extends DataBlock{
+		public int 		hp_cur = 	0;
+		public int 		hp_max = 	0;
+		public int 		ma_cur = 	0;
+		public int 		ma_max = 	0;
+		public boolean 	hp_mod = 	false;
+		public boolean 	ma_mod = 	false;
+		public String  	hp_str = 	"";
+		public String  	ma_str = 	"";
 		public eRestState rest = 	eRestState.READY;
 
-		public eDataType getType(){return eDataType.STATLINE;}
+		public eBlockType getType(){return eBlockType.STATLINE;}
 		public DataStatline(){}
 		public DataStatline(DataStatline dsl){
 			hp_cur = dsl.hp_cur;
@@ -129,7 +192,7 @@ public class OMUD_MMUD{
 		}
 	}
 
-	public static class DataRoom extends Data{
+	public static class DataRoom extends DataBlock{
 		public String roomID = 			""; // MegaMUD RoomID
 		public String name = 			"";
 		public String desc = 			"";
@@ -143,7 +206,7 @@ public class OMUD_MMUD{
 		public ArrayList<String> 		arrlUnits = 		new ArrayList<String>();
 		public ArrayList<RoomExit> 		arrlExits = 		new ArrayList<RoomExit>();
 
-		public eDataType getType(){return eDataType.ROOM;}
+		public eBlockType getType(){return eBlockType.ROOM;}
 		public DataRoom(){}
 		public DataRoom(DataRoom room){
 			roomID = 			new String(room.roomID);
@@ -170,7 +233,7 @@ public class OMUD_MMUD{
 		}
 	}
 
-	public static class DataInv extends Data{
+	public static class DataInv extends DataBlock{
 		public int wealth = 		-1; // in copper
 		public int coins_runic = 	0;
 		public int coins_plat = 	0; 
@@ -183,7 +246,7 @@ public class OMUD_MMUD{
 		public String items = 		"";
 		public String keys =  		"";
 
-		public eDataType getType(){return eDataType.INV;}
+		public eBlockType getType(){return eBlockType.INV;}
 		public DataInv(){}
 		public DataInv(DataInv inv){
 			wealth = 		inv.wealth;
@@ -201,7 +264,7 @@ public class OMUD_MMUD{
 	}
 
 	// DataStats(): HP/MA in DataStatline, EXP in DataExp
-	public static class DataStats extends Data{
+	public static class DataStats extends DataBlock{
 		public String 	name_first = 	"";
 		public String 	name_last = 	"";
 		public String 	stats_race = 	""; // (see note below) -
@@ -226,7 +289,7 @@ public class OMUD_MMUD{
 		public int 		track = 		-1;
 		public int 		ma = 			-1;
 		public int 		mr = 			-1;
-		public eDataType getType(){return eDataType.STATS;}
+		public eBlockType getType(){return eBlockType.STATS;}
 		public DataStats(){}
 		public DataStats(DataStats stats){
 			name_first = 	stats.name_first;
@@ -256,12 +319,12 @@ public class OMUD_MMUD{
 		}
 	}
 
-	public static class DataExp extends Data{
+	public static class DataExp extends DataBlock{
 		public int cur_total = 	-1;
 		public int next_total = -1;
 		public int next_rem = 	-1;
 		public int per_hr =	 	-1;
-		public eDataType getType(){return eDataType.EXP;}
+		public eBlockType getType(){return eBlockType.EXP;}
 		public DataExp(){}
 		public DataExp(DataExp exp){
 			cur_total = 	exp.cur_total;
@@ -271,50 +334,44 @@ public class OMUD_MMUD{
 		}
 	}
 
-	public static class DataSpells extends Data{
-		public static class Spell{
-			public int level = 			0;
-			public int mana = 			0;
-			public String name_short = 	"";
-			public String name_long = 	"";
-		}
+	public static class DataSpells extends DataBlock{
 		public ArrayList<Spell> spells = new ArrayList<Spell>();
-		public eDataType getType(){return eDataType.SPELLS;}
+		public eBlockType getType(){return eBlockType.SPELLS;}
 	}
 
-	public static class DataParty extends Data{
-		public static class Member{
+	public static class DataParty extends DataBlock{
+		public static class PartyMember{
 			public String name = 		"";
 			public String party_class = "";
-			public int hp_cur = 		0;
-			public int ma_cur = 		0;
-			public int hp_max = 		0;
-			public int ma_max = 		0;
+			public int hp_cur = 		 0;
+			public int ma_cur = 		 0;
+			public int hp_max = 		 0;
+			public int ma_max = 		 0;
 			public String rank = 		"";
 		}
-		public ArrayList<Member> members = new ArrayList<Member>();
-		public eDataType getType(){return eDataType.PARTY;}
+		public ArrayList<PartyMember> members = new ArrayList<PartyMember>();
+		public eBlockType getType(){return eBlockType.PARTY;}
 	}
 
-	public static class DataShop extends Data{
-		public static class Item{
+	public static class DataShop extends DataBlock{
+		public static class ShopItem{
 			public String 	name = 	"";
 			public int 		qty = 	0;
 			public String 	price = ""; // string for now, change later when conversions in place
-			public Item(){}
-			public Item(Item item){
+			public ShopItem(){}
+			public ShopItem(ShopItem item){
 				name = 	new String(item.name);
 				qty = 	item.qty;
 				price = new String(item.price);
 			}
 		}
-		public ArrayList<Item> items = new ArrayList<Item>();
-		public eDataType getType(){return eDataType.SHOP;}
+		public ArrayList<ShopItem> items = new ArrayList<ShopItem>();
+		public eBlockType getType(){return eBlockType.SHOP;}
 		public DataShop(){}
 		public DataShop(DataShop shop){
 			items.clear();
 			for (int i = 0; i < shop.items.size(); ++i)
-				items.add(new Item(shop.items.get(i)));
+				items.add(new ShopItem(shop.items.get(i)));
 		}
 	}
 }
