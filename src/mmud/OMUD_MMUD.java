@@ -133,6 +133,26 @@ public class OMUD_MMUD{
 	};	
 
 	// ------------------
+	// Coin/Money Types
+	// ------------------
+	public static enum eCoinType{
+		COPPER,
+		SILVER,
+		GOLD,
+		PLATINUM,
+		RUNIC 			// BBS can have custom runic name
+	}
+
+	// base (singular) full names
+	public static final String[] COIN_TYPE_STRINGS = {
+		"copper farthing",
+		"silver noble",
+		"gold crown",
+		"platinum piece",
+		"runic piece" 	// BBS can have custom runic name
+	};
+
+	// ------------------
 	// Individual Containers
 	// ------------------
 	public static class DataItem{
@@ -141,7 +161,7 @@ public class OMUD_MMUD{
 		public eEquipSlot 	equip_slot = 	eEquipSlot.NONE;
 	}
 
-	public static class Spell{
+	public static class DataSpell{
 		public int 		level = 		0;
 		public int 		mana = 			0;
 		public String 	name_short = 	"";
@@ -234,17 +254,17 @@ public class OMUD_MMUD{
 	}
 
 	public static class DataInv extends DataBlock{
-		public int wealth = 		-1; // in copper
-		public int coins_runic = 	0;
-		public int coins_plat = 	0; 
-		public int coins_gold = 	0; 
-		public int coins_silver = 	0; 
-		public int coins_copper = 	0; 
-		public int enc_cur = 		-1;
-		public int enc_max = 		-1;
-		public String enc_level = 	"";
-		public String items = 		"";
-		public String keys =  		"";
+		public int 		wealth = 		-1; // in copper
+		public int 		coins_runic = 	0;
+		public int 		coins_plat = 	0; 
+		public int 		coins_gold = 	0; 
+		public int 		coins_silver = 	0; 
+		public int 		coins_copper = 	0; 
+		public int 		enc_cur = 		-1;
+		public int 		enc_max = 		-1;
+		public String 	enc_level = 	"";
+		public String 	items = 		"";
+		public String 	keys =  		"";
 
 		public eBlockType getType(){return eBlockType.INV;}
 		public DataInv(){}
@@ -335,19 +355,19 @@ public class OMUD_MMUD{
 	}
 
 	public static class DataSpells extends DataBlock{
-		public ArrayList<Spell> spells = new ArrayList<Spell>();
+		public ArrayList<DataSpell> spells = new ArrayList<DataSpell>();
 		public eBlockType getType(){return eBlockType.SPELLS;}
 	}
 
 	public static class DataParty extends DataBlock{
 		public static class PartyMember{
-			public String name = 		"";
-			public String party_class = "";
-			public int hp_cur = 		 0;
-			public int ma_cur = 		 0;
-			public int hp_max = 		 0;
-			public int ma_max = 		 0;
-			public String rank = 		"";
+			public String 	name = 			"";
+			public String 	party_class = 	"";
+			public int 		hp_cur = 		0;
+			public int 		ma_cur = 		0;
+			public int 		hp_max = 		0;
+			public int 		ma_max = 		0;
+			public String 	rank = 			"";
 		}
 		public ArrayList<PartyMember> members = new ArrayList<PartyMember>();
 		public eBlockType getType(){return eBlockType.PARTY;}
