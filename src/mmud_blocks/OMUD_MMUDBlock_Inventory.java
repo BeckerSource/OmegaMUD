@@ -33,7 +33,7 @@ public class OMUD_MMUDBlock_Inventory extends OMUD_MMUDBlocks.Block{
 			// ------------------
 			if ((pos_right = _sbBlockData.lastIndexOf(MSTR_ENC_END, pos_right)) > -1 &&
 				(pos_left  = _sbBlockData.lastIndexOf(MSTR_ENC_MID, pos_right)) > -1){
-	        	mmc.dataInv.enc_level = _sbBlockData.substring(pos_left + MSTR_ENC_MID.length(), pos_right).trim();
+	        	mmc.dataInv.enc_level = _sbBlockData.substring(pos_left + MSTR_ENC_MID.length(), pos_right).trim().toLowerCase();
 	        	pos_right = pos_left - 1;
 
 	        	if ((pos_left = _sbBlockData.lastIndexOf(MSTR_ENC_PRE, pos_right)) > -1){
@@ -61,7 +61,7 @@ public class OMUD_MMUDBlock_Inventory extends OMUD_MMUDBlocks.Block{
 			if ((pos_right = _sbBlockData.lastIndexOf(MSTR_KEYS_END, pos_right)) > -1 &&
 				(pos_left  = _sbBlockData.lastIndexOf(MSTR_KEYS_PRE, pos_right)) > -1){
 	        	if (_sbBlockData.indexOf(MSTR_KEYS_YES, pos_left + MSTR_KEYS_PRE.length()) > -1)
-	        		 mmc.dataInv.keys = _sbBlockData.substring(pos_left + MSTR_KEYS_PRE.length() + MSTR_KEYS_YES.length(), pos_right).trim();
+	        		 mmc.dataInv.keys = _sbBlockData.substring(pos_left + MSTR_KEYS_PRE.length() + MSTR_KEYS_YES.length(), pos_right).trim().toLowerCase();
 	        	else mmc.dataInv.keys = "(no keys carried)";
 	        	pos_right = pos_left - 1;
 	        }
@@ -69,7 +69,7 @@ public class OMUD_MMUDBlock_Inventory extends OMUD_MMUDBlocks.Block{
 			// ------------------
 			// Items (+ Coins)
 			// ------------------
-			mmc.dataInv.items = _sbBlockData.substring(0, pos_right + 1).trim();
+			mmc.dataInv.items = _sbBlockData.substring(0, pos_right + 1).trim().toLowerCase();
 	        if (mmc.dataInv.items.equals(MSTR_NO_ITEMS))
 	        	mmc.dataInv.items = "(no items carried)";
 		}
