@@ -81,7 +81,6 @@ public class OMUD_MMUDBlock_Inventory extends OMUD_MMUDBlocks.Block{
 	        	ArrayList<String> arrlItems = new ArrayList<String>();
 	        	splitCommaListToArray(strItems, arrlItems);
 	        	for (int i = 0; i < arrlItems.size(); ++i){
-	        		mmc.dataInv.items.add(new OMUD_MMUD.DataItem(arrlItems.get(i)));
 	        		 	 if (arrlItems.get(i).indexOf(OMUD_MMUD.COIN_TYPE_STRINGS[OMUD_MMUD.eCoinType.RUNIC.ordinal()], 0) 		> -1)
 			        	mmc.dataInv.coins_runic = getItemCount(arrlItems.get(i));
 	        		else if (arrlItems.get(i).indexOf(OMUD_MMUD.COIN_TYPE_STRINGS[OMUD_MMUD.eCoinType.PLATINUM.ordinal()], 0) 	> -1)
@@ -92,6 +91,20 @@ public class OMUD_MMUDBlock_Inventory extends OMUD_MMUDBlocks.Block{
 			        	mmc.dataInv.coins_silver = getItemCount(arrlItems.get(i));
 	        		else if (arrlItems.get(i).indexOf(OMUD_MMUD.COIN_TYPE_STRINGS[OMUD_MMUD.eCoinType.COPPER.ordinal()], 0) 	> -1)
 			        	mmc.dataInv.coins_copper = getItemCount(arrlItems.get(i));
+			        // check for ending r-paren char to find worn items...
+			        else if (arrlItems.get(i).charAt(arrlItems.get(i).length() - 1) == ')'){
+			        	int pos_slot_start = -1;
+			        	for (int j = OMUD_MMUD.eEquipSlot.WEAPON.ordinal(); j <= OMUD_MMUD.eEquipSlot.NOWHERE.ordinal() && pos_slot_start == -1; ++j)
+			        		if ((pos_slot_start = arrlItems.get(i).lastIndexOf(OMUD_MMUD.EQUIP_SLOT_STRINGS[j], arrlItems.get(i).length() - 1)) > -1){
+				        		mmc.dataInv.items_worn.add(new OMUD_MMUD.DataItem(arrlItems.get(i)));
+
+				        		int pos_end = mmc.dataInv.items_worn.size() - 1;
+			        			mmc.dataInv.items_worn.get(pos_end).equip_slot = OMUD_MMUD.eEquipSlot.values()[j];
+			        			mmc.dataInv.items_worn.get(pos_end).name = mmc.dataInv.items_worn.get(pos_end).name.substring(0, pos_slot_start).trim(); // remove slot string
+			        		}
+			        } else {
+		        		mmc.dataInv.items_extra.add(new OMUD_MMUD.DataItem(arrlItems.get(i)));
+			        }
 	        	}
 	        } // else mmc.dataInv.items_str = "(no items carried)";
 		}

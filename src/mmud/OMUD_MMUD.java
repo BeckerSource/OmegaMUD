@@ -91,6 +91,8 @@ public class OMUD_MMUD{
 	// ------------------
 	public static enum eEquipSlot{
 		NONE,
+		WEAPON,
+		OFFHAND,
 		HEAD,
 		TORSO,
 		ARMS,
@@ -106,31 +108,29 @@ public class OMUD_MMUD{
 		NECK,
 		FINGER,
 		WORN,
-		WEAPON,
-		OFFHAND,
 		NOWHERE
 	}
 
 	public static final String[] EQUIP_SLOT_STRINGS = {
-		"(NONE)", // not a real slot
-		"(Head)",
-		"(Torso)",
-		"(Arms)",
-		"(Wrist)",
-		"(Hands)",
-		"(Waist)",
-		"(Legs)",
-		"(Feet)",
-		"(Back)",
-		"(Face)",
-		"(Eyes)",
-		"(Ears)",
-		"(Neck)",
-		"(Finger)",
-		"(Worn)",
-		"(Weapon)",
-		"(Off-Hand)",
-		"(Nowhere)"
+		"(NONE)",	// not a real slot
+		"(weapon)",
+		"(off-hand)",
+		"(head)",
+		"(torso)",
+		"(arms)",
+		"(wrist)",
+		"(hands)",
+		"(waist)",
+		"(legs)",
+		"(feet)",
+		"(back)",
+		"(face)",
+		"(eyes)",
+		"(ears)",
+		"(neck)",
+		"(finger)",
+		"(worn)",
+		"(nowhere)"
 	};	
 
 	// ------------------
@@ -270,8 +270,9 @@ public class OMUD_MMUD{
 		public int 		enc_cur = 		-1;
 		public int 		enc_max = 		-1;
 		public String 	enc_level = 	"";
-		public ArrayList<DataItem> items = 	new ArrayList<DataItem>();
-		public ArrayList<DataItem> keys = 	new ArrayList<DataItem>();
+		public ArrayList<DataItem> items_worn  = 	new ArrayList<DataItem>();
+		public ArrayList<DataItem> items_extra = 	new ArrayList<DataItem>();
+		public ArrayList<DataItem> keys = 			new ArrayList<DataItem>();
 
 		public eBlockType getType(){return eBlockType.INV;}
 		public DataInv(){}
@@ -285,8 +286,10 @@ public class OMUD_MMUD{
 			enc_cur = 		di.enc_cur;
 			enc_max =		di.enc_max;
 			enc_level = 	new String(di.enc_level);
-			for (int i = 0; i < di.items.size(); ++i)
-				items.add(new DataItem(di.items.get(i)));
+			for (int i = 0; i < di.items_worn.size(); ++i)
+				items_worn.add(new DataItem(di.items_worn.get(i)));
+			for (int i = 0; i < di.items_extra.size(); ++i)
+				items_extra.add(new DataItem(di.items_extra.get(i)));
 			for (int i = 0; i < di.keys.size(); ++i)
 				keys.add(new DataItem(di.keys.get(i)));
 		}
@@ -318,6 +321,12 @@ public class OMUD_MMUD{
 		public int 		track = 		-1;
 		public int 		ma = 			-1;
 		public int 		mr = 			-1;
+		public boolean 	str_mod = 		false;
+		public boolean 	intel_mod = 	false;
+		public boolean 	wil_mod = 		false;
+		public boolean 	agi_mod = 		false;
+		public boolean 	hea_mod = 		false;
+		public boolean 	cha_mod = 		false;
 		public eBlockType getType(){return eBlockType.STATS;}
 		public DataStats(){}
 		public DataStats(DataStats stats){
@@ -345,6 +354,12 @@ public class OMUD_MMUD{
 			track = 		stats.track;
 			ma = 			stats.ma;
 			mr = 			stats.mr;
+			str_mod = 		stats.str_mod;
+			intel_mod = 	stats.intel_mod;
+			wil_mod = 		stats.wil_mod;
+			agi_mod = 		stats.agi_mod;
+			hea_mod = 		stats.hea_mod;
+			cha_mod = 		stats.cha_mod;
 		}
 	}
 
@@ -394,13 +409,13 @@ public class OMUD_MMUD{
 				price = new String(item.price);
 			}
 		}
-		public ArrayList<ShopItem> items = new ArrayList<ShopItem>();
+		public ArrayList<ShopItem> shop_items = new ArrayList<ShopItem>();
 		public eBlockType getType(){return eBlockType.SHOP;}
 		public DataShop(){}
 		public DataShop(DataShop shop){
-			items.clear();
-			for (int i = 0; i < shop.items.size(); ++i)
-				items.add(new ShopItem(shop.items.get(i)));
+			shop_items.clear();
+			for (int i = 0; i < shop.shop_items.size(); ++i)
+				shop_items.add(new ShopItem(shop.shop_items.get(i)));
 		}
 	}
 }

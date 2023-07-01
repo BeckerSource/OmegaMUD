@@ -60,8 +60,8 @@ public class OMUD_GUIFrameView extends JFrame{
 
         // panel: BBS + telnet...
         _pnlBBS =         	new JPanel();
-        _lblBBSNetAddr =    new OMUD_GUITextField("bbs.bearfather.net", true);
-        _lblBBSNetPort =    new OMUD_GUITextField("23", true);
+        _lblBBSNetAddr =    new OMUD_GUITextField("bbs.bearfather.net", true, false);
+        _lblBBSNetPort =    new OMUD_GUITextField("23", true, false);
         _lblBBSLoc =        new OMUD_GUITextField();
         _btnBBSConnect = 	new JButton("Connect");
         _btnBBSConnect.addActionListener(new AL_BtnConnect());

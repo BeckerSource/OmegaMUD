@@ -13,7 +13,7 @@ public class OMUD_MMUDBlock_Shop extends OMUD_MMUDBlocks.Block{
 		int pos_data_found_start = -1;
 
 		if ((pos_data_found_start = findData(sbTelnetData, pos_offset, true, true, MSTR_SHOP, "")) > -1){
-			mmc.dataShop.items.clear();
+			mmc.dataShop.shop_items.clear();
 
 			int pos_left = 0;
 			int pos_right = 0;
@@ -37,7 +37,7 @@ public class OMUD_MMUDBlock_Shop extends OMUD_MMUDBlocks.Block{
 						item.price = token.substring(pos_right, token.length()).trim();
 					}
 		        }
-				mmc.dataShop.items.add(item);
+				mmc.dataShop.shop_items.add(item);
 	        }						
 		}
 

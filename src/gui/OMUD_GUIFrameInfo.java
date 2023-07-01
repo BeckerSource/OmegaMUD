@@ -37,12 +37,12 @@ public class OMUD_GUIFrameInfo extends JFrame{
         _sdf = new SimpleDateFormat("yyyy-MM-dd_kk-mm-ss");
 
         // inventory stuff...
-        _lblInvRunic = 	new OMUD_GUITextField("Runic: ?");
-        _lblInvPlat = 	new OMUD_GUITextField("Plat: ?");
-        _lblInvGold = 	new OMUD_GUITextField("Gold: ?");
-        _lblInvSilver = new OMUD_GUITextField("Silver: ?");
-        _lblInvCopper = new OMUD_GUITextField("Copper: ?");
-        _lblInvWealth = new OMUD_GUITextField("Wealth: ?");
+        _lblInvRunic = 	new OMUD_GUITextField("Runic: ?",  false, true);
+        _lblInvPlat = 	new OMUD_GUITextField("Plat: ?",   false, true);
+        _lblInvGold = 	new OMUD_GUITextField("Gold: ?",   false, true);
+        _lblInvSilver = new OMUD_GUITextField("Silver: ?", false, true);
+        _lblInvCopper = new OMUD_GUITextField("Copper: ?", false, true);
+        _lblInvWealth = new OMUD_GUITextField("Wealth: ?", false, true);
 
         // tabs...
         _pnlInv =  		new JPanel();
@@ -102,20 +102,20 @@ public class OMUD_GUIFrameInfo extends JFrame{
         _pnlInvMoney.add(_lblInvCopper);
         _pnlInvMoney.add(_lblInvWealth);
 
-        // text area+inv panel...
+        // text area + panel...
         gblc.weightx =      1.0;
-        gblc.weighty =      1.0;
+        gblc.weighty =      0.0;
         gblc.gridwidth =    GridBagConstraints.REMAINDER;
         gblc.gridheight =   1;
         gblc.fill =         GridBagConstraints.BOTH;
-        gbl.setConstraints(_txtInv, gblc);        
-        gblc.weighty =      0.0;
+        gbl.setConstraints(_pnlInvMoney, gblc);
+        gblc.weighty =      1.0;
         gblc.gridheight =   GridBagConstraints.REMAINDER;
-        gblc.fill =         GridBagConstraints.VERTICAL;
+        gbl.setConstraints(_txtInv, gblc);
         gbl.setConstraints(_pnlInv, gblc);
         _pnlInv.setLayout(gbl);
-        _pnlInv.add(_txtInv);
         _pnlInv.add(_pnlInvMoney);
+        _pnlInv.add(_txtInv);
     }
 
     // --------------
@@ -186,23 +186,32 @@ public class OMUD_GUIFrameInfo extends JFrame{
         _tabsInfo.setSelectedIndex(5);
 
         StringBuilder sb = new StringBuilder();
-        sb.append("[InvEnc]: ("     + dataInv.enc_level + ") " + dataInv.enc_cur + "/" + dataInv.enc_max + String.format(" [%.0f", ((float) dataInv.enc_cur / dataInv.enc_max) * 100) + "%]\n\n");
-        sb.append("[InvItems]\n");
-        for (int i = 0; i < dataInv.items.size(); ++i)
-        	sb.append(dataInv.items.get(i).name + "\n");
+        sb.append("\n[InvEnc]: (" + dataInv.enc_level + ") " + dataInv.enc_cur + "/" + dataInv.enc_max + String.format(" [%.0f", ((float) dataInv.enc_cur / dataInv.enc_max) * 100) + "%]\n\n");
+        
+        sb.append("[InvItemsWorn]\n");
+        for (int i = 0; i < dataInv.items_worn.size(); ++i){
+        	sb.append(dataInv.items_worn.get(i).name + " ");
+        	sb.append(OMUD_MMUD.EQUIP_SLOT_STRINGS[dataInv.items_worn.get(i).equip_slot.ordinal()].toUpperCase() + "\n");
+        }
+        
+        sb.append("\n[InvItemsExtra]\n");
+        for (int i = 0; i < dataInv.items_extra.size(); ++i)
+        	sb.append(dataInv.items_extra.get(i).name + "\n");
+        
         sb.append("\n[InvKeys]\n");
         for (int i = 0; i < dataInv.keys.size(); ++i)
         	sb.append(dataInv.keys.get(i).name + "\n");
+        
         _txtInv.setText(sb.toString());
         _txtInv.setCaretPosition(0);
 
         // set coins labels...
-        _lblInvRunic.setText("Runic: " + 	dataInv.coins_runic);
-        _lblInvPlat.setText("Plat: " + 		dataInv.coins_plat);
-        _lblInvGold.setText("Gold: " + 		dataInv.coins_gold);
-        _lblInvSilver.setText("Silver: " + 	dataInv.coins_silver);
-        _lblInvCopper.setText("Copper: " + 	dataInv.coins_copper);
-        _lblInvWealth.setText("Wealth: " + 	dataInv.wealth);
+        _lblInvRunic.setText("Runic: " 		+ 	dataInv.coins_runic);
+        _lblInvPlat.setText("Plat: " 		+ 	dataInv.coins_plat);
+        _lblInvGold.setText("Gold: " 		+ 	dataInv.coins_gold);
+        _lblInvSilver.setText("Silver: " 	+ 	dataInv.coins_silver);
+        _lblInvCopper.setText("Copper: " 	+ 	dataInv.coins_copper);
+        _lblInvWealth.setText("Wealth: " 	+ 	dataInv.wealth);
     }
 
     public void processMUDStats(final OMUD_MMUD.DataStats dataStats){
@@ -216,12 +225,12 @@ public class OMUD_GUIFrameInfo extends JFrame{
         sb.append("[Level]: "       + dataStats.level           + "\n");
         sb.append("[Lives]: "       + dataStats.lives           + "\n");
         sb.append("[CP]: "          + dataStats.cp              + "\n");
-        sb.append("[Str]: "         + dataStats.str             + "\n");
-        sb.append("[Int]: "         + dataStats.intel           + "\n");
-        sb.append("[Wil]: "         + dataStats.wil             + "\n");
-        sb.append("[Agi]: "         + dataStats.agi             + "\n");
-        sb.append("[Hea]: "         + dataStats.hea             + "\n");
-        sb.append("[Cha]: "         + dataStats.cha             + "\n");
+        sb.append("[Str]: "         + dataStats.str             + (dataStats.str_mod 	? " *" : "") + "\n");
+        sb.append("[Int]: "         + dataStats.intel           + (dataStats.intel_mod 	? " *" : "") + "\n");
+        sb.append("[Wil]: "         + dataStats.wil             + (dataStats.wil_mod 	? " *" : "") + "\n");
+        sb.append("[Agi]: "         + dataStats.agi             + (dataStats.agi_mod 	? " *" : "") + "\n");
+        sb.append("[Hea]: "         + dataStats.hea             + (dataStats.hea_mod 	? " *" : "") + "\n");
+        sb.append("[Cha]: "         + dataStats.cha             + (dataStats.cha_mod 	? " *" : "") + "\n");
         sb.append("[AC]: "          + dataStats.ac_ac + "/" + dataStats.ac_accy  + "\n");
         sb.append("[SC]: "          + dataStats.sc              + "\n");
         sb.append("[Perc]: "        + dataStats.perc            + "\n");
@@ -246,14 +255,14 @@ public class OMUD_GUIFrameInfo extends JFrame{
         sb.append("--------------------\n");
         sb.append("[Qty] Name: Price\n");
         sb.append("--------------------\n");
-        for (int i = 0; i < dataShop.items.size(); ++i){
+        for (int i = 0; i < dataShop.shop_items.size(); ++i){
             
             String strFill = "";
-            int fill_len = 30 - dataShop.items.get(i).name.length();
+            int fill_len = 30 - dataShop.shop_items.get(i).name.length();
             if (fill_len > 0)
                 strFill = OMUD.getFillString(" ", fill_len);
             
-            sb.append("[" + dataShop.items.get(i).qty + "]:\t" + dataShop.items.get(i).name + strFill + dataShop.items.get(i).price + "\n");
+            sb.append("[" + dataShop.shop_items.get(i).qty + "]:\t" + dataShop.shop_items.get(i).name + strFill + dataShop.shop_items.get(i).price + "\n");
         }
 
         _txtShop.setText(sb.toString());

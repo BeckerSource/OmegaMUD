@@ -127,11 +127,10 @@ public class OMUD_MMUDBlock_Stats extends OMUD_MMUDBlocks.Block{
 			        	pos_right = pos_left - 1;
 
 						if ((pos_left = lines[row_num].lastIndexOf(MSTR_HITS, pos_right)) > -1){
-							String strHits = lines[row_num].substring(pos_left + MSTR_HITS.length(), pos_right + 1).trim();
 							// check for modifier...
-							if ((mmc.dataStatline.hp_mod = strHits.charAt(0) == '*'))
-								strHits = strHits.substring(1, strHits.length()).trim();
-					        tokens = strHits.split("/");
+							StringBuilder sbVal = new StringBuilder();
+							mmc.dataStatline.hp_mod = parseModdedStat(lines[row_num].substring(pos_left + MSTR_HITS.length(), pos_right + 1).trim(), sbVal);
+					        tokens = sbVal.toString().split("/");
 					        if (tokens.length == 2){
 								mmc.dataStatline.hp_cur = Integer.parseInt(tokens[0]);
 								mmc.dataStatline.hp_max = Integer.parseInt(tokens[1]);
@@ -158,11 +157,11 @@ public class OMUD_MMUDBlock_Stats extends OMUD_MMUDBlocks.Block{
 						(pos_left = lines[row_num].lastIndexOf(MSTR_KAI,  pos_right)) > -1){
 
 			        	int pos_colon = lines[row_num].indexOf(":", pos_left);
-						String strMana = lines[row_num].substring(pos_colon + 1, pos_right + 1).trim();
+
 						// check for modifier...
-						if ((mmc.dataStatline.ma_mod = strMana.charAt(0) == '*'))
-							strMana = strMana.substring(1, strMana.length()).trim();
-				        String[] tokens = strMana.split("/");
+						StringBuilder sbVal = new StringBuilder();
+						mmc.dataStatline.ma_mod = parseModdedStat(lines[row_num].substring(pos_colon + 1, pos_right + 1).trim(), sbVal);
+				        String[] tokens = sbVal.toString().split("/");
 				        if (tokens.length == 2){
 							mmc.dataStatline.ma_cur = Integer.parseInt(tokens[0]);
 							mmc.dataStatline.ma_max = Integer.parseInt(tokens[1]);
@@ -189,11 +188,14 @@ public class OMUD_MMUDBlock_Stats extends OMUD_MMUDBlocks.Block{
 		        	pos_right = pos_left - 1;
 
 					if ((pos_left = lines[row_num].lastIndexOf(MSTR_AGI, pos_right)) > -1){
-			        	mmc.dataStats.agi = Integer.parseInt(lines[row_num].substring(pos_left + MSTR_AGI.length(), pos_right + 1).trim());
+						StringBuilder sbVal = new StringBuilder();
+						mmc.dataStats.agi_mod = parseModdedStat(lines[row_num].substring(pos_left + MSTR_AGI.length(), pos_right + 1).trim(), sbVal);
+			        	mmc.dataStats.agi = Integer.parseInt(sbVal.toString());
 			        	pos_right = pos_left - 1;
 
 						if ((pos_left = lines[row_num].lastIndexOf(MSTR_STR, pos_right)) > -1){
-				        	mmc.dataStats.str = Integer.parseInt(lines[row_num].substring(pos_left + MSTR_STR.length(), pos_right + 1).trim());
+							mmc.dataStats.str_mod = parseModdedStat(lines[row_num].substring(pos_left + MSTR_STR.length(), pos_right + 1).trim(), sbVal);
+				        	mmc.dataStats.str = Integer.parseInt(sbVal.toString());
 				        	pos_right = pos_left - 1;
 						}
 					}
@@ -208,11 +210,14 @@ public class OMUD_MMUDBlock_Stats extends OMUD_MMUDBlocks.Block{
 		        	pos_right = pos_left - 1;
 
 					if ((pos_left = lines[row_num].lastIndexOf(MSTR_HEA, pos_right)) > -1){
-			        	mmc.dataStats.hea = Integer.parseInt(lines[row_num].substring(pos_left + MSTR_HEA.length(), pos_right + 1).trim());
+						StringBuilder sbVal = new StringBuilder();
+						mmc.dataStats.hea_mod = parseModdedStat(lines[row_num].substring(pos_left + MSTR_HEA.length(), pos_right + 1).trim(), sbVal);
+			        	mmc.dataStats.hea = Integer.parseInt(sbVal.toString());
 			        	pos_right = pos_left - 1;
 
 						if ((pos_left = lines[row_num].lastIndexOf(MSTR_INTEL, pos_right)) > -1){
-				        	mmc.dataStats.intel = Integer.parseInt(lines[row_num].substring(pos_left + MSTR_INTEL.length(), pos_right + 1).trim());
+							mmc.dataStats.intel_mod = parseModdedStat(lines[row_num].substring(pos_left + MSTR_INTEL.length(), pos_right + 1).trim(), sbVal);
+				        	mmc.dataStats.intel = Integer.parseInt(sbVal.toString());
 				        	pos_right = pos_left - 1;
 						}
 					}
@@ -227,11 +232,14 @@ public class OMUD_MMUDBlock_Stats extends OMUD_MMUDBlocks.Block{
 		        	pos_right = pos_left - 1;
 
 					if ((pos_left = lines[row_num].lastIndexOf(MSTR_CHA, pos_right)) > -1){
-			        	mmc.dataStats.cha = Integer.parseInt(lines[row_num].substring(pos_left + MSTR_CHA.length(), pos_right + 1).trim());
+						StringBuilder sbVal = new StringBuilder();
+						mmc.dataStats.cha_mod = parseModdedStat(lines[row_num].substring(pos_left + MSTR_CHA.length(), pos_right + 1).trim(), sbVal);
+			        	mmc.dataStats.cha = Integer.parseInt(sbVal.toString());
 			        	pos_right = pos_left - 1;
 
 						if ((pos_left = lines[row_num].lastIndexOf(MSTR_WIL, pos_right)) > -1){
-				        	mmc.dataStats.wil = Integer.parseInt(lines[row_num].substring(pos_left + MSTR_WIL.length(), pos_right + 1).trim());
+							mmc.dataStats.wil_mod = parseModdedStat(lines[row_num].substring(pos_left + MSTR_WIL.length(), pos_right + 1).trim(), sbVal);
+				        	mmc.dataStats.wil = Integer.parseInt(sbVal.toString());
 				        	pos_right = pos_left - 1;
 						}
 					}
@@ -245,5 +253,14 @@ public class OMUD_MMUDBlock_Stats extends OMUD_MMUDBlocks.Block{
 		}
 
 		return pos_data_found_start;
+	}
+
+	private boolean parseModdedStat(String strVal, StringBuilder sbNewVal){
+		boolean is_modded = strVal.charAt(0) == '*';
+		if (is_modded)
+			strVal = strVal.substring(1, strVal.length()).trim();
+		sbNewVal.setLength(0);
+		sbNewVal.append(strVal);
+		return is_modded;
 	}
 }
