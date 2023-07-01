@@ -17,7 +17,7 @@ public class OMUD_GUICaret extends DefaultCaret {
     private boolean _blinked =      false;
     private static final int BLINK_MS = 500;
 
-	public OMUD_GUICaret(Color clr){
+    public OMUD_GUICaret(Color clr){
         _clrFill = clr;
         _clrBorder = new Color(255 - _clrFill.getRed(), 255 - _clrFill.getGreen(), 255 - _clrFill.getBlue()); // inverted
 
@@ -30,22 +30,22 @@ public class OMUD_GUICaret extends DefaultCaret {
         _tmrBlink.setRepeats(true);
         _tmrBlink.start();
 
-		setUpdatePolicy(DefaultCaret.NEVER_UPDATE); // doesn't seem to do jack shit
-	}
+        setUpdatePolicy(DefaultCaret.NEVER_UPDATE); // doesn't seem to do jack shit
+    }
 
-	protected synchronized void damage(Rectangle r) {
-	    if (r == null)
-	    	return;
+    protected synchronized void damage(Rectangle r) {
+        if (r == null)
+            return;
 
-        FontMetrics fm = 	getComponent().getFontMetrics(getComponent().getFont());
-        int char_width = 	fm.stringWidth(" ");
-        int char_height = 	fm.getHeight();
+        FontMetrics fm =    getComponent().getFontMetrics(getComponent().getFont());
+        int char_width =    fm.stringWidth(" ");
+        int char_height =   fm.getHeight();
         x = r.x;
         y = r.y;
-        width = 	char_width;
-        height = 	char_height;
+        width =     char_width;
+        height =    char_height;
         repaint(); // calls getComponent().repaint(x, y, width, height)
-	}
+    }
 
     public void paint(Graphics g) {
         if (getComponent() == null)
@@ -53,10 +53,10 @@ public class OMUD_GUICaret extends DefaultCaret {
 
         Rectangle r = null;
         try {
-        	if ((r = getComponent().modelToView(getDot())) == null)
-        		return;
+            if ((r = getComponent().modelToView(getDot())) == null)
+                return;
         } catch (BadLocationException e) {
-        	return;
+            return;
         }
 
         if ((x != r.x) || (y != r.y)) {

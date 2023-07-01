@@ -11,19 +11,19 @@ interface OMUD_ITextInputEvents{
 }
 
 public class OMUD_GUITextInput extends JTextField{
-	private OMUD_ITextInputEvents _tfe = null;
-	private boolean _single_mode = false;
+    private OMUD_ITextInputEvents _tfe = null;
+    private boolean _single_mode = false;
 
-	public OMUD_GUITextInput(OMUD_ITextInputEvents tfe){
-		_tfe = tfe;
+    public OMUD_GUITextInput(OMUD_ITextInputEvents tfe){
+        _tfe = tfe;
 
         setBackground(OMUD.GUI_BG);
         setForeground(OMUD.TERMINAL_LOCAL_INFO_FG);
         setCaretColor(OMUD.TERMINAL_LOCAL_INFO_FG);
 
-		((AbstractDocument) getDocument()).setDocumentFilter(new SingleModeDocFilter());
+        ((AbstractDocument) getDocument()).setDocumentFilter(new SingleModeDocFilter());
         addKeyListener(new KL_Special());
-	}
+    }
 
     private class KL_Special implements KeyListener{
         public void keyReleased(KeyEvent e){}
@@ -79,7 +79,7 @@ public class OMUD_GUITextInput extends JTextField{
         }
     }
 
-	// SingleModeDocFilter: for grabbing single char input (doesn't detect non-printable chars like enter, up/down, etc)
+    // SingleModeDocFilter: for grabbing single char input (doesn't detect non-printable chars like enter, up/down, etc)
     private class SingleModeDocFilter extends DocumentFilter {
 
         // replace(): replace or append...
@@ -96,7 +96,7 @@ public class OMUD_GUITextInput extends JTextField{
         //}
     }
 
-	public void setSingleMode(boolean v){
+    public void setSingleMode(boolean v){
         // if single mode, clear out the text...
         if ((_single_mode = v))
             setText("");

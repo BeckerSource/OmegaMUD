@@ -5,11 +5,11 @@ import javax.swing.JScrollPane;
 
 public class OMUD_GUIFrameChars extends JFrame{
     private JTable _tblFakeChars = null;
-    private static final int 		FRAME_MIN_WIDTH  = 	450;
-    private static final int 		FRAME_MIN_HEIGHT = 	150;
-    private static final String[] 	TABLE_COL_STRINGS = {"Realm", "Name"};
+    private static final int        FRAME_MIN_WIDTH  =  450;
+    private static final int        FRAME_MIN_HEIGHT =  150;
+    private static final String[]   TABLE_COL_STRINGS = {"Realm", "Name"};
 
-	OMUD_GUIFrameChars(){
+    OMUD_GUIFrameChars(){
         setMinimumSize(new Dimension(FRAME_MIN_WIDTH, FRAME_MIN_HEIGHT));
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setTitle("OmegaMUD v0 (Char Status/Editor)");
@@ -23,5 +23,5 @@ public class OMUD_GUIFrameChars extends JFrame{
         _tblFakeChars = new JTable(objFakeChars, TABLE_COL_STRINGS);
         add(new JScrollPane(_tblFakeChars)); // table must go inside a scroll pane to show column headers properly
         pack();
-	}
+    }
 }

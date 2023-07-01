@@ -1,7 +1,7 @@
 import javax.swing.JTextArea;
 
 public class OMUD_GUITextArea extends JTextArea{
-	OMUD_GUITextArea(){		
+    OMUD_GUITextArea(){     
         setEditable(false);
         setBackground(OMUD.GUI_BG);
         setForeground(OMUD.TERMINAL_LOCAL_INFO_FG);
@@ -9,5 +9,5 @@ public class OMUD_GUITextArea extends JTextArea{
         getCaret().setVisible(true);
         setFont(OMUD.getTerminalFont());
         setLineWrap(true);        
-	}
+    }
 }
