@@ -117,18 +117,6 @@ public class OMUD_GUIFrameView extends JFrame{
         layoutCharView1Char(gbl,        gblc);
         layoutCharView1Input(gbl,       gblc);
         pack();
-
-		// --------------
-		// Optional Auto-Stuff
-		// --------------
-        // auto single-mode...
-		//SwingUtilities.invokeLater(new Runnable(){public void run(){
-		//	_tglSingleMode.setSelected(true);
-        //}});
-        // auto connect...
-		//SwingUtilities.invokeLater(new Runnable(){public void run(){
-		//	_omt.connect(_txtBBSNetAdr.getText(), _txtBBSNetPort.getText());
-        //}});
 	}
 
     private void layoutCharView1Terminal(GridBagLayout gbl, GridBagConstraints gblc){
@@ -249,6 +237,14 @@ public class OMUD_GUIFrameView extends JFrame{
     public void finalizeGUI(){
     	_term.finalizeGUI();
         _txtBBSInput.requestFocus();
+
+		// --------------
+		// Optional Auto-Stuff
+		// --------------
+        // auto single-mode...
+		// _tglSingleMode.setSelected(true);
+        // auto connect...
+		// _omt.connect(_txtBBSNetAdr.getText(), _txtBBSNetPort.getText());
     }
 
     private class AL_BtnConnect implements ActionListener {
