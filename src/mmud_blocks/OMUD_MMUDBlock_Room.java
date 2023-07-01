@@ -21,7 +21,7 @@ public class OMUD_MMUDBlock_Room extends OMUD_MMUDBlocks.Block{
 		_arrlCmdText.add(new CmdText("search", 	3)); // only "sea" is required
 	}
 
-	public int findBlockData(OMUD_IMUDEvents ommme, OMUD_MMUDChar mmc, StringBuilder sbTelnetData, int pos_offset){
+	public int findBlockData(OMUD_IMUDEvents omme, OMUD_MMUDChar mmc, StringBuilder sbTelnetData, int pos_offset){
 		int pos_data_found_start = -1;
 
 		if ((pos_data_found_start = findData(sbTelnetData, pos_offset, true, true, MSTR_ROOM_NAME, "")) > -1){
@@ -95,7 +95,7 @@ public class OMUD_MMUDBlock_Room extends OMUD_MMUDBlocks.Block{
 			if (mmc.dataRoom.name.length() == 0){
 				StringBuilder sbWelcome = new StringBuilder(sbTelnetData.substring(0, pos_data_found_start));
 				cleanData(sbWelcome, false, true);
-				ommme.notifyMUDWelcome(sbWelcome.toString().trim());
+				omme.notifyMUDWelcome(sbWelcome.toString().trim());
 				sbTelnetData.delete(0, pos_data_found_start);
 				pos_data_found_start = 0;
 			// PREFIX: if room name is shown after a move command, it will have a white/black reset prefix...
@@ -121,7 +121,7 @@ public class OMUD_MMUDBlock_Room extends OMUD_MMUDBlocks.Block{
 		// Search: No Items
 		// ------------------
 		} else if ((pos_data_found_start = findData(sbTelnetData, pos_offset, true, false, MSTR_SEARCH_NONE, "")) > -1){
-			ommme.notifyMUDOther("[ROOM_SEARCH_NONE]\n");
+			omme.notifyMUDOther("[ROOM_SEARCH_NONE]\n");
 		}			
 
 		return pos_data_found_start;

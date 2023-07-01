@@ -45,18 +45,16 @@ public class OMUD_GUITerminal extends JTextPane {
         _tmrBlink.start();
     }
 
-    // updateTerminalSize(): get accurate terminal viewing area size based on font and number of rows/cols...
-    public void finalizeGUI(){
-        int char_width =    getGraphics().getFontMetrics(OMUD.getTerminalFont()).stringWidth(" ");
-        int char_height =   getGraphics().getFontMetrics(OMUD.getTerminalFont()).getHeight();
-        _scroll.getVerticalScrollBar().setUnitIncrement(char_height);
-        //char_width * TERMINAL_COLS;
-        //char_height * TERMINAL_ROWS;        
-    }
-
     public void render(final OMUD_Buffer omb, final ArrayList<OMUD_IBufferMod> arrlBMods){
         for (int i = 0; i < arrlBMods.size(); ++i)
             arrlBMods.get(i).render(this, _docSwap, _arrlBlink);
+    }
+
+    public void finalizeGUI(){
+        // get accurate scrolling based on font...
+        int char_width =    getGraphics().getFontMetrics(OMUD.getTerminalFont()).stringWidth(" ");
+        int char_height =   getGraphics().getFontMetrics(OMUD.getTerminalFont()).getHeight();
+        _scroll.getVerticalScrollBar().setUnitIncrement(char_height);
     }
 
     // --------------

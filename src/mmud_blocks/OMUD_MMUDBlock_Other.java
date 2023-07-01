@@ -19,53 +19,53 @@ public class OMUD_MMUDBlock_Other extends OMUD_MMUDBlocks.Block{
 	public OMUD_MMUD.DataBlock.eBlockType getDataType()	{return OMUD_MMUD.DataBlock.eBlockType.NONE;}
 	public OMUD_MMUDBlock_Other(){}
 		
-	public int findBlockData(OMUD_IMUDEvents ommme, OMUD_MMUDChar mmc, StringBuilder sbTelnetData, int pos_offset){
+	public int findBlockData(OMUD_IMUDEvents omme, OMUD_MMUDChar mmc, StringBuilder sbTelnetData, int pos_offset){
 		int pos_data_found_start = -1;
 
 		// ------------------
 		// Invalid Move Dir (no exit in that dir)
 		// ------------------
 		if ((pos_data_found_start = findData(sbTelnetData, pos_offset, true, false, MSTR_MOVE_NO_EXIT_DIR, "")) > -1){
-			ommme.notifyMUDOther("[MSTR_MOVE_NO_EXIT_DIR]\n");
+			omme.notifyMUDOther("[MSTR_MOVE_NO_EXIT_DIR]\n");
 
 		// ------------------
 		// Meditate Wake
 		// ------------------
 		} else if ((pos_data_found_start = findData(sbTelnetData, pos_offset, true, false, MSTR_MEDITATE_WAKE, "")) > -1){
-			ommme.notifyMUDOther("[MSTR_MEDITATE_WAKE]\n");
+			omme.notifyMUDOther("[MSTR_MEDITATE_WAKE]\n");
 
 		// ------------------
 		// Meditate Won't Help
 		// ------------------
 		} else if ((pos_data_found_start = findData(sbTelnetData, pos_offset, true, false, MSTR_MEDITATE_WONT_HELP, "")) > -1){
-			ommme.notifyMUDOther("[MSTR_MEDITATE_WONT_HELP]\n");
+			omme.notifyMUDOther("[MSTR_MEDITATE_WONT_HELP]\n");
 
 		// ------------------
 		// Invalid Command (command has no effect)
 		// ------------------
 		} else if ((pos_data_found_start = findData(sbTelnetData, pos_offset, true, false, MSTR_CMD_NO_EFFECT, "")) > -1){
-			ommme.notifyMUDOther("[MSTR_CMD_NO_EFFECT]\n");
+			omme.notifyMUDOther("[MSTR_CMD_NO_EFFECT]\n");
 
 		// ------------------
 		// Nonstop/Quit/Continue
 		// ------------------
 		//} else if ((pos_data_found_start = findData(sbTelnetData, pos_offset, true, false, MSTR_NQC, "")) > -1){
-		//	ommme.notifyMUDOther("[MSTR_NQC]\n");
+		//	omme.notifyMUDOther("[MSTR_NQC]\n");
 
 		// ------------------
 		// Regular/Non-ANSI Strings
 		// ------------------
 		// capture the text so that it's deleted correctly from the buffer (maybe do stuff with it later?)
 		} else if ((pos_data_found_start = findData(sbTelnetData, pos_offset, true, false, MSTR_REG_RESTING, "")) > -1){
-			ommme.notifyMUDOther("[MSTR_REG_RESTING]\n");
+			omme.notifyMUDOther("[MSTR_REG_RESTING]\n");
 			// PREFIX: can have a clear white/black prefix if was already resting
 			pos_data_found_start = checkPrefix("Rest Cmd When Already Resting", sbTelnetData, pos_data_found_start, MSTR_PREFIX_RESET_WHBL);
 		} else if ((pos_data_found_start = findData(sbTelnetData, pos_offset, true, false, MSTR_REG_MEDITATING, "")) > -1){
-			ommme.notifyMUDOther("[MSTR_REG_MEDITATING]\n");
+			omme.notifyMUDOther("[MSTR_REG_MEDITATING]\n");
 			// PREFIX: can have a clear white/black prefix if was already resting
 			pos_data_found_start = checkPrefix("Med Cmd When Already Meditating", sbTelnetData, pos_data_found_start, MSTR_PREFIX_RESET_WHBL);
 		} else if ((pos_data_found_start = findData(sbTelnetData, pos_offset, true, false, MSTR_REG_SPELL_ALREADY_CAST, "")) > -1){
-			ommme.notifyMUDOther("[MSTR_REG_SPELL_ALREADY_CAST]\n");
+			omme.notifyMUDOther("[MSTR_REG_SPELL_ALREADY_CAST]\n");
 
 		// ------------------
 		// Various ANSI Color-Prefix Strings (LAST)
@@ -75,7 +75,7 @@ public class OMUD_MMUDBlock_Other extends OMUD_MMUDBlocks.Block{
 			(pos_data_found_start = findData(sbTelnetData, pos_offset, true, true, MSTR_COLOR_MAGENTA, ""))	> -1 ||
 			(pos_data_found_start = findData(sbTelnetData, pos_offset, true, true, MSTR_COLOR_CYAN, "")) 	> -1 ||
 			(pos_data_found_start = findData(sbTelnetData, pos_offset, true, true, MSTR_COLOR_WHITE, "")) 	> -1){
-			ommme.notifyMUDOther("[COLOR_TEXT]\n" + _sbBlockData.toString() + "\n");
+			//omme.notifyMUDOther("[COLOR_TEXT]\n" + _sbBlockData.toString() + "\n");
 		}
 
 		return pos_data_found_start;

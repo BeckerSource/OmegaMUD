@@ -9,7 +9,7 @@ public class OMUD_MMUDBlock_Statline extends OMUD_MMUDBlocks.Block{
 	public OMUD_MMUD.DataBlock.eBlockType getDataType()	{return OMUD_MMUD.DataBlock.eBlockType.NONE;}
 	public OMUD_MMUDBlock_Statline(){}
 
-	public int findBlockData(OMUD_IMUDEvents ommme, OMUD_MMUDChar mmc, StringBuilder sbTelnetData, int pos_offset){
+	public int findBlockData(OMUD_IMUDEvents omme, OMUD_MMUDChar mmc, StringBuilder sbTelnetData, int pos_offset){
 		int pos_data_found_start = -1;
 
 		if ((pos_data_found_start = findData(sbTelnetData, sbTelnetData.length() - 1, false, true, MSTR_STATLINE_PRE, MSTR_STATLINE_END)) > -1){
