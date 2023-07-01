@@ -34,10 +34,10 @@ public class OMUD_GUIFrameView extends JFrame{
     private JTextField 			_txtCharLastCmd =   null;
     private JButton             _btnBBSConnect = 	null;
     private JToggleButton       _tglSingleMode =    null;
-    private JPanel              _pnlV1 =            null;
-    private JPanel              _pnlV1BBS =         null;
-    private JPanel              _pnlV1Char =        null;
-    private JPanel              _pnlV1Input =       null;
+    private JPanel              _pnlView =          null;
+    private JPanel              _pnlBBS =         	null;
+    private JPanel              _pnlChar =        	null;
+    private JPanel              _pnlInput =       	null;
     private JTabbedPane         _tabsView =         null;
     private static final int TERMINAL_WIDTH  =      675;
     private static final int FRAME_MIN_WIDTH  =     690;
@@ -58,15 +58,15 @@ public class OMUD_GUIFrameView extends JFrame{
         _scroll.removeCaretListeners(_term);
 
         // terminal panel & tabs...
-        _pnlV1 =    new JPanel();
+        _pnlView =    new JPanel();
         _tabsView = new JTabbedPane();
-        _tabsView.add("Terminal View",  _pnlV1);
+        _tabsView.add("Terminal View",  _pnlView);
         _tabsView.add("Fun View 1",     null);
         _tabsView.add("Fun View 2",     null);
         add(_tabsView);
 
         // panel: BBS + telnet...
-        _pnlV1BBS =         new JPanel();
+        _pnlBBS =         new JPanel();
         _txtBBSNetAdr =     new JTextField("bbs.bearfather.net");
         _txtBBSNetPort =    new JTextField("23");
         _txtBBSLoc =        new JTextField();
@@ -81,7 +81,7 @@ public class OMUD_GUIFrameView extends JFrame{
         _txtBBSLoc.setEditable(false);
 
         // char status fields...
-        _pnlV1Char =        new JPanel();
+        _pnlChar =        new JPanel();
         _txtCharRoomID =    new JTextField("RID: ?");
         _txtCharStatline =  new JTextField("Statline: ?");
         _txtCharExp =       new JTextField("XP: ?");
@@ -101,7 +101,7 @@ public class OMUD_GUIFrameView extends JFrame{
         setBBSLocText(OMUD.BBS_LOCATION_STRINGS[OMUD.eBBSLocation.OFFLINE.ordinal()]);
 
         // input...
-        _pnlV1Input =       new JPanel();
+        _pnlInput =       new JPanel();
         _txtBBSInput =      new OMUD_GUITextInput(omtie);
         _tglSingleMode =    new JToggleButton("SingleMode");
         _tglSingleMode.addItemListener(new IL_TglSelected());
@@ -142,8 +142,8 @@ public class OMUD_GUIFrameView extends JFrame{
         gblc.gridheight =   3;
         gblc.fill =         GridBagConstraints.VERTICAL;
         gbl.setConstraints(_scroll, gblc);
-        _pnlV1.add(_scroll);
-        _pnlV1.setLayout(gbl);
+        _pnlView.add(_scroll);
+        _pnlView.setLayout(gbl);
     }
 
     private void layoutCharView1BBS(GridBagLayout gbl, GridBagConstraints gblc){
@@ -158,27 +158,27 @@ public class OMUD_GUIFrameView extends JFrame{
         gblc.gridheight =   2;
         gblc.fill =         GridBagConstraints.BOTH;
         gbl.setConstraints(_txtBBSNetAdr, gblc);
-        _pnlV1BBS.add(_txtBBSNetAdr);
+        _pnlBBS.add(_txtBBSNetAdr);
         // bbs port...
         gblc.weightx =      0.0;
         gblc.weighty =      0.0;
         gblc.fill =         GridBagConstraints.NONE;
         gbl.setConstraints(_txtBBSNetPort, gblc);
-        _pnlV1BBS.add(_txtBBSNetPort);
+        _pnlBBS.add(_txtBBSNetPort);
         // bbs loc...
         gbl.setConstraints(_txtBBSLoc, gblc);
-        _pnlV1BBS.add(_txtBBSLoc);
+        _pnlBBS.add(_txtBBSLoc);
         gblc.gridwidth =    GridBagConstraints.REMAINDER;
         gbl.setConstraints(_btnBBSConnect, gblc);
-        _pnlV1BBS.add(_btnBBSConnect);
+        _pnlBBS.add(_btnBBSConnect);
         // panel...
         gblc.weightx =      1.0;
         gblc.weighty =      0.0;
         gblc.gridwidth =    GridBagConstraints.REMAINDER;
         gblc.fill =         GridBagConstraints.BOTH;
-        gbl.setConstraints(_pnlV1BBS, gblc);
-        _pnlV1BBS.setLayout(gbl);
-        _pnlV1.add(_pnlV1BBS);
+        gbl.setConstraints(_pnlBBS, gblc);
+        _pnlBBS.setLayout(gbl);
+        _pnlView.add(_pnlBBS);
     }
 
     private void layoutCharView1Char(GridBagLayout gbl, GridBagConstraints gblc){
@@ -194,23 +194,23 @@ public class OMUD_GUIFrameView extends JFrame{
         gblc.gridheight =   1;
         gblc.fill =         GridBagConstraints.BOTH;
         gbl.setConstraints(_txtCharRoomID, gblc);
-        _pnlV1Char.add(_txtCharRoomID);
+        _pnlChar.add(_txtCharRoomID);
         // statline...
         gbl.setConstraints(_txtCharStatline, gblc);
-        _pnlV1Char.add(_txtCharStatline);
+        _pnlChar.add(_txtCharStatline);
         // exp...
         gbl.setConstraints(_txtCharExp, gblc);
-        _pnlV1Char.add(_txtCharExp);
+        _pnlChar.add(_txtCharExp);
         // last cmd...
         gblc.gridwidth =    GridBagConstraints.REMAINDER;
         gbl.setConstraints(_txtCharLastCmd, gblc);
-        _pnlV1Char.add(_txtCharLastCmd);
+        _pnlChar.add(_txtCharLastCmd);
         // panel...
         gblc.gridwidth =    GridBagConstraints.REMAINDER;
         gblc.fill =         GridBagConstraints.BOTH;
-        gbl.setConstraints(_pnlV1Char, gblc);
-        _pnlV1Char.setLayout(gbl);
-        _pnlV1.add(_pnlV1Char);
+        gbl.setConstraints(_pnlChar, gblc);
+        _pnlChar.setLayout(gbl);
+        _pnlView.add(_pnlChar);
     }
 
     private void layoutCharView1Input(GridBagLayout gbl, GridBagConstraints gblc){
@@ -223,22 +223,22 @@ public class OMUD_GUIFrameView extends JFrame{
         gblc.gridheight =   GridBagConstraints.REMAINDER;
         gblc.fill =         GridBagConstraints.BOTH;
         gbl.setConstraints(_txtBBSInput, gblc);
-        _pnlV1Input.add(_txtBBSInput);
+        _pnlInput.add(_txtBBSInput);
         // input mode button...
         gblc.weightx =      0.0;
         gblc.weighty =      0.0;
         gblc.gridwidth =    GridBagConstraints.REMAINDER;
         gblc.fill =         GridBagConstraints.NONE;
         gbl.setConstraints(_tglSingleMode, gblc);
-        _pnlV1Input.add(_tglSingleMode);
+        _pnlInput.add(_tglSingleMode);
         // panel...
         gblc.weightx =      1.0;
         gblc.weighty =      0.0;
         gblc.gridwidth =    GridBagConstraints.REMAINDER;
         gblc.fill =         GridBagConstraints.BOTH;
-        gbl.setConstraints(_pnlV1Input, gblc);
-        _pnlV1Input.setLayout(gbl);
-        _pnlV1.add(_pnlV1Input);
+        gbl.setConstraints(_pnlInput, gblc);
+        _pnlInput.setLayout(gbl);
+        _pnlView.add(_pnlInput);
     }
 
     private void setBBSLocText(String text){_txtBBSLoc.setText("BBSLoc: " + text);}

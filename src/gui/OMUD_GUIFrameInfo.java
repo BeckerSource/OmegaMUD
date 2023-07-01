@@ -12,16 +12,16 @@ import java.util.Date;
 
 public class OMUD_GUIFrameInfo extends JFrame{
     private SimpleDateFormat 	_sdf = 				null; 
-    private JTextField          _txtCharWealth =    null;
-    private JTextArea 			_txtInfoTermDbg = 	null;
-    private JTextArea           _txtInfoCmds =      null;
-    private JTextArea           _txtInfoOther =   	null;
-    private JTextArea           _txtInfoWelcome =   null;
-    private JTextArea           _txtInfoRoom =      null;
-    private JTextArea           _txtInfoInv =       null;
-    private JTextArea           _txtInfoStats =     null;
-    private JTextArea           _txtInfoShop =      null;
-    private JPanel              _pnlInfoInv =       null;
+    private JTextField          _txtInvWealth =    	null;
+    private JTextArea 			_txtFullTermDbg = 	null;
+    private JTextArea           _txtFullCmds =      null;
+    private JTextArea           _txtFullOther =   	null;
+    private JTextArea           _txtFullWelcome =   null;
+    private JTextArea           _txtFullRoom =      null;
+    private JTextArea           _txtFullInv =       null;
+    private JTextArea           _txtFullStats =     null;
+    private JTextArea           _txtFullShop =      null;
+    private JPanel              _pnlInv =       	null;
     private JTabbedPane         _tabsInfo =         null;
     private static final int FRAME_MIN_WIDTH  = 700;
     private static final int FRAME_MIN_HEIGHT = 550;
@@ -33,31 +33,31 @@ public class OMUD_GUIFrameInfo extends JFrame{
         _sdf = new SimpleDateFormat("yyyy-MM-dd_kk-mm-ss");
 
         // tabs...
-        _pnlInfoInv =       new JPanel();
-        _txtInfoTermDbg =   createOMUDTextArea();
-        _txtInfoCmds =      createOMUDTextArea();
-        _txtInfoOther =   	createOMUDTextArea();
-        _txtInfoWelcome =   createOMUDTextArea();
-        _txtInfoRoom =      createOMUDTextArea();
-        _txtInfoInv =       createOMUDTextArea();
-        _txtInfoStats =     createOMUDTextArea();
-        _txtInfoShop =      createOMUDTextArea();
+        _pnlInv =      		new JPanel();
+        _txtFullTermDbg =   createOMUDTextArea();
+        _txtFullCmds =      createOMUDTextArea();
+        _txtFullOther =   	createOMUDTextArea();
+        _txtFullWelcome =   createOMUDTextArea();
+        _txtFullRoom =      createOMUDTextArea();
+        _txtFullInv =       createOMUDTextArea();
+        _txtFullStats =     createOMUDTextArea();
+        _txtFullShop =      createOMUDTextArea();
         _tabsInfo = new JTabbedPane(JTabbedPane.TOP, JTabbedPane.WRAP_TAB_LAYOUT);
-        _tabsInfo.add("TermDbg",  _txtInfoTermDbg);
-        _tabsInfo.add("MCmds",    	new JScrollPane(_txtInfoCmds));
-        _tabsInfo.add("MOther", 	new JScrollPane(_txtInfoOther));
-        _tabsInfo.add("MWelcome", 	new JScrollPane(_txtInfoWelcome));
-        _tabsInfo.add("MRoom",    	new JScrollPane(_txtInfoRoom));
-        _tabsInfo.add("MInv",    	new JScrollPane(_pnlInfoInv));
-        _tabsInfo.add("MStats",   	new JScrollPane(_txtInfoStats));
-        _tabsInfo.add("MShop",    	new JScrollPane(_txtInfoShop));
+        _tabsInfo.add("TermDbg",  _txtFullTermDbg);
+        _tabsInfo.add("MCmds",    	new JScrollPane(_txtFullCmds));
+        _tabsInfo.add("MOther", 	new JScrollPane(_txtFullOther));
+        _tabsInfo.add("MWelcome", 	new JScrollPane(_txtFullWelcome));
+        _tabsInfo.add("MRoom",    	new JScrollPane(_txtFullRoom));
+        _tabsInfo.add("MInv",    	new JScrollPane(_pnlInv));
+        _tabsInfo.add("MStats",   	new JScrollPane(_txtFullStats));
+        _tabsInfo.add("MShop",    	new JScrollPane(_txtFullShop));
         add(_tabsInfo);
 
         // inventory stuff...
-        _txtCharWealth = new JTextField("Wealth: ?");
-        _txtCharWealth.setEditable(false);
-        _txtCharWealth.setBackground(OMUD.GUI_BG);
-        _txtCharWealth.setForeground(OMUD.TERMINAL_LOCAL_INFO_FG);
+        _txtInvWealth = new JTextField("Wealth: ?");
+        _txtInvWealth.setEditable(false);
+        _txtInvWealth.setBackground(OMUD.GUI_BG);
+        _txtInvWealth.setForeground(OMUD.TERMINAL_LOCAL_INFO_FG);
 
         // layouts...
         GridBagLayout gbl =         new GridBagLayout();
@@ -79,7 +79,7 @@ public class OMUD_GUIFrameInfo extends JFrame{
     }
 
     private void layoutCharInfo(GridBagLayout gbl, GridBagConstraints gblc){
-        _txtCharWealth.setPreferredSize(new Dimension(0, 25));
+        _txtInvWealth.setPreferredSize(new Dimension(0, 25));
 
         // text area...
         gblc.weightx =      1.0;
@@ -87,17 +87,17 @@ public class OMUD_GUIFrameInfo extends JFrame{
         gblc.gridwidth =    GridBagConstraints.REMAINDER;
         gblc.gridheight =   1;
         gblc.fill =         GridBagConstraints.BOTH;
-        gbl.setConstraints(_txtInfoInv, gblc);
-        _pnlInfoInv.add(_txtInfoInv);
-        _pnlInfoInv.setLayout(gbl);
+        gbl.setConstraints(_txtFullInv, gblc);
+        _pnlInv.add(_txtFullInv);
+        _pnlInv.setLayout(gbl);
         // wealth...
         gblc.weightx =      1.0;
         gblc.weighty =      0.0;
         gblc.gridwidth =    GridBagConstraints.REMAINDER;
         gblc.gridheight =   GridBagConstraints.REMAINDER;
         gblc.fill =         GridBagConstraints.BOTH;
-        gbl.setConstraints(_txtCharWealth, gblc);
-        _pnlInfoInv.add(_txtCharWealth);
+        gbl.setConstraints(_txtInvWealth, gblc);
+        _pnlInv.add(_txtInvWealth);
     }
 
     // --------------
@@ -128,8 +128,8 @@ public class OMUD_GUIFrameInfo extends JFrame{
             sbTermDebug.append("---------------------------------\n");
             sbTermDebug.append("BLC/BTL/BSZ: " + omb.getLineCount() + ", " + omb.getTopLeftPos() + ", " + omb.getText().length() + "\n");
             sbTermDebug.append("ROW/COL: " + (omb.getRowNum() + 1) + ", " + (omb.getColNum() + 1) + "\n");
-            _txtInfoTermDbg.setText(sbTermDebug.toString());
-            _txtInfoTermDbg.setCaretPosition(caret_pos);
+            _txtFullTermDbg.setText(sbTermDebug.toString());
+            _txtFullTermDbg.setCaretPosition(caret_pos);
         }
 	}
 
@@ -137,16 +137,16 @@ public class OMUD_GUIFrameInfo extends JFrame{
     // MUD Events
     // --------------
     public void processMUDUserCmd(final String strText){
-        _txtInfoCmds.setText(_txtInfoCmds.getText() + _sdf.format(new Date()) + ": " + strText + "\n");
+        _txtFullCmds.setText(_txtFullCmds.getText() + _sdf.format(new Date()) + ": " + strText + "\n");
     }
 
     public void processMUDOther(final String strText){
-        _txtInfoOther.setText(_txtInfoOther.getText() + _sdf.format(new Date()) + ": " + strText + "\n");
-        _txtInfoOther.setCaretPosition(_txtInfoOther.getText().length());
+        _txtFullOther.setText(_txtFullOther.getText() + _sdf.format(new Date()) + ": " + strText + "\n");
+        _txtFullOther.setCaretPosition(_txtFullOther.getText().length());
     }
 
     public void processMUDWelcome(final String strText){
-        _txtInfoWelcome.setText(strText);
+        _txtFullWelcome.setText(strText);
     }
 
     public void processMUDRoom(final OMUD_MMUD.DataRoom dataRoom){
@@ -160,8 +160,8 @@ public class OMUD_GUIFrameInfo extends JFrame{
         sb.append("[RoomUnits]\n"       + dataRoom.units        + "\n\n");
         sb.append("[RoomExits]\n"       + dataRoom.exits        + "\n\n");
         sb.append("[RoomDesc]\n"        + dataRoom.desc);
-        _txtInfoRoom.setText(sb.toString());
-        _txtInfoRoom.setCaretPosition(0);
+        _txtFullRoom.setText(sb.toString());
+        _txtFullRoom.setCaretPosition(0);
     }
 
     public void processMUDInv(final OMUD_MMUD.DataInv dataInv){
@@ -178,8 +178,8 @@ public class OMUD_GUIFrameInfo extends JFrame{
             "Cop: " + dataInv.coins_copper    + "\n\n");
         sb.append("[InvItems]\n"    + dataInv.items   + "\n\n");
         sb.append("[InvKeys]\n"     + dataInv.keys    + "\n\n");
-        _txtInfoInv.setText(sb.toString());
-        _txtInfoInv.setCaretPosition(0);
+        _txtFullInv.setText(sb.toString());
+        _txtFullInv.setCaretPosition(0);
     }
 
     public void processMUDStats(final OMUD_MMUD.DataStats dataStats){
@@ -210,8 +210,8 @@ public class OMUD_GUIFrameInfo extends JFrame{
         sb.append("[MA]: "          + dataStats.ma              + "\n");
         sb.append("[MR]: "          + dataStats.mr              + "\n");
 
-        _txtInfoStats.setText(sb.toString());
-        _txtInfoStats.setCaretPosition(0);            
+        _txtFullStats.setText(sb.toString());
+        _txtFullStats.setCaretPosition(0);            
     }
 
     public void processMUDShop(final OMUD_MMUD.DataShop dataShop, final String strRoomID, final String strRoomName){
@@ -233,7 +233,7 @@ public class OMUD_GUIFrameInfo extends JFrame{
             sb.append("[" + dataShop.items.get(i).qty + "]:\t" + dataShop.items.get(i).name + strFill + dataShop.items.get(i).price + "\n");
         }
 
-        _txtInfoShop.setText(sb.toString());
-        _txtInfoShop.setCaretPosition(0);
+        _txtFullShop.setText(sb.toString());
+        _txtFullShop.setCaretPosition(0);
     }
 }
