@@ -16,6 +16,11 @@ public class OMUD_GUITextInput extends JTextField{
 
 	public OMUD_GUITextInput(OMUD_ITextInputEvents tfe){
 		_tfe = tfe;
+
+        setBackground(OMUD.GUI_BG);
+        setForeground(OMUD.TERMINAL_LOCAL_INFO_FG);
+        setCaretColor(OMUD.TERMINAL_LOCAL_INFO_FG);
+
 		((AbstractDocument) getDocument()).setDocumentFilter(new SingleModeDocFilter());
         addKeyListener(new KL_Special());
 	}

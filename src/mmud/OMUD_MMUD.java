@@ -1,6 +1,7 @@
 import java.util.ArrayList;
 
 public class OMUD_MMUD{
+	
 	// ------------------
 	// Room Data
 	// ------------------
@@ -140,7 +141,7 @@ public class OMUD_MMUD{
 		SILVER,
 		GOLD,
 		PLATINUM,
-		RUNIC 			// BBS can have custom runic name
+		RUNIC 				// BBS can have custom runic name
 	}
 
 	// base (singular) full names
@@ -149,7 +150,7 @@ public class OMUD_MMUD{
 		"silver noble",
 		"gold crown",
 		"platinum piece",
-		"runic piece" 	// BBS can have custom runic name
+		"adamantite piece" 	// BBS can have custom runic name "runic piece" (adamantite for testing)
 	};
 
 	// ------------------
@@ -159,6 +160,12 @@ public class OMUD_MMUD{
 		public int 			id 	= 			-1;
 		public String 		name = 			"";
 		public eEquipSlot 	equip_slot = 	eEquipSlot.NONE;
+		DataItem(String n) 	 {name = n;}
+		DataItem(DataItem di){
+			id = 	di.id;
+			name = 	new String(di.name);
+			equip_slot = di.equip_slot;
+		}
 	}
 
 	public static class DataSpell{
@@ -229,14 +236,14 @@ public class OMUD_MMUD{
 		public eBlockType getType(){return eBlockType.ROOM;}
 		public DataRoom(){}
 		public DataRoom(DataRoom room){
-			roomID = 			new String(room.roomID);
-			name = 				new String(room.name);
-			desc = 				new String(room.desc);
-			items = 			new String(room.items);
-			items_hidden = 		new String(room.items_hidden);
-			units = 			new String(room.units);
-			exits = 			new String(room.exits);
-			light = 			room.light;
+			roomID = 		new String(room.roomID);
+			name = 			new String(room.name);
+			desc = 			new String(room.desc);
+			items = 		new String(room.items);
+			items_hidden = 	new String(room.items_hidden);
+			units = 		new String(room.units);
+			exits = 		new String(room.exits);
+			light = 		room.light;
 			OMUD.copyStringArrayList(arrlItems, 		room.arrlItems);
 			OMUD.copyStringArrayList(arrlItemsHidden, 	room.arrlItemsHidden);
 			OMUD.copyStringArrayList(arrlUnits, 		room.arrlUnits);
@@ -245,7 +252,7 @@ public class OMUD_MMUD{
 		}
 		
 		public void resetOptional(){
-			desc = "";
+			desc = 	"";
 			items = "";
 			items_hidden = "";
 			units = "";
@@ -263,23 +270,25 @@ public class OMUD_MMUD{
 		public int 		enc_cur = 		-1;
 		public int 		enc_max = 		-1;
 		public String 	enc_level = 	"";
-		public String 	items = 		"";
-		public String 	keys =  		"";
+		public ArrayList<DataItem> items = 	new ArrayList<DataItem>();
+		public ArrayList<DataItem> keys = 	new ArrayList<DataItem>();
 
 		public eBlockType getType(){return eBlockType.INV;}
 		public DataInv(){}
-		public DataInv(DataInv inv){
-			wealth = 		inv.wealth;
-			coins_runic = 	inv.coins_runic;
-			coins_plat = 	inv.coins_plat;
-			coins_gold = 	inv.coins_gold;
-			coins_silver = 	inv.coins_silver;
-			coins_copper = 	inv.coins_copper;
-			enc_cur = 		inv.enc_cur;
-			enc_max =		inv.enc_max;
-			enc_level = 	new String(inv.enc_level);
-			items = 		new String(inv.items);
-			keys = 			new String(inv.keys);
+		public DataInv(DataInv di){
+			wealth = 		di.wealth;
+			coins_runic = 	di.coins_runic;
+			coins_plat = 	di.coins_plat;
+			coins_gold = 	di.coins_gold;
+			coins_silver = 	di.coins_silver;
+			coins_copper = 	di.coins_copper;
+			enc_cur = 		di.enc_cur;
+			enc_max =		di.enc_max;
+			enc_level = 	new String(di.enc_level);
+			for (int i = 0; i < di.items.size(); ++i)
+				items.add(new DataItem(di.items.get(i)));
+			for (int i = 0; i < di.keys.size(); ++i)
+				keys.add(new DataItem(di.keys.get(i)));
 		}
 	}
 
