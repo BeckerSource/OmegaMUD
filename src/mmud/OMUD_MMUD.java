@@ -154,6 +154,33 @@ public class OMUD_MMUD{
     };
 
     // ------------------
+    // Alignments
+    // ------------------
+    public static enum eAlignment{
+        NEUTRAL,
+        LAWFUL,
+        SAINT,
+        GOOD,
+        SEEDY,
+        OUTLAW,
+        CRIMINAL,
+        VILLAIN,
+        FIEND
+    }
+
+    public static final String[] ALIGNMENT_STRINGS = {
+        "Neutral", // shown as empty string in mud who list
+        "Lawful",
+        "Saint",
+        "Good",
+        "Seedy",
+        "Outlaw",
+        "Criminal",
+        "Villain",
+        "FIEND"
+    };
+    
+    // ------------------
     // Individual Containers
     // ------------------
     public static class DataItem{
@@ -193,9 +220,10 @@ public class OMUD_MMUD{
             INV,
             STATS,
             EXP,
+            SHOP,
             SPELLS,
-            PARTY,
-            SHOP
+            WHO,
+            PARTY
         }
         public abstract eBlockType getType();
     }
@@ -210,6 +238,7 @@ public class OMUD_MMUD{
         public String   hp_str =    "";
         public String   ma_str =    "";
         public eRestState rest =    eRestState.READY;
+        public static final String MSTR_MA = "MA";
 
         public eBlockType getType(){return eBlockType.STATLINE;}
         public DataStatline(){}
@@ -337,10 +366,10 @@ public class OMUD_MMUD{
         public eBlockType getType(){return eBlockType.STATS;}
         public DataStats(){}
         public DataStats(DataStats ds){
-            name_first =    ds.name_first;
-            name_last =     ds.name_last;
-            stats_race =    ds.stats_race;
-            stats_class =   ds.stats_class;
+            name_first =    new String(ds.name_first);
+            name_last =     new String(ds.name_last);
+            stats_race =    new String(ds.stats_race);
+            stats_class =   new String(ds.stats_class);
             level =         ds.level;
             lives =         ds.lives;
             cp =            ds.cp;
@@ -385,13 +414,62 @@ public class OMUD_MMUD{
         }
     }
 
+    public static class DataShop extends DataBlock{
+        public static class ShopItem{
+            public String   name =  "";
+            public int      qty =   0;
+            public String   price = ""; // string for now, change later when conversions in place
+            public ShopItem(){}
+            public ShopItem(ShopItem si){
+                name =  new String(si.name);
+                qty =   si.qty;
+                price = new String(si.price);
+            }
+        }
+
+        public ArrayList<ShopItem> shop_items = new ArrayList<ShopItem>();
+        public eBlockType getType(){return eBlockType.SHOP;}
+        public DataShop(){}
+        public DataShop(DataShop ds){
+            shop_items.clear();
+            for (int i = 0; i < ds.shop_items.size(); ++i)
+                shop_items.add(new ShopItem(ds.shop_items.get(i)));
+        }
+    }
+
     public static class DataSpells extends DataBlock{
         public ArrayList<DataSpell> spells = new ArrayList<DataSpell>();
         public eBlockType getType(){return eBlockType.SPELLS;}
         public DataSpells(){}
-        public DataSpells(DataSpells ds){        	
+        public DataSpells(DataSpells ds){           
             for (int i = 0; i < ds.spells.size(); ++i)
                 spells.add(new DataSpell(ds.spells.get(i)));
+        }
+    }
+
+    public static class DataWho extends DataBlock{
+        public static class DataWhoChar{
+            public eAlignment   alignment =     eAlignment.NEUTRAL;
+            public String       name_first =    "";
+            public String       name_last =     "";
+            public String       title =         "";
+            public String       guild =         "";
+            DataWhoChar(){}
+            DataWhoChar(DataWhoChar dwc){
+                alignment =     dwc.alignment;
+                name_first =    new String(dwc.name_first);
+                name_last =     new String(dwc.name_last);
+                title =         new String(dwc.title);
+                guild =         new String(dwc.guild);
+            }
+        }
+
+        public ArrayList<DataWhoChar> chars = new ArrayList<DataWhoChar>();
+        public eBlockType getType(){return eBlockType.WHO;}
+        DataWho(){}
+        DataWho(DataWho dw){
+             for (int i = 0; i < dw.chars.size(); ++i)
+                chars.add(new DataWhoChar(dw.chars.get(i)));           
         }
     }
 
@@ -405,29 +483,8 @@ public class OMUD_MMUD{
             public int      ma_max =        0;
             public String   rank =          "";
         }
+
         public ArrayList<PartyMember> members = new ArrayList<PartyMember>();
         public eBlockType getType(){return eBlockType.PARTY;}
-    }
-
-    public static class DataShop extends DataBlock{
-        public static class ShopItem{
-            public String   name =  "";
-            public int      qty =   0;
-            public String   price = ""; // string for now, change later when conversions in place
-            public ShopItem(){}
-            public ShopItem(ShopItem si){
-                name =  new String(si.name);
-                qty =   si.qty;
-                price = new String(si.price);
-            }
-        }
-        public ArrayList<ShopItem> shop_items = new ArrayList<ShopItem>();
-        public eBlockType getType(){return eBlockType.SHOP;}
-        public DataShop(){}
-        public DataShop(DataShop ds){
-            shop_items.clear();
-            for (int i = 0; i < ds.shop_items.size(); ++i)
-                shop_items.add(new ShopItem(ds.shop_items.get(i)));
-        }
     }
 }

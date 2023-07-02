@@ -160,6 +160,12 @@ public class OMUD_GUI implements OMUD_ITextInputEvents, OMUD_ITelnetEvents, OMUD
         }});        
     }
 
+    public void notifyMUDWho(final OMUD_MMUD.DataWho dataWho){
+        SwingUtilities.invokeLater(new Runnable(){public void run(){
+            _fInfo.processMUDWho(dataWho);
+        }});        
+    }
+
     public void notifyMUDParty(){}
     public void notifyMUDCombat(){}
 }

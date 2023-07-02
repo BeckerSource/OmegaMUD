@@ -315,7 +315,7 @@ public class OMUD_GUIFrameView extends JFrame{
     public void processMUDStatline(final OMUD_MMUD.DataStatline dataStatline){
         StringBuilder sb = new StringBuilder();
         sb.append(dataStatline.hp_str + "=" + dataStatline.hp_cur + "/" + dataStatline.hp_max + (dataStatline.hp_mod ? "*" : ""));
-        if (dataStatline.ma_cur > 0)
+        if (dataStatline.ma_str.length() > 0)
             sb.append(", " + dataStatline.ma_str + "=" + dataStatline.ma_cur + "/" + dataStatline.ma_max + (dataStatline.ma_mod ? "*" : ""));
         sb.append(" " + OMUD_MMUD.REST_STATE_STRINGS[dataStatline.rest.ordinal()]);
         _lblCharStatline.setText(sb.toString());

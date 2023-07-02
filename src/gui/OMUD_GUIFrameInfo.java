@@ -25,6 +25,7 @@ public class OMUD_GUIFrameInfo extends JFrame{
     private OMUD_GUITextArea    _txtStats =     null;
     private OMUD_GUITextArea    _txtShop =      null;
     private OMUD_GUITextArea    _txtSpells =    null;
+    private OMUD_GUITextArea    _txtWho =       null;
     private JPanel              _pnlInv =       null;
     private JPanel              _pnlInvMoney =  null;
     private JTabbedPane         _tabsInfo =     null;
@@ -57,6 +58,7 @@ public class OMUD_GUIFrameInfo extends JFrame{
         _txtStats =     new OMUD_GUITextArea(false);
         _txtShop =      new OMUD_GUITextArea(false);
         _txtSpells =    new OMUD_GUITextArea(false);
+        _txtWho =       new OMUD_GUITextArea(false);
         _tabsInfo = new JTabbedPane(JTabbedPane.TOP, JTabbedPane.WRAP_TAB_LAYOUT);
         _tabsInfo.add("TermDbg",  _txtTermDbg);
         _tabsInfo.add("MCmds",      new JScrollPane(_txtCmds));
@@ -67,6 +69,7 @@ public class OMUD_GUIFrameInfo extends JFrame{
         _tabsInfo.add("MStats",     new JScrollPane(_txtStats));
         _tabsInfo.add("MShop",      new JScrollPane(_txtShop));
         _tabsInfo.add("MSpells",    new JScrollPane(_txtSpells));
+        _tabsInfo.add("MWho",       new JScrollPane(_txtWho));
         add(_tabsInfo);
 
         // layouts...
@@ -294,5 +297,26 @@ public class OMUD_GUIFrameInfo extends JFrame{
 
         _txtSpells.setText(sb.toString());
         _txtSpells.setCaretPosition(0);
+    }
+
+    public void processMUDWho(final OMUD_MMUD.DataWho dataWho){
+        _tabsInfo.setSelectedIndex(9);
+
+        StringBuilder sb = new StringBuilder();
+        sb.append("--------------------\n");
+        sb.append("FName LName (Align Title of Guild)\n");
+        sb.append("--------------------\n");
+        for (int i = 0; i < dataWho.chars.size(); ++i){
+            sb.append(dataWho.chars.get(i).name_first);
+            if (dataWho.chars.get(i).name_last.length() > 0)
+                sb.append(" " + dataWho.chars.get(i).name_last);
+            sb.append(" (" + OMUD_MMUD.ALIGNMENT_STRINGS[dataWho.chars.get(i).alignment.ordinal()] + " " + dataWho.chars.get(i).title);
+            if (dataWho.chars.get(i).guild.length() > 0)
+                sb.append(" of " + dataWho.chars.get(i).guild);
+            sb.append(")\n");
+        }
+
+        _txtWho.setText(sb.toString());
+        _txtWho.setCaretPosition(0);
     }
 }

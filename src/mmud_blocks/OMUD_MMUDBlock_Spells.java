@@ -26,37 +26,24 @@ public class OMUD_MMUDBlock_Spells extends OMUD_MMUDBlocks.Block{
 
             // split lines, get spell data...
             String[] lines = _sbBlockData.toString().split("\n");
-            for (String line: lines) {
+            for (String line: lines){
                 line = line.trim();
 
                 OMUD_MMUD.DataSpell spell = new OMUD_MMUD.DataSpell();
 
-                // ---------------
-                // Spell Level
-                // ---------------
-                pos_left = 0;
-                if ((pos_right = line.indexOf(" ", pos_left)) > -1){
-                    spell.level = Integer.parseInt(line.substring(pos_left, pos_right));
-                    pos_left = pos_right;
+                String[] tokens = line.split(" +"); // regex remove multiple spaces
+                if (tokens.length >= 4){
+                    spell.level =       Integer.parseInt(tokens[0]);
+                    spell.cost =        Integer.parseInt(tokens[1]);
+                    spell.name_short =  tokens[2];
 
-                    // ---------------
-                    // Spell Cost
-                    // ---------------
-                    while (pos_left + 1 < line.length() && line.charAt(++pos_left) == ' '){/*go right until non-space*/}
-                    if ((pos_right = line.indexOf(" ", pos_left)) > -1){
-                        spell.cost = Integer.parseInt(line.substring(pos_left, pos_right));
-                        pos_left = pos_right;
+                    // concat the long name...
+                    StringBuilder sb = new StringBuilder();
+                    for (int i = 3; i < tokens.length; ++i)
+                        sb.append(tokens[i] + (i + 1 < tokens.length ? " " : ""));
+                    spell.name_long = sb.toString();
 
-                        // ---------------
-                        // Spell Names
-                        // ---------------
-                        while (pos_left + 1 < line.length() && line.charAt(++pos_left) == ' '){/*go right until non-space*/}
-                        if ((pos_right = line.indexOf(" ", pos_left)) > -1){
-                            spell.name_short =  line.substring(pos_left,  pos_right);
-                            spell.name_long =   line.substring(pos_right, line.length()).trim();
-                            mmc.dataSpells.spells.add(spell);
-                        }
-                    }
+                    mmc.dataSpells.spells.add(spell);
                 }
             }
         }

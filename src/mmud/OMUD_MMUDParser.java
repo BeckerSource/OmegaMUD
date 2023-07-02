@@ -14,6 +14,7 @@ interface OMUD_IMUDEvents{
     public void notifyMUDStats(final OMUD_MMUD.DataStats dataStats);
     public void notifyMUDShop(final OMUD_MMUD.DataShop dataShop, final String strRoomID, final String strRoomName);
     public void notifyMUDSpells(final OMUD_MMUD.DataSpells dataSpells);
+    public void notifyMUDWho(final OMUD_MMUD.DataWho dataWho);
     public void notifyMUDParty();
     public void notifyMUDCombat();
 }
@@ -161,6 +162,12 @@ public class OMUD_MMUDParser{
                         _omme.notifyMUDAutoCmd("stat\n");
                     _omme.notifyMUDAutoCmd("i\n");
                     _omme.notifyMUDAutoCmd("exp\n");
+                    if (_mmc.dataStatline.ma_str.length() > 0){
+                        if (_mmc.dataStatline.ma_str.equals(OMUD_MMUD.DataStatline.MSTR_MA))
+                             _omme.notifyMUDAutoCmd("sp\n");
+                        else _omme.notifyMUDAutoCmd("po\n");
+                    }
+                    _omme.notifyMUDAutoCmd("who\n");
                 }
 
                 // notify for statline update and other data that was updated...
@@ -177,6 +184,8 @@ public class OMUD_MMUDParser{
                     _omme.notifyMUDShop(new OMUD_MMUD.DataShop(_mmc.dataShop), new String(_mmc.dataRoom.roomID), new String(_mmc.dataRoom.name));
                 else if (_mmc.ablk.data_type == OMUD_MMUD.DataBlock.eBlockType.SPELLS)
                     _omme.notifyMUDSpells(new OMUD_MMUD.DataSpells(_mmc.dataSpells));
+                else if (_mmc.ablk.data_type == OMUD_MMUD.DataBlock.eBlockType.WHO)
+                    _omme.notifyMUDWho(new OMUD_MMUD.DataWho(_mmc.dataWho));
 
                 // reset active block with statline forced as last data type...
                 _mmc.ablk = new OMUD_MMUDChar.ActiveBlock(false, OMUD_MMUD.DataBlock.eBlockType.STATLINE);

@@ -37,7 +37,7 @@ public class OMUD_Telnet {
     private StringBuilder               _sbCmdNew =         null;
     private StringBuilder               _sbCmdNewUnsent =   null;
     private ArrayList<StringBuilder>    _arrlCmds =         null;
-    private boolean                     _allow_send =       false;
+    private boolean                     _allow_send =       true;
     private long                        _ayt_last_response_time_ms = 0;
     private final String    TERMINAL_TYPE =     "ANSI";
     private final String    TERMINAL_CHARSET =  "ISO-8859-1";
@@ -121,7 +121,8 @@ public class OMUD_Telnet {
                 _sbCmdNew.setLength(0);
                 _sbCmdNewUnsent.setLength(0);
                 _arrlCmds.clear();
-
+                _allow_send = true;
+                
                 new ThreadParse("\n\n").start(); // add a couple linefeeds for text readability on reconnect
             } catch (Exception e) {
                 OMUD.logError("Telnet: error on disconnect: " + e.getMessage());            

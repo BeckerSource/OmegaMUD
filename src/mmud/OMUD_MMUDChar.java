@@ -24,9 +24,10 @@ public class OMUD_MMUDChar{
     public OMUD_MMUD.DataStats      dataStats =     new OMUD_MMUD.DataStats();
     public OMUD_MMUD.DataStatline   dataStatline =  new OMUD_MMUD.DataStatline();
     public OMUD_MMUD.DataInv        dataInv =       new OMUD_MMUD.DataInv();
-    public OMUD_MMUD.DataSpells     dataSpells =    new OMUD_MMUD.DataSpells();
-    public OMUD_MMUD.DataParty      dataParty =     new OMUD_MMUD.DataParty();
     public OMUD_MMUD.DataShop       dataShop =      new OMUD_MMUD.DataShop();
+    public OMUD_MMUD.DataSpells     dataSpells =    new OMUD_MMUD.DataSpells();
+    public OMUD_MMUD.DataWho        dataWho =       new OMUD_MMUD.DataWho();
+    public OMUD_MMUD.DataParty      dataParty =     new OMUD_MMUD.DataParty();
 
     public ActiveBlock ablk = new ActiveBlock(false, OMUD_MMUD.DataBlock.eBlockType.ROOM);
 }

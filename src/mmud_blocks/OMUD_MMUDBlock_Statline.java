@@ -54,12 +54,12 @@ public class OMUD_MMUDBlock_Statline extends OMUD_MMUDBlocks.Block{
             // strip ansi...
             cleanData(_sbBlockData, false, true);
 
-            // check for Mana/Kai...
+            // get hp/mana...
             int pos_equals  = 0;
             int pos_hp_end  = 0;
             if ((pos_hp_end = _sbBlockData.indexOf("/", pos_equals)) > -1 &&
                 (pos_equals = _sbBlockData.indexOf("=", pos_hp_end)) > -1){
-                if (mmc.dataStatline.ma_str.length() == 0)
+                if (mmc.dataStatline.ma_str.length() == 0) // don't re-assign the string it if we already have it
                     mmc.dataStatline.ma_str = _sbBlockData.substring(pos_hp_end + 1, pos_equals);
                 mmc.dataStatline.ma_cur = Integer.parseInt(_sbBlockData.substring(++pos_equals, _sbBlockData.length()));
             } else pos_hp_end = _sbBlockData.length();
