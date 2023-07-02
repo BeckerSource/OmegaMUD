@@ -46,6 +46,7 @@ Command line run example for Java 1.6 version of OmegaMUD:
   * Exp
   * Shops
   * Spells
+  * Who's Online
 
 ## Tested Systems
 WinXP, Win7, Win8, Win10\
