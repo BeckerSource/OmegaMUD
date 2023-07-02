@@ -154,7 +154,12 @@ public class OMUD_GUI implements OMUD_ITextInputEvents, OMUD_ITelnetEvents, OMUD
         }});
     }
     
+    public void notifyMUDSpells(final OMUD_MMUD.DataSpells dataSpells){
+        SwingUtilities.invokeLater(new Runnable(){public void run(){
+            _fInfo.processMUDSpells(dataSpells);
+        }});        
+    }
+
     public void notifyMUDParty(){}
-    public void notifyMUDSpells(){}
     public void notifyMUDCombat(){}
 }

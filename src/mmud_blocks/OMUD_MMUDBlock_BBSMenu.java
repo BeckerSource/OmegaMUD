@@ -1,7 +1,7 @@
 public class OMUD_MMUDBlock_BBSMenu extends OMUD_MMUDBlocks.Block{
     private final String MSTR_MUD_MENU = "[1;30m[[0mMAJORMUD[1;30m][0m: [0;37;40m";
 
-    public boolean getStatlineWait()                {return false;}
+    public boolean getStatlineWait()                    {return false;}
     public OMUD_MMUD.DataBlock.eBlockType getDataType() {return OMUD_MMUD.DataBlock.eBlockType.NONE;}
     public OMUD_MMUDBlock_BBSMenu(){}
 

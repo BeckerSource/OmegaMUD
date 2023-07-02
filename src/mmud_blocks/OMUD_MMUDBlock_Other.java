@@ -15,7 +15,7 @@ public class OMUD_MMUDBlock_Other extends OMUD_MMUDBlocks.Block{
     private final String MSTR_EXP_GAIN =                "[79D[KYou gain 56 experience.";
     //private final String MSTR_NQC =                   "[0m(N)onstop, (Q)uit, or (C)ontinue?";
 
-    public boolean getStatlineWait()                {return false;}
+    public boolean getStatlineWait()                    {return false;}
     public OMUD_MMUD.DataBlock.eBlockType getDataType() {return OMUD_MMUD.DataBlock.eBlockType.NONE;}
     public OMUD_MMUDBlock_Other(){}
         

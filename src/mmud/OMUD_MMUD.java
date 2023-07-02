@@ -90,7 +90,7 @@ public class OMUD_MMUD{
     // Item / Equipment Data
     // ------------------
     public static enum eEquipSlot{
-        NONE,
+        NONE, 		// not a real slot
         WEAPON,
         OFFHAND,
         HEAD,
@@ -160,19 +160,26 @@ public class OMUD_MMUD{
         public int          id  =           -1;
         public String       name =          "";
         public eEquipSlot   equip_slot =    eEquipSlot.NONE;
-        DataItem(String n)   {name = n;}
-        DataItem(DataItem di){
-            id =    di.id;
-            name =  new String(di.name);
-            equip_slot = di.equip_slot;
+        DataItem(String n)  {name = n;}
+        DataItem(DataItem item){
+            id =    		item.id;
+            name =  		new String(item.name);
+            equip_slot = 	item.equip_slot;
         }
     }
 
     public static class DataSpell{
         public int      level =         0;
-        public int      mana =          0;
+        public int      cost =          0;
         public String   name_short =    "";
         public String   name_long =     "";
+        DataSpell(){}
+        DataSpell(DataSpell spell){
+        	level = 		spell.level;
+        	cost  = 		spell.cost;
+        	name_short = 	new String(spell.name_short);
+        	name_long = 	new String(spell.name_long);
+        }
     }
 
     // ------------------
@@ -235,20 +242,20 @@ public class OMUD_MMUD{
 
         public eBlockType getType(){return eBlockType.ROOM;}
         public DataRoom(){}
-        public DataRoom(DataRoom room){
-            roomID =        new String(room.roomID);
-            name =          new String(room.name);
-            desc =          new String(room.desc);
-            items =         new String(room.items);
-            items_hidden =  new String(room.items_hidden);
-            units =         new String(room.units);
-            exits =         new String(room.exits);
-            light =         room.light;
-            OMUD.copyStringArrayList(arrlItems,         room.arrlItems);
-            OMUD.copyStringArrayList(arrlItemsHidden,   room.arrlItemsHidden);
-            OMUD.copyStringArrayList(arrlUnits,         room.arrlUnits);
-            for (int i = 0; i < room.arrlExits.size(); ++i)
-                arrlExits.add(new RoomExit(room.arrlExits.get(i)));
+        public DataRoom(DataRoom dr){
+            roomID =        new String(dr.roomID);
+            name =          new String(dr.name);
+            desc =          new String(dr.desc);
+            items =         new String(dr.items);
+            items_hidden =  new String(dr.items_hidden);
+            units =         new String(dr.units);
+            exits =         new String(dr.exits);
+            light =         dr.light;
+            OMUD.copyStringArrayList(arrlItems,         dr.arrlItems);
+            OMUD.copyStringArrayList(arrlItemsHidden,   dr.arrlItemsHidden);
+            OMUD.copyStringArrayList(arrlUnits,         dr.arrlUnits);
+            for (int i = 0; i < dr.arrlExits.size(); ++i)
+                arrlExits.add(new RoomExit(dr.arrlExits.get(i)));
         }
         
         public void resetOptional(){
@@ -329,37 +336,37 @@ public class OMUD_MMUD{
         public boolean  cha_mod =       false;
         public eBlockType getType(){return eBlockType.STATS;}
         public DataStats(){}
-        public DataStats(DataStats stats){
-            name_first =    stats.name_first;
-            name_last =     stats.name_last;
-            stats_race =    stats.stats_race;
-            stats_class =   stats.stats_class;
-            level =         stats.level;
-            lives =         stats.lives;
-            cp =            stats.cp;
-            str =           stats.str;
-            intel =         stats.intel;
-            wil =           stats.wil;
-            agi =           stats.agi;
-            hea =           stats.hea;
-            cha =           stats.cha;
-            ac_ac =         stats.ac_ac;
-            ac_accy =       stats.ac_accy;
-            sc =            stats.sc;
-            perc =          stats.perc;
-            stealth =       stats.stealth;
-            thievery =      stats.thievery;
-            traps =         stats.traps;
-            pick =          stats.pick;
-            track =         stats.track;
-            ma =            stats.ma;
-            mr =            stats.mr;
-            str_mod =       stats.str_mod;
-            intel_mod =     stats.intel_mod;
-            wil_mod =       stats.wil_mod;
-            agi_mod =       stats.agi_mod;
-            hea_mod =       stats.hea_mod;
-            cha_mod =       stats.cha_mod;
+        public DataStats(DataStats ds){
+            name_first =    ds.name_first;
+            name_last =     ds.name_last;
+            stats_race =    ds.stats_race;
+            stats_class =   ds.stats_class;
+            level =         ds.level;
+            lives =         ds.lives;
+            cp =            ds.cp;
+            str =           ds.str;
+            intel =         ds.intel;
+            wil =           ds.wil;
+            agi =           ds.agi;
+            hea =           ds.hea;
+            cha =           ds.cha;
+            ac_ac =         ds.ac_ac;
+            ac_accy =       ds.ac_accy;
+            sc =            ds.sc;
+            perc =          ds.perc;
+            stealth =       ds.stealth;
+            thievery =      ds.thievery;
+            traps =         ds.traps;
+            pick =          ds.pick;
+            track =         ds.track;
+            ma =            ds.ma;
+            mr =            ds.mr;
+            str_mod =       ds.str_mod;
+            intel_mod =     ds.intel_mod;
+            wil_mod =       ds.wil_mod;
+            agi_mod =       ds.agi_mod;
+            hea_mod =       ds.hea_mod;
+            cha_mod =       ds.cha_mod;
         }
     }
 
@@ -370,17 +377,22 @@ public class OMUD_MMUD{
         public int per_hr =     -1;
         public eBlockType getType(){return eBlockType.EXP;}
         public DataExp(){}
-        public DataExp(DataExp exp){
-            cur_total =     exp.cur_total;
-            next_total =    exp.next_total;
-            next_rem =      exp.next_rem;
-            per_hr =        exp.per_hr;
+        public DataExp(DataExp de){
+            cur_total =     de.cur_total;
+            next_total =    de.next_total;
+            next_rem =      de.next_rem;
+            per_hr =        de.per_hr;
         }
     }
 
     public static class DataSpells extends DataBlock{
         public ArrayList<DataSpell> spells = new ArrayList<DataSpell>();
         public eBlockType getType(){return eBlockType.SPELLS;}
+        public DataSpells(){}
+        public DataSpells(DataSpells ds){        	
+            for (int i = 0; i < ds.spells.size(); ++i)
+                spells.add(new DataSpell(ds.spells.get(i)));
+        }
     }
 
     public static class DataParty extends DataBlock{
@@ -403,19 +415,19 @@ public class OMUD_MMUD{
             public int      qty =   0;
             public String   price = ""; // string for now, change later when conversions in place
             public ShopItem(){}
-            public ShopItem(ShopItem item){
-                name =  new String(item.name);
-                qty =   item.qty;
-                price = new String(item.price);
+            public ShopItem(ShopItem si){
+                name =  new String(si.name);
+                qty =   si.qty;
+                price = new String(si.price);
             }
         }
         public ArrayList<ShopItem> shop_items = new ArrayList<ShopItem>();
         public eBlockType getType(){return eBlockType.SHOP;}
         public DataShop(){}
-        public DataShop(DataShop shop){
+        public DataShop(DataShop ds){
             shop_items.clear();
-            for (int i = 0; i < shop.shop_items.size(); ++i)
-                shop_items.add(new ShopItem(shop.shop_items.get(i)));
+            for (int i = 0; i < ds.shop_items.size(); ++i)
+                shop_items.add(new ShopItem(ds.shop_items.get(i)));
         }
     }
 }

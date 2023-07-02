@@ -3,7 +3,7 @@ public class OMUD_MMUDBlock_Shop extends OMUD_MMUDBlocks.Block{
     private final String MSTR_ITEM_NAME =   "[32m";
     private final String MSTR_ITEM_QTY =    "[36m";
 
-    public boolean getStatlineWait()                {return true;}
+    public boolean getStatlineWait()                    {return true;}
     public OMUD_MMUD.DataBlock.eBlockType getDataType() {return OMUD_MMUD.DataBlock.eBlockType.SHOP;}
     public OMUD_MMUDBlock_Shop(){
         _arrlCmdText.add(new CmdText("list", 3));

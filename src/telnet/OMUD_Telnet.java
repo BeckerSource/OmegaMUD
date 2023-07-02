@@ -117,6 +117,11 @@ public class OMUD_Telnet {
                 _threadReader = null;
                 _omte.notifyTelnetDisconnected();
                 _omtp.reset();
+                
+                _sbCmdNew.setLength(0);
+                _sbCmdNewUnsent.setLength(0);
+                _arrlCmds.clear();
+
                 new ThreadParse("\n\n").start(); // add a couple linefeeds for text readability on reconnect
             } catch (Exception e) {
                 OMUD.logError("Telnet: error on disconnect: " + e.getMessage());            

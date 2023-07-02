@@ -14,7 +14,7 @@ public class OMUD_MMUDBlock_Room extends OMUD_MMUDBlocks.Block{
     private final String MSTR_SEARCH_NONE =         "[0;36mYour search revealed nothing.";
     private final String MSTR_SEARCH_PRE =          "[0;37;40m[0;36mYou notice ";
 
-    public boolean getStatlineWait()                {return true;}
+    public boolean getStatlineWait()                    {return true;}
     public OMUD_MMUD.DataBlock.eBlockType getDataType() {return OMUD_MMUD.DataBlock.eBlockType.ROOM;}
     public OMUD_MMUDBlock_Room(){
         _arrlCmdText.add(new CmdText("look",    0)); // 0-len covers LF/enter only (zero-len) and all chars as part of look

@@ -5,7 +5,7 @@ public class OMUD_MMUDBlock_Exp extends OMUD_MMUDBlocks.Block{
     private final String MSTR_NEXT_TOTAL_PRE =  "(";
     private final String MSTR_NEXT_TOTAL_END =  ")";
 
-    public boolean getStatlineWait()                {return true;}
+    public boolean getStatlineWait()                    {return true;}
     public OMUD_MMUD.DataBlock.eBlockType getDataType() {return OMUD_MMUD.DataBlock.eBlockType.EXP;}
     public OMUD_MMUDBlock_Exp(){
         _arrlCmdText.add(new CmdText("experience", 3));

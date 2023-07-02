@@ -13,7 +13,7 @@ public class OMUD_MMUDBlock_Inventory extends OMUD_MMUDBlocks.Block{
     private final String MSTR_ENC_MID =     " - ";
     private final String MSTR_ENC_END =     "[";
 
-    public boolean getStatlineWait()                {return true;}
+    public boolean getStatlineWait()                    {return true;}
     public OMUD_MMUD.DataBlock.eBlockType getDataType() {return OMUD_MMUD.DataBlock.eBlockType.INV;}
     public OMUD_MMUDBlock_Inventory(){
         _arrlCmdText.add(new CmdText("i",         1));

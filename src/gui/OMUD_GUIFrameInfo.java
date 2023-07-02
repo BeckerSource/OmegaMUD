@@ -24,10 +24,11 @@ public class OMUD_GUIFrameInfo extends JFrame{
     private OMUD_GUITextArea    _txtInv =       null;
     private OMUD_GUITextArea    _txtStats =     null;
     private OMUD_GUITextArea    _txtShop =      null;
+    private OMUD_GUITextArea    _txtSpells =    null;
     private JPanel              _pnlInv =       null;
     private JPanel              _pnlInvMoney =  null;
     private JTabbedPane         _tabsInfo =     null;
-    private static final int FRAME_MIN_WIDTH  = 700;
+    private static final int FRAME_MIN_WIDTH  = 710;
     private static final int FRAME_MIN_HEIGHT = 550;
 
     OMUD_GUIFrameInfo(){
@@ -47,14 +48,15 @@ public class OMUD_GUIFrameInfo extends JFrame{
         // tabs...
         _pnlInv =       new JPanel();
         _pnlInvMoney =  new JPanel();
-        _txtTermDbg =   new OMUD_GUITextArea();
-        _txtCmds =      new OMUD_GUITextArea();
-        _txtOther =     new OMUD_GUITextArea();
-        _txtWelcome =   new OMUD_GUITextArea();
-        _txtRoom =      new OMUD_GUITextArea();
-        _txtInv =       new OMUD_GUITextArea();
-        _txtStats =     new OMUD_GUITextArea();
-        _txtShop =      new OMUD_GUITextArea();
+        _txtTermDbg =   new OMUD_GUITextArea(false);
+        _txtCmds =      new OMUD_GUITextArea(false);
+        _txtOther =     new OMUD_GUITextArea(false);
+        _txtWelcome =   new OMUD_GUITextArea(false);
+        _txtRoom =      new OMUD_GUITextArea(true);
+        _txtInv =       new OMUD_GUITextArea(true);
+        _txtStats =     new OMUD_GUITextArea(false);
+        _txtShop =      new OMUD_GUITextArea(false);
+        _txtSpells =    new OMUD_GUITextArea(false);
         _tabsInfo = new JTabbedPane(JTabbedPane.TOP, JTabbedPane.WRAP_TAB_LAYOUT);
         _tabsInfo.add("TermDbg",  _txtTermDbg);
         _tabsInfo.add("MCmds",      new JScrollPane(_txtCmds));
@@ -64,6 +66,7 @@ public class OMUD_GUIFrameInfo extends JFrame{
         _tabsInfo.add("MInv",       new JScrollPane(_pnlInv));
         _tabsInfo.add("MStats",     new JScrollPane(_txtStats));
         _tabsInfo.add("MShop",      new JScrollPane(_txtShop));
+        _tabsInfo.add("MSpells",    new JScrollPane(_txtSpells));
         add(_tabsInfo);
 
         // layouts...
@@ -188,17 +191,23 @@ public class OMUD_GUIFrameInfo extends JFrame{
         StringBuilder sb = new StringBuilder();
         sb.append("\n[InvEnc]: (" + dataInv.enc_level + ") " + dataInv.enc_cur + "/" + dataInv.enc_max + String.format(" [%.0f", ((float) dataInv.enc_cur / dataInv.enc_max) * 100) + "%]\n\n");
         
+        sb.append("--------------------\n");
         sb.append("[InvItemsWorn]\n");
+        sb.append("--------------------\n");
         for (int i = 0; i < dataInv.items_worn.size(); ++i){
             sb.append(dataInv.items_worn.get(i).name + " ");
             sb.append(OMUD_MMUD.EQUIP_SLOT_STRINGS[dataInv.items_worn.get(i).equip_slot.ordinal()].toUpperCase() + "\n");
         }
         
-        sb.append("\n[InvItemsExtra]\n");
+        sb.append("\n--------------------\n");
+        sb.append("[InvItemsExtra]\n");
+        sb.append("--------------------\n");
         for (int i = 0; i < dataInv.items_extra.size(); ++i)
             sb.append(dataInv.items_extra.get(i).name + "\n");
         
-        sb.append("\n[InvKeys]\n");
+        sb.append("\n--------------------\n");
+        sb.append("[InvKeys]\n");
+        sb.append("--------------------\n");
         for (int i = 0; i < dataInv.keys.size(); ++i)
             sb.append(dataInv.keys.get(i).name + "\n");
         
@@ -225,14 +234,16 @@ public class OMUD_GUIFrameInfo extends JFrame{
         sb.append("[Level]: "       + dataStats.level           + "\n");
         sb.append("[Lives]: "       + dataStats.lives           + "\n");
         sb.append("[CP]: "          + dataStats.cp              + "\n");
+        sb.append("[AC]: "          + dataStats.ac_ac + "/" + dataStats.ac_accy  + "\n");
+        sb.append("[SC]: "          + dataStats.sc              + "\n");
+        sb.append("--------------------\n");
         sb.append("[Str]: "         + dataStats.str             + (dataStats.str_mod    ? " *" : "") + "\n");
         sb.append("[Int]: "         + dataStats.intel           + (dataStats.intel_mod  ? " *" : "") + "\n");
         sb.append("[Wil]: "         + dataStats.wil             + (dataStats.wil_mod    ? " *" : "") + "\n");
         sb.append("[Agi]: "         + dataStats.agi             + (dataStats.agi_mod    ? " *" : "") + "\n");
         sb.append("[Hea]: "         + dataStats.hea             + (dataStats.hea_mod    ? " *" : "") + "\n");
         sb.append("[Cha]: "         + dataStats.cha             + (dataStats.cha_mod    ? " *" : "") + "\n");
-        sb.append("[AC]: "          + dataStats.ac_ac + "/" + dataStats.ac_accy  + "\n");
-        sb.append("[SC]: "          + dataStats.sc              + "\n");
+        sb.append("--------------------\n");
         sb.append("[Perc]: "        + dataStats.perc            + "\n");
         sb.append("[Stealth]: "     + dataStats.stealth         + "\n");
         sb.append("[Thiev]: "       + dataStats.thievery        + "\n");
@@ -267,5 +278,21 @@ public class OMUD_GUIFrameInfo extends JFrame{
 
         _txtShop.setText(sb.toString());
         _txtShop.setCaretPosition(0);
+    }
+
+    public void processMUDSpells(final OMUD_MMUD.DataSpells dataSpells){
+        _tabsInfo.setSelectedIndex(8);
+
+        StringBuilder sb = new StringBuilder();
+        sb.append("--------------------\n");
+        sb.append("Short (Lvl, Cost) Full\n");
+        sb.append("--------------------\n");
+        for (int i = 0; i < dataSpells.spells.size(); ++i){
+            sb.append(dataSpells.spells.get(i).name_short + " (" + dataSpells.spells.get(i).level + ", " + dataSpells.spells.get(i).cost + ") ");
+            sb.append(dataSpells.spells.get(i).name_long + "\n");
+        }
+
+        _txtSpells.setText(sb.toString());
+        _txtSpells.setCaretPosition(0);
     }
 }

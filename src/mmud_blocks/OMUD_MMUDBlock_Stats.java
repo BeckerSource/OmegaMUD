@@ -27,7 +27,7 @@ public class OMUD_MMUDBlock_Stats extends OMUD_MMUDBlocks.Block{
     private final String MSTR_MR =          "MagicRes:";
     private final int    MSTR_STAT_ROW_COUNT = 9;
 
-    public boolean getStatlineWait()                {return true;}
+    public boolean getStatlineWait()                    {return true;}
     public OMUD_MMUD.DataBlock.eBlockType getDataType() {return OMUD_MMUD.DataBlock.eBlockType.STATS;}
     public OMUD_MMUDBlock_Stats(){
         _arrlCmdText.add(new CmdText("stat", 2));

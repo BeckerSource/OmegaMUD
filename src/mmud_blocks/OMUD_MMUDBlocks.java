@@ -164,6 +164,7 @@ public class OMUD_MMUDBlocks{
         _arrlBlocks.add(new OMUD_MMUDBlock_Inventory());
         _arrlBlocks.add(new OMUD_MMUDBlock_Stats());
         _arrlBlocks.add(new OMUD_MMUDBlock_Shop());
+        _arrlBlocks.add(new OMUD_MMUDBlock_Spells());
         _arrlBlocks.add(new OMUD_MMUDBlock_Editor());       // NOTE: editor should always be at the end!
         _bpos_cmd_editor = _arrlBlocks.size() - 1;          // 
         // ------------------

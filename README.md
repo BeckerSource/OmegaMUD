@@ -45,6 +45,7 @@ Command line run example for Java 1.6 version of OmegaMUD:
   * Stats
   * Exp
   * Shops
+  * Spells
 
 ## Tested Systems
 WinXP, Win7, Win8, Win10\
@@ -79,4 +80,7 @@ Mac: Untested
 ![MUD Inventory](./screenshots/omegamud-mud_inventory.png)
 
 ## Screenshot: MUD Shops
-![MUD Inventory](./screenshots/omegamud-mud_shop.png)
+![MUD Shops](./screenshots/omegamud-mud_shop.png)
+
+## Screenshot: MUD Spells
+![MUD Spells](./screenshots/omegamud-mud_spells.png)
