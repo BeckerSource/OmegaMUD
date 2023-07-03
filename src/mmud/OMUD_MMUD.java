@@ -179,7 +179,7 @@ public class OMUD_MMUD{
         "Villain",
         "FIEND"
     };
-    
+
     // ------------------
     // Individual Containers
     // ------------------
@@ -187,6 +187,7 @@ public class OMUD_MMUD{
         public int          id  =           -1;
         public String       name =          "";
         public eEquipSlot   equip_slot =    eEquipSlot.NONE;
+
         DataItem(String n)  {name = n;}
         DataItem(DataItem item){
             id =    		item.id;
@@ -200,6 +201,7 @@ public class OMUD_MMUD{
         public int      cost =          0;
         public String   name_short =    "";
         public String   name_long =     "";
+
         DataSpell(){}
         DataSpell(DataSpell spell){
         	level = 		spell.level;
@@ -363,6 +365,7 @@ public class OMUD_MMUD{
         public boolean  agi_mod =       false;
         public boolean  hea_mod =       false;
         public boolean  cha_mod =       false;
+
         public eBlockType getType(){return eBlockType.STATS;}
         public DataStats(){}
         public DataStats(DataStats ds){
@@ -404,6 +407,7 @@ public class OMUD_MMUD{
         public int next_total = -1;
         public int next_rem =   -1;
         public int per_hr =     -1;
+
         public eBlockType getType(){return eBlockType.EXP;}
         public DataExp(){}
         public DataExp(DataExp de){
@@ -419,6 +423,7 @@ public class OMUD_MMUD{
             public String   name =  "";
             public int      qty =   0;
             public String   price = ""; // string for now, change later when conversions in place
+
             public ShopItem(){}
             public ShopItem(ShopItem si){
                 name =  new String(si.name);
@@ -426,8 +431,8 @@ public class OMUD_MMUD{
                 price = new String(si.price);
             }
         }
-
         public ArrayList<ShopItem> shop_items = new ArrayList<ShopItem>();
+
         public eBlockType getType(){return eBlockType.SHOP;}
         public DataShop(){}
         public DataShop(DataShop ds){
@@ -439,6 +444,7 @@ public class OMUD_MMUD{
 
     public static class DataSpells extends DataBlock{
         public ArrayList<DataSpell> spells = new ArrayList<DataSpell>();
+
         public eBlockType getType(){return eBlockType.SPELLS;}
         public DataSpells(){}
         public DataSpells(DataSpells ds){           
@@ -454,6 +460,7 @@ public class OMUD_MMUD{
             public String       name_last =     "";
             public String       title =         "";
             public String       guild =         "";
+
             DataWhoChar(){}
             DataWhoChar(DataWhoChar dwc){
                 alignment =     dwc.alignment;
@@ -463,8 +470,8 @@ public class OMUD_MMUD{
                 guild =         new String(dwc.guild);
             }
         }
-
         public ArrayList<DataWhoChar> chars = new ArrayList<DataWhoChar>();
+
         public eBlockType getType(){return eBlockType.WHO;}
         DataWho(){}
         DataWho(DataWho dw){
@@ -483,8 +490,8 @@ public class OMUD_MMUD{
             public int      ma_max =        0;
             public String   rank =          "";
         }
-
         public ArrayList<PartyMember> members = new ArrayList<PartyMember>();
+
         public eBlockType getType(){return eBlockType.PARTY;}
     }
 }

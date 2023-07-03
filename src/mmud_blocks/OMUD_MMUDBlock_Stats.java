@@ -11,8 +11,6 @@ public class OMUD_MMUDBlock_Stats extends OMUD_MMUDBlocks.Block{
     private final String MSTR_HITS =        "Hits:";
     private final String MSTR_AC =          "Armour Class:";
     private final String MSTR_THIEVERY =    "Thievery:";
-    private final String MSTR_MANA =        "Mana:";
-    private final String MSTR_KAI =         "Kai:";
     private final String MSTR_SC =          "Spellcasting:";
     private final String MSTR_TRAPS =       "Traps:";
     private final String MSTR_PICK =        "Picklocks:";
@@ -153,19 +151,16 @@ public class OMUD_MMUDBlock_Stats extends OMUD_MMUDBlocks.Block{
                         pos_right = pos_left - 1;
                     }
 
-                    if ((pos_left = lines[row_num].lastIndexOf(MSTR_MANA, pos_right)) > -1 ||
-                        (pos_left = lines[row_num].lastIndexOf(MSTR_KAI,  pos_right)) > -1){
-
-                        int pos_colon = lines[row_num].indexOf(":", pos_left);
-
+                    if ((pos_left = lines[row_num].lastIndexOf(":", pos_right)) > -1){
                         // check for modifier...
                         StringBuilder sbVal = new StringBuilder();
-                        mmc.dataStatline.ma_mod = parseModdedStat(lines[row_num].substring(pos_colon + 1, pos_right + 1).trim(), sbVal);
+                        mmc.dataStatline.ma_mod = parseModdedStat(lines[row_num].substring(pos_left + 1, pos_right + 1).trim(), sbVal);
                         String[] tokens = sbVal.toString().split("/");
                         if (tokens.length == 2){
                             mmc.dataStatline.ma_cur = Integer.parseInt(tokens[0]);
                             mmc.dataStatline.ma_max = Integer.parseInt(tokens[1]);
                         }
+                        mmc.dataStatline.ma_str = lines[row_num].substring(0, 2).toUpperCase(); // get first two chars of mana type for statline
                         pos_right = pos_left - 1;
                     }
                 }
