@@ -11,6 +11,10 @@ set "SRC=src"
 set "BUILD_DIR=_BUILD"
 set "MAN=MANIFEST.MF"
 
+echo JAVA_HOME: "%JAVA_HOME%"
+echo Build:     %JAR_OMUD% %JAR_AC%
+echo.
+
 REM ------------
 REM Create Build Dir Structure
 REM ------------

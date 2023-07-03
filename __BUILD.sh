@@ -19,6 +19,10 @@ cp fonts/* $BUILD_DIR/fonts 2>/dev/null
 cp lib/$JAR_AC $BUILD_DIR   2>/dev/null
 cp src/$MAN $BUILD_DIR      2>/dev/null
 
+echo JAVA_HOME: \"$JAVA_HOME\"
+echo Build:     \"$JAR_OMUD\" \"$JAR_AC\"
+echo ""
+
 # ------------
 # Compile
 # ------------
