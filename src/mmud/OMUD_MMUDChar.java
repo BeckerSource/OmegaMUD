@@ -19,6 +19,7 @@ public class OMUD_MMUDChar{
         }
     }
 
+    public String                   strWelcome =    "";
     public OMUD_MMUD.DataRoom       dataRoom =      new OMUD_MMUD.DataRoom();
     public OMUD_MMUD.DataExp        dataExp =       new OMUD_MMUD.DataExp();
     public OMUD_MMUD.DataStats      dataStats =     new OMUD_MMUD.DataStats();
@@ -28,6 +29,5 @@ public class OMUD_MMUDChar{
     public OMUD_MMUD.DataSpells     dataSpells =    new OMUD_MMUD.DataSpells();
     public OMUD_MMUD.DataWho        dataWho =       new OMUD_MMUD.DataWho();
     public OMUD_MMUD.DataParty      dataParty =     new OMUD_MMUD.DataParty();
-
     public ActiveBlock ablk = new ActiveBlock(false, OMUD_MMUD.DataBlock.eBlockType.ROOM);
 }

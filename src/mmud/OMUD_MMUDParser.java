@@ -19,7 +19,7 @@ interface OMUD_IMUDEvents{
     public void notifyMUDCombat();
 }
 
-public class OMUD_MMUDParser{
+public class OMUD_MMUDParser {
 
     // ------------------
     // OMUD_MMUDParser
@@ -38,7 +38,7 @@ public class OMUD_MMUDParser{
 
     private void resetData(OMUD.eBBSLocation eBBSLoc){      
         _eBBSLoc = eBBSLoc;
-        _mmc =  new OMUD_MMUDChar();
+        _mmc = new OMUD_MMUDChar();
     }
 
     public void appendChar(char c)          {_sbDataTelnet.append(c);}
@@ -99,7 +99,7 @@ public class OMUD_MMUDParser{
         // BBS MUD Menu
         // ------------------
         // find a better way to isolate this check based on a command in the future?...
-        if (_sbDataTelnet.length() > 0 && (pos_data_found_start = _s_blocks.parseBBSMenu(_omme, _mmc, _sbDataTelnet)) > -1){
+        if (_sbDataTelnet.length() > 0 && (pos_data_found_start = _s_blocks.parseBBSMenu(_mmc, _sbDataTelnet)) > -1){
             _sbDataTelnet.delete(0, pos_data_found_start);
             // reset data and location...
             resetData(OMUD.eBBSLocation.MUD_MENU);
@@ -149,17 +149,24 @@ public class OMUD_MMUDParser{
             // ------------------
             // Find Statline
             // ------------------
-            if (_sbDataTelnet.length() > 0 && (pos_data_found_start = _s_blocks.parseStatline(_omme, _mmc, _sbDataTelnet)) > -1){
+            if (_sbDataTelnet.length() > 0 && (pos_data_found_start = _s_blocks.parseStatline(_mmc, _sbDataTelnet)) > -1){
                 pos_buf_delete_len = updateParseDeleteLen(pos_data_found_start, pos_buf_delete_len);
 
                 // check if returning from training stats or at a prompt/input...
                 if (_eBBSLoc == OMUD.eBBSLocation.MUD_EDITOR){
                     _omme.notifyMUDLocation((_eBBSLoc = OMUD.eBBSLocation.MUD));
+
+                    // check for welcome msg...
+                    if (_mmc.strWelcome.length() > 0){
+                        _omme.notifyMUDWelcome(new String(_mmc.strWelcome));
+                        _mmc.strWelcome = "";
+                    }
+
                     // some basic auto commands on enter - can make manual/auto modes for this later...
                     if (_mmc.dataRoom.name.length() == 0)
                         _omme.notifyMUDAutoCmd("\n");
                     if (_mmc.dataStats.name_first.length() == 0)
-                        _omme.notifyMUDAutoCmd("stat\n");
+                        _omme.notifyMUDAutoCmd("st\n");
                     _omme.notifyMUDAutoCmd("i\n");
                     _omme.notifyMUDAutoCmd("exp\n");
                     if (_mmc.dataStatline.ma_str.length() > 0){
@@ -199,7 +206,7 @@ public class OMUD_MMUDParser{
                     char char_next = i + 1 < _sbDataTelnet.length() ? _sbDataTelnet.charAt(i + 1) : 0; // 0 val is end of bufer
                     if (_sbDataTelnet.charAt(i) == OMUD.ASCII_LF && (char_next == OMUD.ASCII_ESC || char_next == 0)){
                         // parse/strip out line blocks as they are found, reset the iterator to find more until none are found...
-                        if ((pos_data_found_start = _s_blocks.parseLineBlocks(_omme, _mmc, _sbDataTelnet, i)) > -1){
+                        if ((pos_data_found_start = _s_blocks.parseLineBlocks(_mmc, _sbDataTelnet, i)) > -1){
                             pos_buf_delete_len = updateParseDeleteLen(pos_data_found_start, pos_buf_delete_len);
                             i = pos_data_found_start;
                         }

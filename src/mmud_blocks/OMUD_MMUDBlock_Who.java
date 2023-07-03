@@ -13,7 +13,7 @@ public class OMUD_MMUDBlock_Who extends OMUD_MMUDBlocks.Block{
         _arrlCmdText.add(new CmdText("who", 3));
     }
 
-    public int findBlockData(OMUD_IMUDEvents omme, OMUD_MMUDChar mmc, StringBuilder sbTelnetData, int pos_offset){
+    public int findBlockData(OMUD_MMUDChar mmc, StringBuilder sbTelnetData, int pos_offset){
         int pos_data_found_start = -1;
 
         if ((pos_data_found_start = findData(sbTelnetData, pos_offset, true, true, MSTR_WHO, "")) > -1){            

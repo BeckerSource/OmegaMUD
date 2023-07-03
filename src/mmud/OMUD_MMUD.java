@@ -16,8 +16,7 @@ public class OMUD_MMUD{
         SW,
         UP,
         DOWN,
-        NONE,
-        COUNT
+        NONE
     }
 
     public static final String[] EXIT_DIR_STRINGS = {
@@ -37,8 +36,7 @@ public class OMUD_MMUD{
     public static enum eDoorType{
         NONE,
         OPEN,
-        CLOSED,
-        COUNT
+        CLOSED
     }
 
     public static final String[] DOOR_TYPE_STRINGS = {

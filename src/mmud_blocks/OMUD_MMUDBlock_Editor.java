@@ -9,7 +9,7 @@ public class OMUD_MMUDBlock_Editor extends OMUD_MMUDBlocks.Block{
         _arrlCmdText.add(new CmdText("x",           1));
     }
 
-    public int findBlockData(OMUD_IMUDEvents omme, OMUD_MMUDChar mmc, StringBuilder sbTelnetData, int pos_offset){
+    public int findBlockData(OMUD_MMUDChar mmc, StringBuilder sbTelnetData, int pos_offset){
         return -1;
     }
 }

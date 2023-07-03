@@ -1,6 +1,8 @@
 import java.awt.Dimension;
 import java.awt.GridBagLayout;
 import java.awt.GridBagConstraints;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
@@ -8,8 +10,22 @@ import javax.swing.JScrollPane;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-public class OMUD_GUIFrameInfo extends JFrame{
+public class OMUD_GUIFrameInfo extends JFrame {
+    private enum eTab{
+        TERM_DEBUG,
+        MUD_OTHER,
+        MUD_CMDS,
+        MUD_WELCOME,
+        MUD_ROOM,
+        MUD_INV,
+        MUD_STATS,
+        MUD_SHOP,
+        MUD_SPELLS,
+        MUD_WHO
+    }
+
     private SimpleDateFormat    _sdf =          null; 
+    private OMUD_IMUDEvents     _omme =         null;
     private OMUD_GUITextField   _lblInvRunic =  null;
     private OMUD_GUITextField   _lblInvPlat =   null;
     private OMUD_GUITextField   _lblInvGold =   null;
@@ -28,14 +44,16 @@ public class OMUD_GUIFrameInfo extends JFrame{
     private OMUD_GUITextArea    _txtWho =       null;
     private JPanel              _pnlInv =       null;
     private JPanel              _pnlInvMoney =  null;
-    private JTabbedPane         _tabsInfo =     null;
+    private JTabbedPane         _tabs =         null;
+    private eTab                _tab_prev =     eTab.TERM_DEBUG;
     private static final int FRAME_MIN_WIDTH  = 710;
     private static final int FRAME_MIN_HEIGHT = 550;
 
-    OMUD_GUIFrameInfo(){
+    OMUD_GUIFrameInfo(OMUD_IMUDEvents omme){
         setMinimumSize(new Dimension(FRAME_MIN_WIDTH, FRAME_MIN_HEIGHT));
         setTitle("Char Info");
 
+        _omme = omme;
         _sdf = new SimpleDateFormat("yyyy-MM-dd_kk-mm-ss");
 
         // inventory stuff...
@@ -59,23 +77,27 @@ public class OMUD_GUIFrameInfo extends JFrame{
         _txtShop =      new OMUD_GUITextArea(false);
         _txtSpells =    new OMUD_GUITextArea(false);
         _txtWho =       new OMUD_GUITextArea(false);
-        _tabsInfo = new JTabbedPane(JTabbedPane.TOP, JTabbedPane.WRAP_TAB_LAYOUT);
-        _tabsInfo.add("TermDbg",  _txtTermDbg);
-        _tabsInfo.add("MCmds",      new JScrollPane(_txtCmds));
-        _tabsInfo.add("MOther",     new JScrollPane(_txtOther));
-        _tabsInfo.add("MWelcome",   new JScrollPane(_txtWelcome));
-        _tabsInfo.add("MRoom",      new JScrollPane(_txtRoom));
-        _tabsInfo.add("MInv",       new JScrollPane(_pnlInv));
-        _tabsInfo.add("MStats",     new JScrollPane(_txtStats));
-        _tabsInfo.add("MShop",      new JScrollPane(_txtShop));
-        _tabsInfo.add("MSpells",    new JScrollPane(_txtSpells));
-        _tabsInfo.add("MWho",       new JScrollPane(_txtWho));
-        add(_tabsInfo);
+        _tabs =         new JTabbedPane(JTabbedPane.TOP, JTabbedPane.WRAP_TAB_LAYOUT);
+        
+        _tabs.add("TermDbg",    _txtTermDbg);
+        _tabs.add("MOther",     new JScrollPane(_txtOther));
+        _tabs.add("MCmds",      new JScrollPane(_txtCmds));
+        _tabs.add("MWelcome",   new JScrollPane(_txtWelcome));
+        _tabs.add("MRoom",      new JScrollPane(_txtRoom));
+        _tabs.add("MInv",       new JScrollPane(_pnlInv));
+        _tabs.add("MStats",     new JScrollPane(_txtStats));
+        _tabs.add("MShop",      new JScrollPane(_txtShop));
+        _tabs.add("MSpells",    new JScrollPane(_txtSpells));
+        _tabs.add("MWho",       new JScrollPane(_txtWho));
+        add(_tabs);
 
         // layouts...
         GridBagLayout gbl = new GridBagLayout();
         layoutInv(gbl);
         pack();
+
+        // listeners...
+        _tabs.addMouseListener(new ML_Tabs());
     }
 
     private void layoutInv(GridBagLayout gbl){
@@ -125,10 +147,38 @@ public class OMUD_GUIFrameInfo extends JFrame{
     }
 
     // --------------
+    // GUI Events
+    // --------------
+    private class ML_Tabs implements MouseListener {
+        public void mouseEntered(MouseEvent event)  {}
+        public void mouseExited(MouseEvent event)   {}
+        public void mousePressed(MouseEvent event)  {}
+        public void mouseReleased(MouseEvent event) {}
+        public void mouseClicked(MouseEvent event) {
+            if (_tabs.getSelectedIndex() != _tab_prev.ordinal()){
+                _tab_prev = eTab.values()[_tabs.getSelectedIndex()];
+
+                     if (_tab_prev == eTab.MUD_ROOM)
+                    _omme.notifyMUDAutoCmd("\n");
+                else if (_tab_prev == eTab.MUD_INV)
+                    _omme.notifyMUDAutoCmd("i\n");
+                else if (_tab_prev == eTab.MUD_STATS)
+                    _omme.notifyMUDAutoCmd("st\n");
+                else if (_tab_prev == eTab.MUD_SHOP)
+                    _omme.notifyMUDAutoCmd("lis\n");
+                else if (_tab_prev == eTab.MUD_SPELLS)
+                    _omme.notifyMUDAutoCmd("sp\n");
+                else if (_tab_prev == eTab.MUD_WHO)
+                    _omme.notifyMUDAutoCmd("who\n");
+            }
+        }
+    }
+
+    // --------------
     // Telnet Events
     // --------------
     public void processTelnetParsed(final OMUD_Buffer omb){
-        if (isVisible() && _tabsInfo.getSelectedIndex() == 0){
+        if (isVisible() && _tabs.getSelectedIndex() == 0){
             // terminal debug text...
             int caret_pos = 0;
             String strRow;
@@ -174,10 +224,10 @@ public class OMUD_GUIFrameInfo extends JFrame{
     }
 
     public void processMUDRoom(final OMUD_MMUD.DataRoom dataRoom){
-        _tabsInfo.setSelectedIndex(4);
+        _tabs.setSelectedIndex(4);
 
         StringBuilder sb = new StringBuilder();
-        sb.append("[RoomID]: "          + dataRoom.roomID       + "\n\n");
+        sb.append("[RoomID]: "          + dataRoom.roomID       + "\n");
         sb.append("[RoomName]: "        + dataRoom.name         + " (" + OMUD_MMUD.ROOM_LIGHT_STRINGS[dataRoom.light.ordinal()] + ")\n\n");
         sb.append("[RoomItems]\n"       + dataRoom.items        + "\n\n");
         sb.append("[RoomItemsHidden]\n" + dataRoom.items_hidden + "\n\n");
@@ -189,7 +239,7 @@ public class OMUD_GUIFrameInfo extends JFrame{
     }
 
     public void processMUDInv(final OMUD_MMUD.DataInv dataInv){
-        _tabsInfo.setSelectedIndex(5);
+        _tabs.setSelectedIndex(5);
 
         StringBuilder sb = new StringBuilder();
         sb.append("\n[InvEnc]: (" + dataInv.enc_level + ") " + dataInv.enc_cur + "/" + dataInv.enc_max + String.format(" [%.0f", ((float) dataInv.enc_cur / dataInv.enc_max) * 100) + "%]\n\n");
@@ -227,7 +277,7 @@ public class OMUD_GUIFrameInfo extends JFrame{
     }
 
     public void processMUDStats(final OMUD_MMUD.DataStats dataStats){
-        _tabsInfo.setSelectedIndex(6);
+        _tabs.setSelectedIndex(6);
 
         StringBuilder sb = new StringBuilder();
         sb.append("[NameFirst]: "   + dataStats.name_first      + "\n");
@@ -261,7 +311,7 @@ public class OMUD_GUIFrameInfo extends JFrame{
     }
 
     public void processMUDShop(final OMUD_MMUD.DataShop dataShop, final String strRoomID, final String strRoomName){
-        _tabsInfo.setSelectedIndex(7);
+        _tabs.setSelectedIndex(7);
 
         StringBuilder sb = new StringBuilder();
         sb.append("[RoomID]: "    + strRoomID   + "\n");
@@ -284,7 +334,7 @@ public class OMUD_GUIFrameInfo extends JFrame{
     }
 
     public void processMUDSpells(final OMUD_MMUD.DataSpells dataSpells){
-        _tabsInfo.setSelectedIndex(8);
+        _tabs.setSelectedIndex(8);
 
         StringBuilder sb = new StringBuilder();
         sb.append("--------------------\n");
@@ -300,7 +350,7 @@ public class OMUD_GUIFrameInfo extends JFrame{
     }
 
     public void processMUDWho(final OMUD_MMUD.DataWho dataWho){
-        _tabsInfo.setSelectedIndex(9);
+        _tabs.setSelectedIndex(9);
 
         StringBuilder sb = new StringBuilder();
         sb.append("--------------------\n");

@@ -27,7 +27,7 @@ public class OMUD_GUI implements OMUD_ITextInputEvents, OMUD_ITelnetEvents, OMUD
         // --------------
         _fChars =   new OMUD_GUIFrameChars();
         _fView =    new OMUD_GUIFrameView(this, _omt, _omtp);
-        _fInfo =    new OMUD_GUIFrameInfo();
+        _fInfo =    new OMUD_GUIFrameInfo(this);
 
         //_fView.setLocationRelativeTo(null); // center in main display
         Dimension size = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice().getDefaultConfiguration().getBounds().getSize();
@@ -82,7 +82,7 @@ public class OMUD_GUI implements OMUD_ITextInputEvents, OMUD_ITelnetEvents, OMUD
     // --------------
     public void notifyMUDAutoCmd(final String strCmd){
         SwingUtilities.invokeLater(new Runnable(){public void run(){
-            _fView.processMUDAutoCmd(strCmd);
+            _omt.sendText(strCmd);
         }});
     }
 

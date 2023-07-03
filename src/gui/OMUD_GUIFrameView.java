@@ -300,10 +300,6 @@ public class OMUD_GUIFrameView extends JFrame{
     // --------------
     // MUD Events
     // --------------
-    public void processMUDAutoCmd(final String strCmd){
-        _omt.sendText(strCmd);
-    }
-
     public void processMUDLocation(final OMUD.eBBSLocation eLoc){
         setBBSLocText(OMUD.BBS_LOCATION_STRINGS[eLoc.ordinal()]);
     }

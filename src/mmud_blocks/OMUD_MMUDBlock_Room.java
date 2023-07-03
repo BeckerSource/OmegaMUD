@@ -21,7 +21,7 @@ public class OMUD_MMUDBlock_Room extends OMUD_MMUDBlocks.Block{
         _arrlCmdText.add(new CmdText("search",  3)); // only "sea" is required
     }
 
-    public int findBlockData(OMUD_IMUDEvents omme, OMUD_MMUDChar mmc, StringBuilder sbTelnetData, int pos_offset){
+    public int findBlockData(OMUD_MMUDChar mmc, StringBuilder sbTelnetData, int pos_offset){
         int pos_data_found_start = -1;
 
         if ((pos_data_found_start = findData(sbTelnetData, pos_offset, true, true, MSTR_ROOM_NAME, "")) > -1){
@@ -95,7 +95,7 @@ public class OMUD_MMUDBlock_Room extends OMUD_MMUDBlocks.Block{
             if (mmc.dataRoom.name.length() == 0){
                 StringBuilder sbWelcome = new StringBuilder(sbTelnetData.substring(0, pos_data_found_start));
                 cleanData(sbWelcome, false, true);
-                omme.notifyMUDWelcome(sbWelcome.toString().trim());
+                mmc.strWelcome = sbWelcome.toString().trim();
                 sbTelnetData.delete(0, pos_data_found_start);
                 pos_data_found_start = 0;
             // PREFIX: if room name is shown after a move command, it will have a white/black reset prefix...
@@ -121,7 +121,7 @@ public class OMUD_MMUDBlock_Room extends OMUD_MMUDBlocks.Block{
         // Search: No Items
         // ------------------
         } else if ((pos_data_found_start = findData(sbTelnetData, pos_offset, true, false, MSTR_SEARCH_NONE, "")) > -1){
-            omme.notifyMUDOther("[ROOM_SEARCH_NONE]\n");
+            //omme.notifyMUDOther("[ROOM_SEARCH_NONE]\n");
         }           
 
         return pos_data_found_start;
@@ -148,7 +148,7 @@ public class OMUD_MMUDBlock_Room extends OMUD_MMUDBlocks.Block{
                     word_door_name  = words[1]; // not sure if door name will ever be needed or not
                     // match up the door state -
                     // ignore case by default, not sure if needed for doors...
-                    int ds_count = OMUD_MMUD.eDoorType.COUNT.ordinal();
+                    int ds_count = OMUD_MMUD.DOOR_TYPE_STRINGS.length;
                     for (int i = 0; i < ds_count; ++i){
                         if (word_door_state.equalsIgnoreCase(OMUD_MMUD.DOOR_TYPE_STRINGS[i])){
                             edoor = OMUD_MMUD.eDoorType.values()[i];
@@ -159,7 +159,7 @@ public class OMUD_MMUDBlock_Room extends OMUD_MMUDBlocks.Block{
 
                 // match up the direction -
                 // ignore case for some situations with secret passages with upper first char directions and probably others...
-                int ed_count = OMUD_MMUD.eExitDir.COUNT.ordinal();
+                int ed_count = OMUD_MMUD.EXIT_DIR_STRINGS.length;
                 for (int i = 0; i < ed_count; ++i){
                     if (word_dir.equalsIgnoreCase(OMUD_MMUD.EXIT_DIR_STRINGS[i])){
                         edir = OMUD_MMUD.eExitDir.values()[i];

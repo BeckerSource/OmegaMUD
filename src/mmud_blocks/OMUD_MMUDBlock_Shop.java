@@ -1,5 +1,6 @@
 public class OMUD_MMUDBlock_Shop extends OMUD_MMUDBlocks.Block{
-    private final String MSTR_SHOP =        "[0;37;40m[0;37;40m[79D[KThe following items are for sale here:\n\n[0;32mItem                          [36mQuantity    Price\n------------------------------------------------------\n";
+    private final String MSTR_SHOP_YES =    "[0;37;40m[0;37;40m[79D[KThe following items are for sale here:\n\n[0;32mItem                          [36mQuantity    Price\n------------------------------------------------------\n";
+    private final String MSTR_SHOP_NO =     "[0;37;40m[1;31;40mYou cannot LIST if you are not in a shop!\n";
     private final String MSTR_ITEM_NAME =   "[32m";
     private final String MSTR_ITEM_QTY =    "[36m";
 
@@ -9,11 +10,11 @@ public class OMUD_MMUDBlock_Shop extends OMUD_MMUDBlocks.Block{
         _arrlCmdText.add(new CmdText("list", 3));
     }
 
-    public int findBlockData(OMUD_IMUDEvents omme, OMUD_MMUDChar mmc, StringBuilder sbTelnetData, int pos_offset){
+    public int findBlockData(OMUD_MMUDChar mmc, StringBuilder sbTelnetData, int pos_offset){
         int pos_data_found_start = -1;
 
-        if ((pos_data_found_start = findData(sbTelnetData, pos_offset, true, true, MSTR_SHOP, "")) > -1){
-            mmc.dataShop.shop_items.clear();
+        if ((pos_data_found_start = findData(sbTelnetData, pos_offset, true, true, MSTR_SHOP_YES, "")) > -1){
+            mmc.dataShop = new OMUD_MMUD.DataShop();
 
             int pos_left = 0;
             int pos_right = 0;
@@ -39,6 +40,8 @@ public class OMUD_MMUDBlock_Shop extends OMUD_MMUDBlocks.Block{
                 }
                 mmc.dataShop.shop_items.add(item);
             }                       
+        } else if ((pos_data_found_start = findData(sbTelnetData, pos_offset, true, false, MSTR_SHOP_NO, "")) > -1){
+            mmc.dataShop = new OMUD_MMUD.DataShop();
         }
 
         return pos_data_found_start;
