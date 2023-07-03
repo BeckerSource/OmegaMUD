@@ -77,8 +77,8 @@ Mac: Untested
 ## Screenshot: MUD Newhaven Arena
 ![MUD Newhaven Arena](./screenshots/omud-mud_newhaven_arena.png)
 
-## Screenshot: MUD Room Info
-![MUD Room Info](./screenshots/omud-mud_room.png)
+## Screenshot: MUD Room Items
+![MUD Room Items](./screenshots/omud-mud_room_items.png)
 
 ## Screenshot: MUD Inventory
 ![MUD Inventory](./screenshots/omud-mud_inventory.png)
