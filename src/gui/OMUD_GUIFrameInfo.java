@@ -389,13 +389,17 @@ public class OMUD_GUIFrameInfo extends JFrame {
             if (fill_len > 0)
                 sb.append(OMUD.getFillString(" ", fill_len));
 
-            // align, title...
+            // align...
             String strAlign = OMUD_MMUD.ALIGNMENT_STRINGS[dataWho.chars.get(i).alignment.ordinal()];
-            sb.append(" (" + strAlign + " " + dataWho.chars.get(i).title);
+            sb.append(" (" + strAlign);
+            fill_len = 8 - strAlign.length();
+            if (fill_len > 0)
+                sb.append(OMUD.getFillString(" ", fill_len));
 
-            // guild...
+            // title + guild...
+            sb.append(" " + dataWho.chars.get(i).title);
             if (dataWho.chars.get(i).guild.length() > 0){
-                fill_len = (8 + 16) - (strAlign.length() + dataWho.chars.get(i).title.length());
+                fill_len = 16 - dataWho.chars.get(i).title.length();
                 if (fill_len > 0)
                     sb.append(OMUD.getFillString(" ", fill_len));
                 sb.append(" of " + dataWho.chars.get(i).guild);

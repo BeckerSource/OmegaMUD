@@ -192,10 +192,11 @@ public class OMUD_MMUDBlock_Room extends OMUD_MMUDBlocks.Block{
                 }
             }
 
-            // check for existing...
+            // check for existing - update greater quantity if found...
             boolean found = false;
             for (int j = 0; j < arrlRoomItems.size() && !found; ++j)
-                found = ri.name.equals(arrlRoomItems.get(j).name);
+                if ((found = ri.name.equals(arrlRoomItems.get(j).name)) && ri.qty > arrlRoomItems.get(j).qty)
+                    arrlRoomItems.get(j).qty = ri.qty;
             if (!found)
                 arrlRoomItems.add(ri);
         }

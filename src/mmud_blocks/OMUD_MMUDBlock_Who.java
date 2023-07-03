@@ -59,15 +59,12 @@ public class OMUD_MMUDBlock_Who extends OMUD_MMUDBlocks.Block{
                             // if title is non-neutral, more data to the left (skip the pre-space)...
                             pos_right = pos_left - 1;
                             String strAlign = strLeft.substring(0, pos_right).trim();
-                            if (strAlign.length() > 0 &&
-                                (pos_left = strLeft.lastIndexOf(" ", --pos_right)) > -1){
-
-                                strAlign = strLeft.substring(pos_left + 1, pos_right + 1);
+                            if (strAlign.length() > 0){
                                 for (int i = OMUD_MMUD.eAlignment.NEUTRAL.ordinal() + 1; i < OMUD_MMUD.ALIGNMENT_STRINGS.length; ++i)
-                                    if (strAlign.equals(OMUD_MMUD.ALIGNMENT_STRINGS[i])){
+                                    if (strAlign.lastIndexOf(OMUD_MMUD.ALIGNMENT_STRINGS[i], strAlign.length() - 1) > -1){
                                         whoChar.alignment = OMUD_MMUD.eAlignment.values()[i];
                                         break;
-                                    }                                    
+                                    }
                             }
                         }
 
