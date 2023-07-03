@@ -1,6 +1,6 @@
 public class OMUD_MMUDBlock_Who extends OMUD_MMUDBlocks.Block{
     private final String MSTR_WHO =         "[0;37;40m[79D[K[1;33m         Current Adventurers\n[1;30m         ===================\n\n";
-    private final String MSTR_COLOR_PRE=    "[0m";
+    private final String MSTR_COLOR_PRE =   "[0m";
     private final String MSTR_LINE_END =    " [37m ";
     private final String MSTR_DELIM_LR =    "  -  [35m";
     private final String MSTR_NAME =        "[0;32m";
