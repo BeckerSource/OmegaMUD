@@ -1,14 +1,14 @@
 import java.util.ArrayList;
 
 interface OMUD_IMUDEvents{
+    public void requestMUDData(OMUD_MMUD.DataBlock.eBlockType block_type);
+    public void notifyMUDInit(final String strWelcome, final String strSpellsCmd);
+    public void notifyMUDUnknown(final String strText);
+    public void notifyMUDOther(final String strText);
+    public void notifyMUDUserCmd(final String strText);
     public void notifyMUDLocation(final OMUD.eBBSLocation eLoc);
     public void notifyMUDStatline(final OMUD_MMUD.DataStatline dataStatline);
     public void notifyMUDExp(final OMUD_MMUD.DataExp dataExp);
-    public void notifyMUDUserCmd(final String strText);
-    public void notifyMUDAutoCmd(final String strCmd);
-    public void notifyMUDUnknown(final String strText);
-    public void notifyMUDOther(final String strText);
-    public void notifyMUDWelcome(final String strText);
     public void notifyMUDRoom(final OMUD_MMUD.DataRoom dataRoom);
     public void notifyMUDInv(final OMUD_MMUD.DataInv dataInv);
     public void notifyMUDStats(final OMUD_MMUD.DataStats dataStats);
@@ -158,23 +158,26 @@ public class OMUD_MMUDParser {
 
                     // check for welcome msg...
                     if (_mmc.strWelcome.length() > 0){
-                        _omme.notifyMUDWelcome(new String(_mmc.strWelcome));
+                        String strSpellsCmd = OMUD_MMUD.DataBlock.CMD_STRINGS[OMUD_MMUD.DataBlock.eBlockType.SPELLS.ordinal()]; // defaults to empty string
+                        if (_mmc.dataStatline.ma_str.length() > 0){
+                            if (_mmc.dataStatline.ma_str.equals(OMUD_MMUD.DataStatline.MA_STR))
+                                 strSpellsCmd = OMUD_MMUD.DataBlock.CMD_SPELLS_REG;
+                            else strSpellsCmd = OMUD_MMUD.DataBlock.CMD_SPELLS_KAI;
+                        }
+                        _omme.notifyMUDInit(new String(_mmc.strWelcome), strSpellsCmd);
                         _mmc.strWelcome = "";
                     }
 
                     // some basic auto commands on enter - can make manual/auto modes for this later...
                     if (_mmc.dataRoom.name.length() == 0)
-                        _omme.notifyMUDAutoCmd("\n");
+                        _omme.requestMUDData(OMUD_MMUD.DataBlock.eBlockType.ROOM);
                     if (_mmc.dataStats.name_first.length() == 0)
-                        _omme.notifyMUDAutoCmd("st\n");
-                    _omme.notifyMUDAutoCmd("i\n");
-                    _omme.notifyMUDAutoCmd("exp\n");
-                    if (_mmc.dataStatline.ma_str.length() > 0){
-                        if (_mmc.dataStatline.ma_str.equals(OMUD_MMUD.DataStatline.MSTR_MA))
-                             _omme.notifyMUDAutoCmd("sp\n");
-                        else _omme.notifyMUDAutoCmd("po\n");
-                    }
-                    _omme.notifyMUDAutoCmd("who\n");
+                        _omme.requestMUDData(OMUD_MMUD.DataBlock.eBlockType.STATS);
+                    _omme.requestMUDData(OMUD_MMUD.DataBlock.eBlockType.INV);
+                    _omme.requestMUDData(OMUD_MMUD.DataBlock.eBlockType.EXP);
+                    if (_mmc.dataStatline.ma_str.length() > 0)
+                        _omme.requestMUDData(OMUD_MMUD.DataBlock.eBlockType.SPELLS);
+                    _omme.requestMUDData(OMUD_MMUD.DataBlock.eBlockType.WHO);
                 }
 
                 // notify for statline update and other data that was updated...

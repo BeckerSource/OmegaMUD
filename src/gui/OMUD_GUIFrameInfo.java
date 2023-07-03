@@ -159,17 +159,17 @@ public class OMUD_GUIFrameInfo extends JFrame {
                 _tab_prev = eTab.values()[_tabs.getSelectedIndex()];
 
                      if (_tab_prev == eTab.MUD_ROOM)
-                    _omme.notifyMUDAutoCmd("\n");
+                    _omme.requestMUDData(OMUD_MMUD.DataBlock.eBlockType.ROOM);
                 else if (_tab_prev == eTab.MUD_INV)
-                    _omme.notifyMUDAutoCmd("i\n");
+                    _omme.requestMUDData(OMUD_MMUD.DataBlock.eBlockType.INV);
                 else if (_tab_prev == eTab.MUD_STATS)
-                    _omme.notifyMUDAutoCmd("st\n");
+                    _omme.requestMUDData(OMUD_MMUD.DataBlock.eBlockType.STATS);
                 else if (_tab_prev == eTab.MUD_SHOP)
-                    _omme.notifyMUDAutoCmd("lis\n");
+                    _omme.requestMUDData(OMUD_MMUD.DataBlock.eBlockType.SHOP);
                 else if (_tab_prev == eTab.MUD_SPELLS)
-                    _omme.notifyMUDAutoCmd("sp\n");
+                    _omme.requestMUDData(OMUD_MMUD.DataBlock.eBlockType.SPELLS);
                 else if (_tab_prev == eTab.MUD_WHO)
-                    _omme.notifyMUDAutoCmd("who\n");
+                    _omme.requestMUDData(OMUD_MMUD.DataBlock.eBlockType.WHO);
             }
         }
     }

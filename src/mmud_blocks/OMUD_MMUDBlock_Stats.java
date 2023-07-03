@@ -160,7 +160,6 @@ public class OMUD_MMUDBlock_Stats extends OMUD_MMUDBlocks.Block{
                             mmc.dataStatline.ma_cur = Integer.parseInt(tokens[0]);
                             mmc.dataStatline.ma_max = Integer.parseInt(tokens[1]);
                         }
-                        mmc.dataStatline.ma_str = lines[row_num].substring(0, 2).toUpperCase(); // get first two chars of mana type for statline
                         pos_right = pos_left - 1;
                     }
                 }

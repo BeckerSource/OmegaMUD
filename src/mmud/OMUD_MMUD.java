@@ -1,7 +1,7 @@
 import java.util.ArrayList;
 
 public class OMUD_MMUD{
-    
+
     // ------------------
     // Room Data
     // ------------------
@@ -225,6 +225,22 @@ public class OMUD_MMUD{
             WHO,
             PARTY
         }
+
+        public static final String[] CMD_STRINGS = {
+            "",
+            "",
+            "\n",
+            "i\n",
+            "stat\n",
+            "exp\n",
+            "lis\n",
+            "",
+            "who\n",
+            "par\n"
+        };
+        public static final String CMD_SPELLS_REG = "sp\n";
+        public static final String CMD_SPELLS_KAI = "po\n";
+
         public abstract eBlockType getType();
     }
 
@@ -238,7 +254,7 @@ public class OMUD_MMUD{
         public String   hp_str =    "";
         public String   ma_str =    "";
         public eRestState rest =    eRestState.READY;
-        public static final String MSTR_MA = "MA";
+        public static final String MA_STR = "MA";
 
         public eBlockType getType(){return eBlockType.STATLINE;}
         public DataStatline(){}

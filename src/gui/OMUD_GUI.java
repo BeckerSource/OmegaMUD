@@ -4,11 +4,12 @@ import javax.swing.SwingUtilities;
 import java.util.ArrayList;
 
 public class OMUD_GUI implements OMUD_ITextInputEvents, OMUD_ITelnetEvents, OMUD_IMUDEvents{
-    private OMUD_Telnet         _omt =    null;
-    private OMUD_TelnetParser   _omtp =   null;
-    private OMUD_GUIFrameChars  _fChars = null;
-    private OMUD_GUIFrameView   _fView =  null;
-    private OMUD_GUIFrameInfo   _fInfo =  null;
+    private OMUD_Telnet         _omt =          null;
+    private OMUD_TelnetParser   _omtp =         null;
+    private OMUD_GUIFrameChars  _fChars =       null;
+    private OMUD_GUIFrameView   _fView =        null;
+    private OMUD_GUIFrameInfo   _fInfo =        null;
+    private String              _strSpellsCmd = "";
 
     public OMUD_GUI() {
 
@@ -79,10 +80,22 @@ public class OMUD_GUI implements OMUD_ITextInputEvents, OMUD_ITelnetEvents, OMUD
 
     // --------------
     // MUD Events
-    // --------------
-    public void notifyMUDAutoCmd(final String strCmd){
+    // --------------    
+    public void requestMUDData(OMUD_MMUD.DataBlock.eBlockType block_type){
+        if (block_type != OMUD_MMUD.DataBlock.eBlockType.SPELLS){
+            String strCmd = OMUD_MMUD.DataBlock.CMD_STRINGS[block_type.ordinal()];
+            if (strCmd.length() > 0)
+                _omt.sendText(strCmd);
+        // spells: check if a caster...
+        } else if (_strSpellsCmd.length() > 0) {
+            _omt.sendText(_strSpellsCmd);
+        }
+    }
+
+    public void notifyMUDInit(final String strWelcome, final String strSpellsCmd){
         SwingUtilities.invokeLater(new Runnable(){public void run(){
-            _omt.sendText(strCmd);
+            _fInfo.processMUDWelcome(strWelcome);
+            _strSpellsCmd = strSpellsCmd;
         }});
     }
 
@@ -122,13 +135,7 @@ public class OMUD_GUI implements OMUD_ITextInputEvents, OMUD_ITelnetEvents, OMUD
             _fInfo.processMUDOther(strText);
         }});
     }
-    
-    public void notifyMUDWelcome(final String strText){
-        SwingUtilities.invokeLater(new Runnable(){public void run(){
-            _fInfo.processMUDWelcome(strText);
-        }});
-    }
-    
+        
     public void notifyMUDRoom(final OMUD_MMUD.DataRoom dataRoom){
         SwingUtilities.invokeLater(new Runnable(){public void run(){
             _fView.processMUDRoom(dataRoom);
