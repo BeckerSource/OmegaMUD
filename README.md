@@ -71,11 +71,14 @@ Mac: Untested
 ## Screenshot: MUD Command History
 ![MUD CMD History](./screenshots/omud-mud_cmd_history.png)
 
+## Screenshot: MUD Show Stats
+![MUD CMD History](./screenshots/omud-mud_stats.png)
+
 ## Screenshot: MUD Newhaven Arena
 ![MUD Newhaven Arena](./screenshots/omud-mud_newhaven_arena.png)
 
-## Screenshot: MUD Show Stats
-![MUD CMD History](./screenshots/omud-mud_stats.png)
+## Screenshot: MUD Room Info
+![MUD Room Info](./screenshots/omud-mud_room.png)
 
 ## Screenshot: MUD Inventory
 ![MUD Inventory](./screenshots/omud-mud_inventory.png)
