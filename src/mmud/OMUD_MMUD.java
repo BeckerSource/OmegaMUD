@@ -271,42 +271,47 @@ public class OMUD_MMUD{
     }
 
     public static class DataRoom extends DataBlock{
+        public static class RoomItem extends DataItem{
+            public int qty = 1;
+
+            public RoomItem(String n){super(n);}
+            public RoomItem(RoomItem ri){
+                super(ri);
+                qty = ri.qty;
+            }
+        }
+
         public String roomID =          ""; // MegaMUD RoomID
         public String name =            "";
         public String desc =            "";
-        public String items =           "";
-        public String items_hidden =    "";
-        public String units =           "";
-        public String exits =           "";
         public eRoomLight light =       eRoomLight.NORMAL; 
-        public ArrayList<String>        arrlItems =         new ArrayList<String>();
-        public ArrayList<String>        arrlItemsHidden =   new ArrayList<String>();
+        public ArrayList<RoomItem>      arrlItems =         new ArrayList<RoomItem>();
+        public ArrayList<RoomItem>      arrlItemsHidden =   new ArrayList<RoomItem>();
         public ArrayList<String>        arrlUnits =         new ArrayList<String>();
         public ArrayList<RoomExit>      arrlExits =         new ArrayList<RoomExit>();
 
         public eBlockType getType(){return eBlockType.ROOM;}
         public DataRoom(){}
         public DataRoom(DataRoom dr){
-            roomID =        new String(dr.roomID);
-            name =          new String(dr.name);
-            desc =          new String(dr.desc);
-            items =         new String(dr.items);
-            items_hidden =  new String(dr.items_hidden);
-            units =         new String(dr.units);
-            exits =         new String(dr.exits);
-            light =         dr.light;
-            OMUD.copyStringArrayList(arrlItems,         dr.arrlItems);
-            OMUD.copyStringArrayList(arrlItemsHidden,   dr.arrlItemsHidden);
-            OMUD.copyStringArrayList(arrlUnits,         dr.arrlUnits);
+            roomID =    new String(dr.roomID);
+            name =      new String(dr.name);
+            desc =      new String(dr.desc);
+            light =     dr.light;
+            for (int i = 0; i < dr.arrlItems.size(); ++i)
+                arrlItems.add(new RoomItem(dr.arrlItems.get(i)));
+            for (int i = 0; i < dr.arrlItemsHidden.size(); ++i)
+                arrlItemsHidden.add(new RoomItem(dr.arrlItemsHidden.get(i)));
+            OMUD.copyStringArrayList(dr.arrlUnits, arrlUnits);
             for (int i = 0; i < dr.arrlExits.size(); ++i)
                 arrlExits.add(new RoomExit(dr.arrlExits.get(i)));
         }
         
         public void resetOptional(){
-            desc =  "";
-            items = "";
-            items_hidden = "";
-            units = "";
+            desc = "";
+            arrlItems.clear();
+            arrlItemsHidden.clear(); // hidden items are cumulative, will need to change this later when movement detection is in
+            arrlUnits.clear();
+            arrlExits.clear();
             light = eRoomLight.NORMAL;
         }
     }

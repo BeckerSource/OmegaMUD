@@ -248,4 +248,16 @@ public class OMUD{
         for (int i = 0; i < arrlSrc.size(); ++i)
             arrlDest.add(new String(arrlSrc.get(i)));
     }
+
+    // appendStringArrayListUniques(): assumes new array does not have dupes
+    public static void appendStringArrayListUniques(ArrayList<String> arrlNew, ArrayList<String> arrlDest){
+        int dest_orig_size = arrlDest.size(); // prevent checking newly addd
+        for (int i = 0; i < arrlNew.size(); ++i){
+            boolean found = false;
+            for (int j = 0; j < dest_orig_size && !found; ++j)
+                found = arrlNew.get(i).equals(arrlDest.get(j));
+            if (!found)
+                arrlDest.add(arrlNew.get(i));
+        }
+    }    
 }

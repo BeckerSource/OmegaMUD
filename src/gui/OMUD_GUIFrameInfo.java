@@ -228,13 +228,34 @@ public class OMUD_GUIFrameInfo extends JFrame {
         setTab(eTab.MUD_ROOM);
 
         StringBuilder sb = new StringBuilder();
-        sb.append("[RoomID]: "          + dataRoom.roomID       + "\n");
-        sb.append("[RoomName]: "        + dataRoom.name         + " (" + OMUD_MMUD.ROOM_LIGHT_STRINGS[dataRoom.light.ordinal()] + ")\n\n");
-        sb.append("[RoomItems]\n"       + dataRoom.items        + "\n\n");
-        sb.append("[RoomItemsHidden]\n" + dataRoom.items_hidden + "\n\n");
-        sb.append("[RoomUnits]\n"       + dataRoom.units        + "\n\n");
-        sb.append("[RoomExits]\n"       + dataRoom.exits        + "\n\n");
-        sb.append("[RoomDesc]\n"        + dataRoom.desc);
+        sb.append("[RoomID]: "      + dataRoom.roomID);
+        sb.append("\n[RoomName]: "  + dataRoom.name + " (" + OMUD_MMUD.ROOM_LIGHT_STRINGS[dataRoom.light.ordinal()] + ")");
+
+        sb.append("\n\n--------------------\n");
+        sb.append("[RoomItems] (*=HIDDEN)\n");
+        sb.append("--------------------\n");
+        for (int i = 0; i < dataRoom.arrlItems.size(); ++i)
+            sb.append("  (" + dataRoom.arrlItems.get(i).qty + ") " + dataRoom.arrlItems.get(i).name + "\n");
+        for (int i = 0; i < dataRoom.arrlItemsHidden.size(); ++i)
+            sb.append("* (" + dataRoom.arrlItemsHidden.get(i).qty + ") " + dataRoom.arrlItemsHidden.get(i).name + "\n");
+
+        sb.append("\n--------------------\n");
+        sb.append("[RoomUnits]\n");
+        sb.append("--------------------\n");
+        for (int i = 0; i < dataRoom.arrlUnits.size(); ++i)
+            sb.append(dataRoom.arrlUnits.get(i) + "\n");
+
+        sb.append("\n--------------------\n");
+        sb.append("[RoomExits]\n");
+        sb.append("--------------------\n");
+        for (int i = 0; i < dataRoom.arrlExits.size(); ++i)
+            sb.append(OMUD_MMUD.EXIT_DIR_STRINGS[dataRoom.arrlExits.get(i).eDir.ordinal()] + "\n");
+
+        sb.append("\n--------------------\n");
+        sb.append("[RoomDesc]\n");
+        sb.append("--------------------\n");
+        sb.append(dataRoom.desc);
+
         _txtRoom.setText(sb.toString());
         _txtRoom.setCaretPosition(0);
     }
@@ -243,9 +264,9 @@ public class OMUD_GUIFrameInfo extends JFrame {
         setTab(eTab.MUD_INV);
 
         StringBuilder sb = new StringBuilder();
-        sb.append("\n[InvEnc]: (" + dataInv.enc_level + ") " + dataInv.enc_cur + "/" + dataInv.enc_max + String.format(" [%.0f", ((float) dataInv.enc_cur / dataInv.enc_max) * 100) + "%]\n\n");
+        sb.append("\n[InvEnc]: (" + dataInv.enc_level + ") " + dataInv.enc_cur + "/" + dataInv.enc_max + String.format(" [%.0f", ((float) dataInv.enc_cur / dataInv.enc_max) * 100) + "%]");
         
-        sb.append("--------------------\n");
+        sb.append("\n\n--------------------\n");
         sb.append("[InvItemsWorn]\n");
         sb.append("--------------------\n");
         for (int i = 0; i < dataInv.items_worn.size(); ++i){
@@ -281,31 +302,31 @@ public class OMUD_GUIFrameInfo extends JFrame {
         setTab(eTab.MUD_STATS);
 
         StringBuilder sb = new StringBuilder();
-        sb.append("[NameFirst]: "   + dataStats.name_first      + "\n");
-        sb.append("[NameLast]: "    + dataStats.name_last       + "\n");
-        sb.append("[Race]: "        + dataStats.stats_race      + "\n");
-        sb.append("[Class]: "       + dataStats.stats_class     + "\n");
-        sb.append("[Level]: "       + dataStats.level           + "\n");
-        sb.append("[Lives]: "       + dataStats.lives           + "\n");
-        sb.append("[CP]: "          + dataStats.cp              + "\n");
-        sb.append("[AC]: "          + dataStats.ac_ac + "/" + dataStats.ac_accy  + "\n");
-        sb.append("[SC]: "          + dataStats.sc              + "\n");
-        sb.append("--------------------\n");
-        sb.append("[Str]: "         + dataStats.str             + (dataStats.str_mod    ? " *" : "") + "\n");
-        sb.append("[Int]: "         + dataStats.intel           + (dataStats.intel_mod  ? " *" : "") + "\n");
-        sb.append("[Wil]: "         + dataStats.wil             + (dataStats.wil_mod    ? " *" : "") + "\n");
-        sb.append("[Agi]: "         + dataStats.agi             + (dataStats.agi_mod    ? " *" : "") + "\n");
-        sb.append("[Hea]: "         + dataStats.hea             + (dataStats.hea_mod    ? " *" : "") + "\n");
-        sb.append("[Cha]: "         + dataStats.cha             + (dataStats.cha_mod    ? " *" : "") + "\n");
-        sb.append("--------------------\n");
-        sb.append("[Perc]: "        + dataStats.perc            + "\n");
-        sb.append("[Stealth]: "     + dataStats.stealth         + "\n");
-        sb.append("[Thiev]: "       + dataStats.thievery        + "\n");
-        sb.append("[Traps]: "       + dataStats.traps           + "\n");
-        sb.append("[Pick]: "        + dataStats.pick            + "\n");
-        sb.append("[Track]: "       + dataStats.track           + "\n");
-        sb.append("[MA]: "          + dataStats.ma              + "\n");
-        sb.append("[MR]: "          + dataStats.mr              + "\n");
+        sb.append("[NameFirst]: "   + dataStats.name_first);
+        sb.append("\n[NameLast]: "  + dataStats.name_last);
+        sb.append("\n[Race]: "      + dataStats.stats_race);
+        sb.append("\n[Class]: "     + dataStats.stats_class);
+        sb.append("\n[Level]: "     + dataStats.level);
+        sb.append("\n[Lives]: "     + dataStats.lives);
+        sb.append("\n[CP]: "        + dataStats.cp);
+        sb.append("\n[AC]: "        + dataStats.ac_ac + "/" + dataStats.ac_accy);
+        sb.append("\n[SC]: "        + dataStats.sc);
+        sb.append("\n--------------------");
+        sb.append("\n[Str]: "       + dataStats.str     + (dataStats.str_mod    ? " *" : ""));
+        sb.append("\n[Int]: "       + dataStats.intel   + (dataStats.intel_mod  ? " *" : ""));
+        sb.append("\n[Wil]: "       + dataStats.wil     + (dataStats.wil_mod    ? " *" : ""));
+        sb.append("\n[Agi]: "       + dataStats.agi     + (dataStats.agi_mod    ? " *" : ""));
+        sb.append("\n[Hea]: "       + dataStats.hea     + (dataStats.hea_mod    ? " *" : ""));
+        sb.append("\n[Cha]: "       + dataStats.cha     + (dataStats.cha_mod    ? " *" : ""));
+        sb.append("\n--------------------");
+        sb.append("\n[Perc]: "      + dataStats.perc);
+        sb.append("\n[Stealth]: "   + dataStats.stealth);
+        sb.append("\n[Thiev]: "     + dataStats.thievery);
+        sb.append("\n[Traps]: "     + dataStats.traps);
+        sb.append("\n[Pick]: "      + dataStats.pick);
+        sb.append("\n[Track]: "     + dataStats.track);
+        sb.append("\n[MA]: "        + dataStats.ma);
+        sb.append("\n[MR]: "        + dataStats.mr);
 
         _txtStats.setText(sb.toString());
         _txtStats.setCaretPosition(0);            
@@ -315,9 +336,9 @@ public class OMUD_GUIFrameInfo extends JFrame {
         setTab(eTab.MUD_SHOP);
 
         StringBuilder sb = new StringBuilder();
-        sb.append("[RoomID]: "    + strRoomID   + "\n");
-        sb.append("[RoomName]: "  + strRoomName + "\n\n");
-        sb.append("--------------------\n");
+        sb.append("[RoomID]: "      + strRoomID);
+        sb.append("\n[RoomName]: "  + strRoomName);
+        sb.append("\n\n--------------------\n");
         sb.append("[Qty] Name: Price\n");
         sb.append("--------------------\n");
         for (int i = 0; i < dataShop.shop_items.size(); ++i){
