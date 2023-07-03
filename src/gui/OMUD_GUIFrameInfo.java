@@ -21,8 +21,7 @@ public class OMUD_GUIFrameInfo extends JFrame {
         MUD_STATS,
         MUD_SHOP,
         MUD_SPELLS,
-        MUD_WHO,
-        COUNT
+        MUD_WHO
     }
 
     private SimpleDateFormat    _sdf =          null; 
