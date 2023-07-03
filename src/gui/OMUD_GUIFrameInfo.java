@@ -270,13 +270,13 @@ public class OMUD_GUIFrameInfo extends JFrame{
         sb.append("[Qty] Name: Price\n");
         sb.append("--------------------\n");
         for (int i = 0; i < dataShop.shop_items.size(); ++i){
-            
-            String strFill = "";
+            sb.append("[" + dataShop.shop_items.get(i).qty + "]:\t" + dataShop.shop_items.get(i).name);
+
             int fill_len = 30 - dataShop.shop_items.get(i).name.length();
             if (fill_len > 0)
-                strFill = OMUD.getFillString(" ", fill_len);
-            
-            sb.append("[" + dataShop.shop_items.get(i).qty + "]:\t" + dataShop.shop_items.get(i).name + strFill + dataShop.shop_items.get(i).price + "\n");
+               sb.append(OMUD.getFillString(" ", fill_len));
+
+            sb.append(dataShop.shop_items.get(i).price + "\n");
         }
 
         _txtShop.setText(sb.toString());
@@ -307,12 +307,27 @@ public class OMUD_GUIFrameInfo extends JFrame{
         sb.append("FName LName (Align Title of Guild)\n");
         sb.append("--------------------\n");
         for (int i = 0; i < dataWho.chars.size(); ++i){
+            // name...
+            int fill_len = 24 - dataWho.chars.get(i).name_first.length();
             sb.append(dataWho.chars.get(i).name_first);
-            if (dataWho.chars.get(i).name_last.length() > 0)
+            if (dataWho.chars.get(i).name_last.length() > 0){
+                fill_len -= (dataWho.chars.get(i).name_last.length() + 1); // +1 for inner space delim
                 sb.append(" " + dataWho.chars.get(i).name_last);
-            sb.append(" (" + OMUD_MMUD.ALIGNMENT_STRINGS[dataWho.chars.get(i).alignment.ordinal()] + " " + dataWho.chars.get(i).title);
-            if (dataWho.chars.get(i).guild.length() > 0)
+            }
+            if (fill_len > 0)
+                sb.append(OMUD.getFillString(" ", fill_len));
+
+            // align, title...
+            String strAlign = OMUD_MMUD.ALIGNMENT_STRINGS[dataWho.chars.get(i).alignment.ordinal()];
+            sb.append(" (" + strAlign + " " + dataWho.chars.get(i).title);
+
+            // guild...
+            if (dataWho.chars.get(i).guild.length() > 0){
+                fill_len = (8 + 16) - (strAlign.length() + dataWho.chars.get(i).title.length());
+                if (fill_len > 0)
+                    sb.append(OMUD.getFillString(" ", fill_len));
                 sb.append(" of " + dataWho.chars.get(i).guild);
+            }
             sb.append(")\n");
         }
 
