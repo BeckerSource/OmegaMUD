@@ -21,7 +21,8 @@ public class OMUD_GUIFrameInfo extends JFrame {
         MUD_STATS,
         MUD_SHOP,
         MUD_SPELLS,
-        MUD_WHO
+        MUD_WHO,
+        COUNT
     }
 
     private SimpleDateFormat    _sdf =          null; 
@@ -147,11 +148,11 @@ public class OMUD_GUIFrameInfo extends JFrame {
     // GUI Events
     // --------------
     private class ML_Tabs implements MouseListener {
+        public void mouseClicked(MouseEvent event)  {}
         public void mouseEntered(MouseEvent event)  {}
         public void mouseExited(MouseEvent event)   {}
-        public void mousePressed(MouseEvent event)  {}
         public void mouseReleased(MouseEvent event) {}
-        public void mouseClicked(MouseEvent event) {
+        public void mousePressed(MouseEvent event) {
             if (_tabs.getSelectedIndex() != _tab_prev.ordinal()){
                 _tab_prev = eTab.values()[_tabs.getSelectedIndex()];
 
@@ -169,6 +170,10 @@ public class OMUD_GUIFrameInfo extends JFrame {
                     _omme.requestMUDData(OMUD_MMUD.DataBlock.eBlockType.WHO);
             }
         }
+    }
+
+    private void setTab(eTab tab){
+        _tabs.setSelectedIndex((_tab_prev = tab).ordinal());
     }
 
     // --------------
@@ -221,7 +226,7 @@ public class OMUD_GUIFrameInfo extends JFrame {
     }
 
     public void processMUDRoom(final OMUD_MMUD.DataRoom dataRoom){
-        _tabs.setSelectedIndex(4);
+        setTab(eTab.MUD_ROOM);
 
         StringBuilder sb = new StringBuilder();
         sb.append("[RoomID]: "          + dataRoom.roomID       + "\n");
@@ -236,7 +241,7 @@ public class OMUD_GUIFrameInfo extends JFrame {
     }
 
     public void processMUDInv(final OMUD_MMUD.DataInv dataInv){
-        _tabs.setSelectedIndex(5);
+        setTab(eTab.MUD_INV);
 
         StringBuilder sb = new StringBuilder();
         sb.append("\n[InvEnc]: (" + dataInv.enc_level + ") " + dataInv.enc_cur + "/" + dataInv.enc_max + String.format(" [%.0f", ((float) dataInv.enc_cur / dataInv.enc_max) * 100) + "%]\n\n");
@@ -274,7 +279,7 @@ public class OMUD_GUIFrameInfo extends JFrame {
     }
 
     public void processMUDStats(final OMUD_MMUD.DataStats dataStats){
-        _tabs.setSelectedIndex(6);
+        setTab(eTab.MUD_STATS);
 
         StringBuilder sb = new StringBuilder();
         sb.append("[NameFirst]: "   + dataStats.name_first      + "\n");
@@ -308,7 +313,7 @@ public class OMUD_GUIFrameInfo extends JFrame {
     }
 
     public void processMUDShop(final OMUD_MMUD.DataShop dataShop, final String strRoomID, final String strRoomName){
-        _tabs.setSelectedIndex(7);
+        setTab(eTab.MUD_SHOP);
 
         StringBuilder sb = new StringBuilder();
         sb.append("[RoomID]: "    + strRoomID   + "\n");
@@ -331,7 +336,7 @@ public class OMUD_GUIFrameInfo extends JFrame {
     }
 
     public void processMUDSpells(final OMUD_MMUD.DataSpells dataSpells){
-        _tabs.setSelectedIndex(8);
+        setTab(eTab.MUD_SPELLS);
 
         StringBuilder sb = new StringBuilder();
         sb.append("--------------------\n");
@@ -347,7 +352,7 @@ public class OMUD_GUIFrameInfo extends JFrame {
     }
 
     public void processMUDWho(final OMUD_MMUD.DataWho dataWho){
-        _tabs.setSelectedIndex(9);
+        setTab(eTab.MUD_WHO);
 
         StringBuilder sb = new StringBuilder();
         sb.append("--------------------\n");

@@ -158,12 +158,10 @@ public class OMUD_MMUDParser {
 
                     // check for welcome msg...
                     if (_mmc.strWelcome.length() > 0){
-                        String strSpellsCmd = OMUD_MMUD.DataBlock.CMD_STRINGS[OMUD_MMUD.DataBlock.eBlockType.SPELLS.ordinal()]; // defaults to empty string
-                        if (_mmc.dataStatline.ma_str.length() > 0){
-                            if (_mmc.dataStatline.ma_str.equals(OMUD_MMUD.DataStatline.MA_STR))
-                                 strSpellsCmd = OMUD_MMUD.DataBlock.CMD_SPELLS_REG;
-                            else strSpellsCmd = OMUD_MMUD.DataBlock.CMD_SPELLS_KAI;
-                        }
+                        String strSpellsCmd = OMUD_MMUD.DataBlock.CMD_STRINGS[OMUD_MMUD.DataBlock.eBlockType.SPELLS.ordinal()];
+                        if ( _mmc.dataStatline.ma_str.length() > 0 && 
+                            !_mmc.dataStatline.ma_str.equals(OMUD_MMUD.DataStatline.MA_STR))
+                            strSpellsCmd = OMUD_MMUD.DataBlock.CMD_SPELLS_KAI;
                         _omme.notifyMUDInit(new String(_mmc.strWelcome), strSpellsCmd);
                         _mmc.strWelcome = "";
                     }

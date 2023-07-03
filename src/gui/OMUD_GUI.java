@@ -82,14 +82,12 @@ public class OMUD_GUI implements OMUD_ITextInputEvents, OMUD_ITelnetEvents, OMUD
     // MUD Events
     // --------------    
     public void requestMUDData(OMUD_MMUD.DataBlock.eBlockType block_type){
-        if (block_type != OMUD_MMUD.DataBlock.eBlockType.SPELLS){
-            String strCmd = OMUD_MMUD.DataBlock.CMD_STRINGS[block_type.ordinal()];
-            if (strCmd.length() > 0)
-                _omt.sendText(strCmd);
-        // spells: check if a caster...
-        } else if (_strSpellsCmd.length() > 0) {
-            _omt.sendText(_strSpellsCmd);
-        }
+        String strCmd = "";
+        if (block_type == OMUD_MMUD.DataBlock.eBlockType.SPELLS)
+             strCmd = _strSpellsCmd;
+        else strCmd = OMUD_MMUD.DataBlock.CMD_STRINGS[block_type.ordinal()];
+        if (strCmd.length() > 0)
+            _omt.sendText(strCmd + "\n");
     }
 
     public void notifyMUDInit(final String strWelcome, final String strSpellsCmd){

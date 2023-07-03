@@ -229,17 +229,16 @@ public class OMUD_MMUD{
         public static final String[] CMD_STRINGS = {
             "",
             "",
-            "\n",
-            "i\n",
-            "stat\n",
-            "exp\n",
-            "lis\n",
-            "",
-            "who\n",
-            "par\n"
+            "look",
+            "i",
+            "stat",
+            "experience",
+            "list",
+            "spells",
+            "who",
+            "party"
         };
-        public static final String CMD_SPELLS_REG = "sp\n";
-        public static final String CMD_SPELLS_KAI = "po\n";
+        public static final String CMD_SPELLS_KAI = "powers";
 
         public abstract eBlockType getType();
     }

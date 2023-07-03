@@ -10,7 +10,7 @@ public class OMUD_MMUDBlock_Who extends OMUD_MMUDBlocks.Block{
     public boolean getStatlineWait()                    {return true;}
     public OMUD_MMUD.DataBlock.eBlockType getDataType() {return OMUD_MMUD.DataBlock.eBlockType.WHO;}
     public OMUD_MMUDBlock_Who(){
-        _arrlCmdText.add(new CmdText("who", 3));
+        _arrlCmdText.add(new CmdText(OMUD_MMUD.DataBlock.CMD_STRINGS[getDataType().ordinal()], 3));
     }
 
     public int findBlockData(OMUD_MMUDChar mmc, StringBuilder sbTelnetData, int pos_offset){

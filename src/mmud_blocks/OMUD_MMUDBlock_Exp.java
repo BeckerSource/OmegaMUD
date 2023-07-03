@@ -8,7 +8,7 @@ public class OMUD_MMUDBlock_Exp extends OMUD_MMUDBlocks.Block{
     public boolean getStatlineWait()                    {return true;}
     public OMUD_MMUD.DataBlock.eBlockType getDataType() {return OMUD_MMUD.DataBlock.eBlockType.EXP;}
     public OMUD_MMUDBlock_Exp(){
-        _arrlCmdText.add(new CmdText("experience", 3));
+        _arrlCmdText.add(new CmdText(OMUD_MMUD.DataBlock.CMD_STRINGS[getDataType().ordinal()], 3));
     }
 
     public int findBlockData(OMUD_MMUDChar mmc, StringBuilder sbTelnetData, int pos_offset){

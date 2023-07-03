@@ -17,8 +17,8 @@ public class OMUD_MMUDBlock_Room extends OMUD_MMUDBlocks.Block{
     public boolean getStatlineWait()                    {return true;}
     public OMUD_MMUD.DataBlock.eBlockType getDataType() {return OMUD_MMUD.DataBlock.eBlockType.ROOM;}
     public OMUD_MMUDBlock_Room(){
-        _arrlCmdText.add(new CmdText("look",    0)); // 0-len covers LF/enter only (zero-len) and all chars as part of look
-        _arrlCmdText.add(new CmdText("search",  3)); // only "sea" is required
+        _arrlCmdText.add(new CmdText(OMUD_MMUD.DataBlock.CMD_STRINGS[getDataType().ordinal()], 0)); // 0-len covers LF/enter only (zero-len) and all chars as part of look
+        _arrlCmdText.add(new CmdText("search", 3)); // only "sea" is required
     }
 
     public int findBlockData(OMUD_MMUDChar mmc, StringBuilder sbTelnetData, int pos_offset){

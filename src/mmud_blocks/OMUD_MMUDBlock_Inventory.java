@@ -16,7 +16,7 @@ public class OMUD_MMUDBlock_Inventory extends OMUD_MMUDBlocks.Block{
     public boolean getStatlineWait()                    {return true;}
     public OMUD_MMUD.DataBlock.eBlockType getDataType() {return OMUD_MMUD.DataBlock.eBlockType.INV;}
     public OMUD_MMUDBlock_Inventory(){
-        _arrlCmdText.add(new CmdText("i",         1));
+        _arrlCmdText.add(new CmdText(OMUD_MMUD.DataBlock.CMD_STRINGS[getDataType().ordinal()], 1));
         _arrlCmdText.add(new CmdText("inventory", 4)); // "inve" is min ("in" and "inv" conflict with "invite" so are ignored in mud)
     }
 
