@@ -78,7 +78,6 @@ public class OMUD_GUIFrameInfo extends JFrame {
         _txtSpells =    new OMUD_GUITextArea(false);
         _txtWho =       new OMUD_GUITextArea(false);
         _tabs =         new JTabbedPane(JTabbedPane.TOP, JTabbedPane.WRAP_TAB_LAYOUT);
-        
         _tabs.add("TermDbg",    _txtTermDbg);
         _tabs.add("MOther",     new JScrollPane(_txtOther));
         _tabs.add("MCmds",      new JScrollPane(_txtCmds));
@@ -89,15 +88,13 @@ public class OMUD_GUIFrameInfo extends JFrame {
         _tabs.add("MShop",      new JScrollPane(_txtShop));
         _tabs.add("MSpells",    new JScrollPane(_txtSpells));
         _tabs.add("MWho",       new JScrollPane(_txtWho));
+        _tabs.addMouseListener(new ML_Tabs());
         add(_tabs);
 
         // layouts...
         GridBagLayout gbl = new GridBagLayout();
         layoutInv(gbl);
         pack();
-
-        // listeners...
-        _tabs.addMouseListener(new ML_Tabs());
     }
 
     private void layoutInv(GridBagLayout gbl){
