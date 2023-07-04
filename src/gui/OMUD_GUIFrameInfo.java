@@ -200,7 +200,9 @@ public class OMUD_GUIFrameInfo extends JFrame {
 
                 sbTermDebug.append("\n");
             }
-            sbTermDebug.append("---------------------------------\n");
+            sbTermDebug.append("-------------------------------------------------------------------------------------\n");
+            sbTermDebug.append("     12345678901234567890123456789012345678901234567890123456789012345678901234567890\n");
+            sbTermDebug.append("-------------------------------------------------------------------------------------\n");
             sbTermDebug.append("BLC/BTL/BSZ: " + omb.getLineCount() + ", " + omb.getTopLeftPos() + ", " + omb.getText().length() + "\n");
             sbTermDebug.append("ROW/COL: " + (omb.getRowNum() + 1) + ", " + (omb.getColNum() + 1) + "\n");
             _txtTermDbg.setText(sbTermDebug.toString());
