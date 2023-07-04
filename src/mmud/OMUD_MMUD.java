@@ -257,7 +257,7 @@ public class OMUD_MMUD{
 
     public static class DataItem{
         public int          id  =           -1;
-        public int          qty =           1; // used for room items
+        public int          qty =            1;
         public String       name =          "";
         public eEquipSlot   equip_slot =    eEquipSlot.NONE;
 
