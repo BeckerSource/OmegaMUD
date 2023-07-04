@@ -205,8 +205,7 @@ public class OMUD_MMUD{
         public int silver =  0;
         public int copper =  0;
         public DataCoins(){}
-        public DataCoins(DataCoins dc){copy(dc);}
-        private void copy(DataCoins dc){
+        public DataCoins(DataCoins dc){
             runic =   dc.runic;
             plat =    dc.plat;
             gold =    dc.gold;
@@ -215,43 +214,38 @@ public class OMUD_MMUD{
         }
 
         public void convert(boolean convert_up){
-            DataCoins dc = new DataCoins(this);
-
             // convert up: get max coins for each type...
             if (convert_up){
                 if (copper  >= 100){
-                    dc.silver   = copper / 100;
-                    dc.copper   = copper % 100;
+                    silver  += copper / 100;
+                    copper   = copper % 100;
                 }
                 if (silver  >= 100){
-                    dc.gold     = silver / 100;
-                    dc.silver   = silver % 100;
+                    gold    += silver / 100;
+                    silver   = silver % 100;
                 }
                 if (gold    >= 100){
-                    dc.plat     = gold   / 100;
-                    dc.gold     = gold   % 100;
+                    plat    += gold   / 100;
+                    gold     = gold   % 100;
                 }
                 if (plat    >= 100){
-                    dc.runic   += plat   / 100;
-                    dc.plat     = plat   % 100;
+                    runic   += plat   / 100;
+                    plat     = plat   % 100;
                 }
-
-            // convert all down to copper...
+            // convert down: convert all to copper...
             } else {
-                dc.plat     += dc.runic  * 100;
-                dc.runic     = 0;
+                plat    += runic  * 100;
+                runic    = 0;
 
-                dc.gold     += dc.plat   * 100;
-                dc.plat      = 0;
+                gold    += plat   * 100;
+                plat     = 0;
 
-                dc.silver   += dc.gold   * 100;
-                dc.gold      = 0;
+                silver  += gold   * 100;
+                gold     = 0;
 
-                dc.copper   += dc.silver * 100;
-                dc.silver    = 0;
+                copper  += silver * 100;
+                silver   = 0;
             }
-
-            copy(dc);
         }
     }
 
