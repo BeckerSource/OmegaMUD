@@ -137,7 +137,81 @@ public class OMUD_MMUDBlocks{
             String[] items = strItems.split(",");
             for (String item : items)
                 arrlItems.add(item.trim());
-        }       
+        }
+
+        protected void buildItemList(ArrayList<String> arrlNew, OMUD_MMUD.DataCoins coins, ArrayList<OMUD_MMUD.DataItem> arrlItems, ArrayList<OMUD_MMUD.DataItem> arrlItemsWorn){
+            for (int i = 0; i < arrlNew.size(); ++i){
+                OMUD_MMUD.DataItem ri = new OMUD_MMUD.DataItem(arrlNew.get(i));
+
+                boolean is_coin = false;
+                boolean is_dupe = false;
+
+                // if inventory call (worn non-null), set worn items...
+                if (arrlItemsWorn != null && ri.name.charAt(ri.name.length() - 1) == ')'){
+                    int pos_slot_start = -1;
+                    for (int j = OMUD_MMUD.eEquipSlot.WEAPON.ordinal(); j < OMUD_MMUD.EQUIP_SLOT_STRINGS.length && pos_slot_start == -1; ++j)
+                        if ((pos_slot_start = ri.name.lastIndexOf(OMUD_MMUD.EQUIP_SLOT_STRINGS[j], ri.name.length() - 1)) > -1){
+                            ri.equip_slot = OMUD_MMUD.eEquipSlot.values()[j];
+                            ri.name = ri.name.substring(0, pos_slot_start - 1); // remove slot and trailing space (-1)
+                            arrlItemsWorn.add(ri);
+                        }
+                }
+
+                // non-equipped: check for quantity prefixes and dupes...
+                if (ri.equip_slot == OMUD_MMUD.eEquipSlot.NONE){
+
+                    // check for quantity prefix...
+                    int pos_left = -1;
+                    if ((pos_left = ri.name.indexOf(" ", 0)) > -1){
+                        boolean is_number = true;
+
+                        String strFirstWord = ri.name.substring(0, pos_left);
+                        for (int j = 0; j < strFirstWord.length() && is_number; ++j)
+                            is_number = strFirstWord.charAt(j) >= 48 && strFirstWord.charAt(j) <= 57; // 0-9 ascii
+
+                        if (is_number){
+                            ri.qty =  Integer.parseInt(strFirstWord);
+                            ri.name = ri.name.substring(pos_left + 1, ri.name.length());
+
+                            // get coin counts - coins always displayed first and in order,
+                            // so can exit early if out-of-range or if copper is found...
+                            if (i < OMUD_MMUD.COIN_TYPE_STRINGS.length){
+                                for (int j = 0; j < OMUD_MMUD.COIN_TYPE_STRINGS.length && coins.copper == 0; ++j){
+                                         if ((is_coin = (ri.name.indexOf(OMUD_MMUD.COIN_TYPE_STRINGS[OMUD_MMUD.eCoinType.RUNIC.ordinal()], 0))      > -1))
+                                        coins.runic =   ri.qty;
+                                    else if ((is_coin = (ri.name.indexOf(OMUD_MMUD.COIN_TYPE_STRINGS[OMUD_MMUD.eCoinType.PLATINUM.ordinal()], 0))   > -1))
+                                        coins.plat =    ri.qty;
+                                    else if ((is_coin = (ri.name.indexOf(OMUD_MMUD.COIN_TYPE_STRINGS[OMUD_MMUD.eCoinType.GOLD.ordinal()], 0))       > -1))
+                                        coins.gold =    ri.qty;
+                                    else if ((is_coin = (ri.name.indexOf(OMUD_MMUD.COIN_TYPE_STRINGS[OMUD_MMUD.eCoinType.SILVER.ordinal()], 0))     > -1))
+                                        coins.silver =  ri.qty;
+                                    else if ((is_coin = (ri.name.indexOf(OMUD_MMUD.COIN_TYPE_STRINGS[OMUD_MMUD.eCoinType.COPPER.ordinal()], 0))     > -1))
+                                        coins.copper =  ri.qty;
+                                }
+                            }
+                        }
+                    }
+
+                    // check for existing and update quantities...
+                    if (!is_coin){                    
+                        for (int j = 0; j < arrlItems.size() && !is_dupe; ++j)
+                            if ((is_dupe = ri.name.equals(arrlItems.get(j).name))){
+                                // inventory: worn item with extra non-worn in inv -
+                                // keep the counter on the original equipped item
+                                if (arrlItems.get(j).equip_slot != OMUD_MMUD.eEquipSlot.NONE)
+                                    arrlItems.get(j).qty = ri.qty + 1; 
+                                // else this is from a search and the greater quantity should be updated 
+                                // based on the search results...
+                                else if (ri.qty > arrlItems.get(j).qty)
+                                    arrlItems.get(j).qty = ri.qty;
+                            }
+                    }
+                }
+
+                if (!is_coin && !is_dupe)
+                    arrlItems.add(ri);                    
+            }
+        }
     }
 
     // ------------------

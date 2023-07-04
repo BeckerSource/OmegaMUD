@@ -157,13 +157,14 @@ public class OMUD_MMUDParser {
                     _omme.notifyMUDLocation((_eBBSLoc = OMUD.eBBSLocation.MUD));
 
                     // check for welcome msg...
-                    if (_mmc.strWelcome.length() > 0){
+                    if (!_mmc.got_statline){
+                         _mmc.got_statline = true;
+
                         String strSpellsCmd = OMUD_MMUD.DataBlock.CMD_STRINGS[OMUD_MMUD.DataBlock.eBlockType.SPELLS.ordinal()];
                         if ( _mmc.dataStatline.ma_str.length() > 0 && 
                             !_mmc.dataStatline.ma_str.equals(OMUD_MMUD.DataStatline.MA_STR))
                             strSpellsCmd = OMUD_MMUD.DataBlock.CMD_SPELLS_KAI;
                         _omme.notifyMUDInit(new String(_mmc.strWelcome), strSpellsCmd);
-                        _mmc.strWelcome = "";
                     }
 
                     // some basic auto commands on enter - can make manual/auto modes for this later...

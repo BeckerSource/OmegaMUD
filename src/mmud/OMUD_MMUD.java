@@ -181,14 +181,32 @@ public class OMUD_MMUD{
     // ------------------
     // Individual Containers
     // ------------------
+    public static class DataCoins{
+        public int runic =   0;
+        public int plat =    0; 
+        public int gold =    0; 
+        public int silver =  0; 
+        public int copper =  0; 
+        public DataCoins(){}
+        public DataCoins(DataCoins dc){
+            runic =   dc.runic;
+            plat =    dc.plat;
+            gold =    dc.gold;
+            silver =  dc.silver;
+            copper =  dc.copper;
+        }
+    }
+
     public static class DataItem{
         public int          id  =           -1;
+        public int          qty =           1; // used for room items
         public String       name =          "";
         public eEquipSlot   equip_slot =    eEquipSlot.NONE;
 
         DataItem(String n)  {name = n;}
         DataItem(DataItem item){
             id =    		item.id;
+            qty =           item.qty;
             name =  		new String(item.name);
             equip_slot = 	item.equip_slot;
         }
@@ -271,83 +289,60 @@ public class OMUD_MMUD{
     }
 
     public static class DataRoom extends DataBlock{
-        public static class RoomItem extends DataItem{
-            public int qty = 1;
-
-            public RoomItem(String n){super(n);}
-            public RoomItem(RoomItem ri){
-                super(ri);
-                qty = ri.qty;
-            }
-        }
-
-        public String roomID =          ""; // MegaMUD RoomID
-        public String name =            "";
-        public String desc =            "";
-        public eRoomLight light =       eRoomLight.NORMAL; 
-        public ArrayList<RoomItem>      arrlItems =         new ArrayList<RoomItem>();
-        public ArrayList<RoomItem>      arrlItemsHidden =   new ArrayList<RoomItem>();
-        public ArrayList<String>        arrlUnits =         new ArrayList<String>();
-        public ArrayList<RoomExit>      arrlExits =         new ArrayList<RoomExit>();
+        public String       roomID =        ""; // MegaMUD RoomID
+        public String       name =          "";
+        public String       desc =          "";
+        public DataCoins    coins =         new DataCoins();
+        public DataCoins    coins_hidden =  new DataCoins();
+        public eRoomLight   light =         eRoomLight.NORMAL;
+        public ArrayList<DataItem>  arrlItems =         new ArrayList<DataItem>();
+        public ArrayList<DataItem>  arrlItemsHidden =   new ArrayList<DataItem>();
+        public ArrayList<String>    arrlUnits =         new ArrayList<String>();
+        public ArrayList<RoomExit>  arrlExits =         new ArrayList<RoomExit>();
 
         public eBlockType getType(){return eBlockType.ROOM;}
         public DataRoom(){}
         public DataRoom(DataRoom dr){
-            roomID =    new String(dr.roomID);
-            name =      new String(dr.name);
-            desc =      new String(dr.desc);
-            light =     dr.light;
+            roomID =        new String(dr.roomID);
+            name =          new String(dr.name);
+            desc =          new String(dr.desc);
+            coins =         new DataCoins(dr.coins);
+            coins_hidden =  new DataCoins(dr.coins_hidden);
+            light =         dr.light;
             for (int i = 0; i < dr.arrlItems.size(); ++i)
-                arrlItems.add(new RoomItem(dr.arrlItems.get(i)));
+                arrlItems.add(new DataItem(dr.arrlItems.get(i)));
             for (int i = 0; i < dr.arrlItemsHidden.size(); ++i)
-                arrlItemsHidden.add(new RoomItem(dr.arrlItemsHidden.get(i)));
+                arrlItemsHidden.add(new DataItem(dr.arrlItemsHidden.get(i)));
             OMUD.copyStringArrayList(dr.arrlUnits, arrlUnits);
             for (int i = 0; i < dr.arrlExits.size(); ++i)
                 arrlExits.add(new RoomExit(dr.arrlExits.get(i)));
         }
-        
-        public void resetOptional(){
-            desc = "";
-            arrlItems.clear();
-            arrlItemsHidden.clear(); // hidden items are cumulative, will need to change this later when movement detection is in
-            arrlUnits.clear();
-            arrlExits.clear();
-            light = eRoomLight.NORMAL;
-        }
     }
 
     public static class DataInv extends DataBlock{
-        public int      wealth =        -1; // in copper
-        public int      coins_runic =   0;
-        public int      coins_plat =    0; 
-        public int      coins_gold =    0; 
-        public int      coins_silver =  0; 
-        public int      coins_copper =  0; 
-        public int      enc_cur =       -1;
-        public int      enc_max =       -1;
-        public String   enc_level =     "";
-        public ArrayList<DataItem> items_worn  =    new ArrayList<DataItem>();
-        public ArrayList<DataItem> items_extra =    new ArrayList<DataItem>();
-        public ArrayList<DataItem> keys =           new ArrayList<DataItem>();
+        public int          wealth =        -1; // in copper
+        public DataCoins    coins =         new DataCoins();
+        public int          enc_cur =       -1;
+        public int          enc_max =       -1;
+        public String       enc_level =     "";
+        public ArrayList<DataItem> arrlItems = new ArrayList<DataItem>();
+        public ArrayList<DataItem> arrlWorn  = new ArrayList<DataItem>();
+        public ArrayList<DataItem> arrlKeys =  new ArrayList<DataItem>();
 
         public eBlockType getType(){return eBlockType.INV;}
         public DataInv(){}
         public DataInv(DataInv di){
             wealth =        di.wealth;
-            coins_runic =   di.coins_runic;
-            coins_plat =    di.coins_plat;
-            coins_gold =    di.coins_gold;
-            coins_silver =  di.coins_silver;
-            coins_copper =  di.coins_copper;
+            coins =         new DataCoins(di.coins);
             enc_cur =       di.enc_cur;
             enc_max =       di.enc_max;
             enc_level =     new String(di.enc_level);
-            for (int i = 0; i < di.items_worn.size(); ++i)
-                items_worn.add(new DataItem(di.items_worn.get(i)));
-            for (int i = 0; i < di.items_extra.size(); ++i)
-                items_extra.add(new DataItem(di.items_extra.get(i)));
-            for (int i = 0; i < di.keys.size(); ++i)
-                keys.add(new DataItem(di.keys.get(i)));
+            for (int i = 0; i < di.arrlItems.size(); ++i)
+                arrlItems.add(new DataItem(di.arrlItems.get(i)));
+            for (int i = 0; i < di.arrlWorn.size(); ++i)
+                arrlWorn.add(new DataItem(di.arrlWorn.get(i)));
+            for (int i = 0; i < di.arrlKeys.size(); ++i)
+                arrlKeys.add(new DataItem(di.arrlKeys.get(i)));
         }
     }
 

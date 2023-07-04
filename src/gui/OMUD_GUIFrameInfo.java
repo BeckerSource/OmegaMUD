@@ -232,6 +232,20 @@ public class OMUD_GUIFrameInfo extends JFrame {
         sb.append("\n[RoomName]: "  + dataRoom.name + " (" + OMUD_MMUD.ROOM_LIGHT_STRINGS[dataRoom.light.ordinal()] + ")");
 
         sb.append("\n\n--------------------\n");
+        sb.append("[RoomCoins] (*=HIDDEN)\n");
+        sb.append("--------------------\n");
+        sb.append("  R: "   + dataRoom.coins.runic          + ", ");
+        sb.append("P: "     + dataRoom.coins.plat           + ", ");
+        sb.append("G: "     + dataRoom.coins.gold           + ", ");
+        sb.append("S: "     + dataRoom.coins.silver         + ", ");
+        sb.append("C: "     + dataRoom.coins.copper         + "\n");
+        sb.append("* R: "   + dataRoom.coins_hidden.runic   + ", ");
+        sb.append("P: "     + dataRoom.coins_hidden.plat    + ", ");
+        sb.append("G: "     + dataRoom.coins_hidden.gold    + ", ");
+        sb.append("S: "     + dataRoom.coins_hidden.silver  + ", ");
+        sb.append("C: "     + dataRoom.coins_hidden.copper  + "\n");
+
+        sb.append("\n--------------------\n");
         sb.append("[RoomItems] (*=HIDDEN)\n");
         sb.append("--------------------\n");
         for (int i = 0; i < dataRoom.arrlItems.size(); ++i)
@@ -269,33 +283,41 @@ public class OMUD_GUIFrameInfo extends JFrame {
         sb.append("\n\n--------------------\n");
         sb.append("[InvItemsWorn]\n");
         sb.append("--------------------\n");
-        for (int i = 0; i < dataInv.items_worn.size(); ++i){
-            sb.append(dataInv.items_worn.get(i).name + " ");
-            sb.append(OMUD_MMUD.EQUIP_SLOT_STRINGS[dataInv.items_worn.get(i).equip_slot.ordinal()].toUpperCase() + "\n");
+        for (int i = 0; i < dataInv.arrlWorn.size(); ++i){
+            String strSlot = OMUD_MMUD.EQUIP_SLOT_STRINGS[dataInv.arrlWorn.get(i).equip_slot.ordinal()].toUpperCase();
+            sb.append(strSlot);
+            int fill_len = 10 - strSlot.length();
+            if (fill_len > 0)
+                sb.append(OMUD.getFillString(" ", fill_len));
+            sb.append(" " + dataInv.arrlWorn.get(i).name + "\n");
         }
         
         sb.append("\n--------------------\n");
-        sb.append("[InvItemsExtra]\n");
+        sb.append("[InvItems] (*=WORN)\n");
         sb.append("--------------------\n");
-        for (int i = 0; i < dataInv.items_extra.size(); ++i)
-            sb.append(dataInv.items_extra.get(i).name + "\n");
+        for (int i = 0; i < dataInv.arrlItems.size(); ++i){
+            if (dataInv.arrlItems.get(i).equip_slot != OMUD_MMUD.eEquipSlot.NONE)
+                 sb.append("* ");
+            else sb.append("  ");
+            sb.append("(" + dataInv.arrlItems.get(i).qty + ") " + dataInv.arrlItems.get(i).name + "\n");
+        }
         
         sb.append("\n--------------------\n");
         sb.append("[InvKeys]\n");
         sb.append("--------------------\n");
-        for (int i = 0; i < dataInv.keys.size(); ++i)
-            sb.append(dataInv.keys.get(i).name + "\n");
+        for (int i = 0; i < dataInv.arrlKeys.size(); ++i)
+            sb.append(dataInv.arrlKeys.get(i).name + "\n");
         
         _txtInv.setText(sb.toString());
         _txtInv.setCaretPosition(0);
 
         // set coins labels...
-        _lblInvRunic.setText("Runic: "      +   dataInv.coins_runic);
-        _lblInvPlat.setText("Plat: "        +   dataInv.coins_plat);
-        _lblInvGold.setText("Gold: "        +   dataInv.coins_gold);
-        _lblInvSilver.setText("Silver: "    +   dataInv.coins_silver);
-        _lblInvCopper.setText("Copper: "    +   dataInv.coins_copper);
-        _lblInvWealth.setText("Wealth: "    +   dataInv.wealth);
+        _lblInvRunic.setText("R: "  +   dataInv.coins.runic);
+        _lblInvPlat.setText("P: "   +   dataInv.coins.plat);
+        _lblInvGold.setText("G: "   +   dataInv.coins.gold);
+        _lblInvSilver.setText("S: " +   dataInv.coins.silver);
+        _lblInvCopper.setText("C: " +   dataInv.coins.copper);
+        _lblInvWealth.setText("W: " +   dataInv.wealth);
     }
 
     public void processMUDStats(final OMUD_MMUD.DataStats dataStats){
