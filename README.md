@@ -3,7 +3,7 @@ Another attempt at a MegaMUD replacement in Java.
 
 ## Java Version Requirements
 Tested with OpenJDK 1.6 (J6), 1.7 (J7), and 1.8 (J8).\
-I assume equivalent Oracle Java versions should work.
+I assume equivalent Oracle Java versions will work.
 
 ## Apache Commons Net
 Apache Commons Net telnet class files are built into the JAR during the build process.\
