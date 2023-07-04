@@ -157,10 +157,10 @@ public class OMUD_TelnetParser{
                 // [1] Functions like 'ESC[K' (clear from cursor to end and don't move cursor)
                 // can be the last thing on a row that is not full, and will have added extra spaces.
                 // In that case, we need to move the buffer pos to the end before placing the linefeed.
-                // [2] This also helps prevent extra complex logic for overwrite code and 
+                // [2] This also helps prevent extra complex logic for overwrite code and
                 // large blocks of text with multiple linefeeds inside.
                 } else if (d == OMUD.ASCII_LF){
-                    // if current ansi text is empty, force the buffer pos to the very end (above notes) - 
+                    // if current ansi text is empty, force the buffer pos to the very end (above notes) -
                     // otherwise use current buffer position...
                     int pos_offset = _ansi.getText().length() == 0 ? _omb.getText().length() : _omb.getPos();
                     _ansi.getText().append(c);
@@ -180,7 +180,7 @@ public class OMUD_TelnetParser{
                         _arrlBMods.add(new OMUD_BufferInsert("ESC", _omb, _ansi, _omb.getPos(), _omb.getPos() + _ansi.getText().length()));
                         _ansi.getText().setLength(0);
                     }
-                // tabs and form-feed: unhandled for now  until detected - 
+                // tabs and form-feed: unhandled for now  until detected -
                 // use error message for visibility...
                 } else if (d == OMUD.ASCII_HTB || d == OMUD.ASCII_VTB || d == OMUD.ASCII_FF){
                     append_ansi_char = true;
@@ -195,10 +195,10 @@ public class OMUD_TelnetParser{
                     _sbEscSeq.append(c);
 
                 // special: check for ANSI RIP escape sequence query (and ignore)...
-                if (d == OMUD.ASCII_EXC && 
-                    _sbEscSeq.length() > 2 && 
-                    _sbEscSeq.charAt(0) == OMUD.ASCII_ESC && 
-                    _sbEscSeq.charAt(1) == OMUD.ASCII_LBR && 
+                if (d == OMUD.ASCII_EXC &&
+                    _sbEscSeq.length() > 2 &&
+                    _sbEscSeq.charAt(0) == OMUD.ASCII_ESC &&
+                    _sbEscSeq.charAt(1) == OMUD.ASCII_LBR &&
                     (OMUD.compareSBString(_sbEscSeq, OMUD.RIP_QVERSION1) ||
                      OMUD.compareSBString(_sbEscSeq, OMUD.RIP_QVERSION2) ||
                      OMUD.compareSBString(_sbEscSeq, OMUD.RIP_OFF)       ||
@@ -389,7 +389,7 @@ public class OMUD_TelnetParser{
                         // Cursor Move to Row+Col
                         // ------------------
                         // move cursor to row and column number...
-                        } else if (esc_seq_last_char == OMUD.CSI_CRSR_RWCL1 || 
+                        } else if (esc_seq_last_char == OMUD.CSI_CRSR_RWCL1 ||
                                    esc_seq_last_char == OMUD.CSI_CRSR_RWCL2){
 
                             // strip last char id and split the move values ROW;COL...
@@ -402,7 +402,7 @@ public class OMUD_TelnetParser{
                                 // the screen clear function was called - might have to revisit this later...
                                 _arrlBMods.add(new OMUD_BufferMove(_sbEscSeq.toString(), _omb, _omb.getTopLeftPos()));
                                 crsrMoveUpDown(_sbEscSeq.toString(), false, dest_row - 1);      // -1 here because we're already "moved" to row/col 1
-                                crsrMoveLeftRight(_sbEscSeq.toString(), false, dest_col - 1);   // 
+                                crsrMoveLeftRight(_sbEscSeq.toString(), false, dest_col - 1);   //
                             } else OMUD.logError("Found bad values for cursor move to row/col: " + _sbEscSeq);
 
                         // ------------------
@@ -417,10 +417,10 @@ public class OMUD_TelnetParser{
                             // The mud parser has no way of knowing if data is still incoming for commands.
                             _mmp.clearTelnetData();
                         // delete from cursor to end of line (don't move cursor)...
-                        } else if (OMUD.compareSBString(_sbEscSeq, OMUD.CSI_CLR_LINE_CRSR1) || 
+                        } else if (OMUD.compareSBString(_sbEscSeq, OMUD.CSI_CLR_LINE_CRSR1) ||
                                    OMUD.compareSBString(_sbEscSeq, OMUD.CSI_CLR_LINE_CRSR2)){
 
-                            // majormud game string compare needs the escape sequence prefix - 
+                            // majormud game string compare needs the escape sequence prefix -
                             // (majormud only ever shows CSI_CLR_LINE_CRSR1 but assume it should be fine)...
                             _mmp.appendChar(OMUD.ASCII_ESC);
                             _mmp.appendChar(OMUD.ASCII_LBR);

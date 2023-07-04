@@ -35,7 +35,7 @@ public class OMUD_GUITerminal extends JTextPane {
         setEditable(false);
         getCaret().setVisible(true);
         setBackground(OMUD_ANSI.getDefaultBGColor());
-        StyleConstants.setForeground(_attrLocal, OMUD.TERMINAL_LOCAL_INFO_FG);  
+        StyleConstants.setForeground(_attrLocal, OMUD.TERMINAL_LOCAL_INFO_FG);
         StyleConstants.setBackground(_attrLocal, OMUD.TERMINAL_LOCAL_INFO_BG);
         setFont(OMUD.getTerminalFont());
 
@@ -59,7 +59,7 @@ public class OMUD_GUITerminal extends JTextPane {
 
     // --------------
     // Blinking ANSI Text
-    // --------------    
+    // --------------
     // NOTE: for efficiency, move the blink updates/calcs to when text changes and on scroll...
     private class AL_TimerBlink implements ActionListener {
         private boolean _blinked =  false;

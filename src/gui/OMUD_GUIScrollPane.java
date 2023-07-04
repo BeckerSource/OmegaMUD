@@ -11,7 +11,7 @@ public class OMUD_GUIScrollPane extends JScrollPane{
     // --------------------------------
     // Prevent auto-scroll when setting the caret -
     // update policy "never" does not prevent scroll when setting the caret.
-    // We need to set the caret as if it were a cursor for accurate ANSI text placement 
+    // We need to set the caret as if it were a cursor for accurate ANSI text placement
     // and don't want the display moving around.
     // https://stackoverflow.com/questions/23608144/jtextpane-set-caret-position-without-changing-scrollpane
     public void removeCaretListeners(JTextPane tp){
@@ -29,6 +29,6 @@ public class OMUD_GUIScrollPane extends JScrollPane{
             public void adjustmentValueChanged(AdjustmentEvent e){
                 e.getAdjustable().setValue(e.getAdjustable().getMaximum());
                 getVerticalScrollBar().removeAdjustmentListener(this);
-        }});        
+        }});
     }
 }

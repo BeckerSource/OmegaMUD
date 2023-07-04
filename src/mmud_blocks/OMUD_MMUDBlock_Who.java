@@ -16,7 +16,7 @@ public class OMUD_MMUDBlock_Who extends OMUD_MMUDBlocks.Block{
     public int findBlockData(OMUD_MMUDChar mmc, StringBuilder sbTelnetData, int pos_offset){
         int pos_data_found_start = -1;
 
-        if ((pos_data_found_start = findData(sbTelnetData, pos_offset, true, true, MSTR_WHO, "")) > -1){            
+        if ((pos_data_found_start = findData(sbTelnetData, pos_offset, true, true, MSTR_WHO, "")) > -1){
             // remove color prefix from first row...
             if (_sbBlockData.indexOf(MSTR_COLOR_PRE, 0) == 0)
                 _sbBlockData.delete(0, MSTR_COLOR_PRE.length());

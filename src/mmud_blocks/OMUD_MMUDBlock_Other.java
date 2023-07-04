@@ -18,7 +18,7 @@ public class OMUD_MMUDBlock_Other extends OMUD_MMUDBlocks.Block{
     public boolean getStatlineWait()                    {return false;}
     public OMUD_MMUD.DataBlock.eBlockType getDataType() {return OMUD_MMUD.DataBlock.eBlockType.NONE;}
     public OMUD_MMUDBlock_Other(){}
-        
+
     public int findBlockData(OMUD_MMUDChar mmc, StringBuilder sbTelnetData, int pos_offset){
         int pos_data_found_start = -1;
 

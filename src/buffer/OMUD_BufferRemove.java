@@ -24,7 +24,7 @@ public class OMUD_BufferRemove implements OMUD_IBufferMod{
 
     public void render(JTextPane tp, StyledDocument docSwap, ArrayList<OMUD_GUIBlinkText> arrlBlink){
         try{
-            // update blinking ANSI positions outside the delete range and 
+            // update blinking ANSI positions outside the delete range and
             // remove blinking ANSI stored in the deleted range...
             if (_buf_limit_mod){
                 int delete_end = _pos_offset + _rem_length;
@@ -32,7 +32,7 @@ public class OMUD_BufferRemove implements OMUD_IBufferMod{
                     if  (arrlBlink.get(i).pos <= delete_end)
                          arrlBlink.remove(i);
                     else arrlBlink.get(i).pos -= delete_end;
-                }                
+                }
             }
 
             // JTextPane performance boost by writing to the doc when not attached/visible (swap)...

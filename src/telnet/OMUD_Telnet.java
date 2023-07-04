@@ -5,7 +5,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 import java.util.ArrayList;
 import java.util.concurrent.locks.ReentrantLock;
-import org.apache.commons.net.telnet.TelnetClient; 
+import org.apache.commons.net.telnet.TelnetClient;
 //import org.apache.commons.net.telnet.SimpleOptionHandler;
 import org.apache.commons.net.telnet.EchoOptionHandler;
 import org.apache.commons.net.telnet.TelnetNotificationHandler;
@@ -86,7 +86,7 @@ public class OMUD_Telnet {
             try{
                 OMUD.logInfo("Telnet: attempting connection: " + strTelnetAdr + ":" + strTelnetPort);
                 _tnc.registerNotifHandler(_runApache);
-                _tnc.connect(strTelnetAdr, Integer.parseInt(strTelnetPort));       
+                _tnc.connect(strTelnetAdr, Integer.parseInt(strTelnetPort));
                 _threadReader = new Thread(_runApache);
                 _threadReader.start();
                 // create timer/task for connectivity checks...
@@ -95,7 +95,7 @@ public class OMUD_Telnet {
                 _tmrAYT = new Timer();
                 _tmrAYT.schedule(_taskAYT, TELNET_AYT_MS, TELNET_AYT_MS);
             } catch (Exception e) {
-                OMUD.logError("Telnet: error on connect: " + e.getMessage());            
+                OMUD.logError("Telnet: error on connect: " + e.getMessage());
             }
         }
     }
@@ -117,15 +117,15 @@ public class OMUD_Telnet {
                 _threadReader = null;
                 _omte.notifyTelnetDisconnected();
                 _omtp.reset();
-                
+
                 _sbCmdNew.setLength(0);
                 _sbCmdNewUnsent.setLength(0);
                 _arrlCmds.clear();
                 _allow_send = true;
-                
+
                 new ThreadParse("\n\n").start(); // add a couple linefeeds for text readability on reconnect
             } catch (Exception e) {
-                OMUD.logError("Telnet: error on disconnect: " + e.getMessage());            
+                OMUD.logError("Telnet: error on disconnect: " + e.getMessage());
             }
         }
     }
@@ -136,8 +136,8 @@ public class OMUD_Telnet {
     private class TimerTaskAYT extends TimerTask{
         public void run(){
             long current_time_ms = System.currentTimeMillis();
-            if (current_time_ms - _ayt_last_response_time_ms >= TELNET_AYT_MS){                        
-                //OMUD.logInfo("Telnet: checking idle connection...");                    
+            if (current_time_ms - _ayt_last_response_time_ms >= TELNET_AYT_MS){
+                //OMUD.logInfo("Telnet: checking idle connection...");
                 try {
                     _tnc.sendCommand((byte) TelnetCommand.NOP);
                     _ayt_last_response_time_ms = current_time_ms;
@@ -161,7 +161,7 @@ public class OMUD_Telnet {
 
                         // check if we already have unsent commands/text -
                         // if first command is empty, mud cleared it, so not unsent if empty...
-                        boolean have_unsent_text = _text.length() == 0 || _sbCmdNewUnsent.length() > 0 || 
+                        boolean have_unsent_text = _text.length() == 0 || _sbCmdNewUnsent.length() > 0 ||
                             (_arrlCmds.size() > 0 && _arrlCmds.get(0).length() > 0);
 
                         // string could be empty if coming coming from a call to send the unsent...
@@ -186,7 +186,7 @@ public class OMUD_Telnet {
                             }
                         }
 
-                        // send is prevented when a command is sent and 
+                        // send is prevented when a command is sent and
                         // until mud says it's ready for another...
                         if (_allow_send){
                             // use unsent commands/text first...
@@ -206,7 +206,7 @@ public class OMUD_Telnet {
                                     _tnc.getOutputStream().flush();
                                 } catch (Exception e) {
                                     OMUD.logError("Telnet: error sending: " + e.getMessage());
-                                }                                
+                                }
                             }
                         }
 
@@ -219,7 +219,7 @@ public class OMUD_Telnet {
     }
 
     public void sendText(String text){
-        if (text.length() > 0) 
+        if (text.length() > 0)
             new ThreadSend(new String(text)).start();
     }
 
@@ -236,7 +236,7 @@ public class OMUD_Telnet {
                 if ((_allow_send = _omtp.threadParseData(_strData, cmds_count > 0 ? _arrlCmds.get(0) : null))){
                     if (cmds_count > 0)
                         _arrlCmds.remove(0);
-                    if (!_lockSend.hasQueuedThreads() && 
+                    if (!_lockSend.hasQueuedThreads() &&
                         (_arrlCmds.size() > 0 || _sbCmdNewUnsent.length() > 0))
                         new ThreadSend("").start();
                 }
@@ -251,7 +251,7 @@ public class OMUD_Telnet {
 
         public void run() {
             // use a buffered reader to force the ISO char set to show characters properly on all systems -
-            // windows was displaying correctly but linux wasn't showing extended ASCII correctly and 
+            // windows was displaying correctly but linux wasn't showing extended ASCII correctly and
             // was displaying text very slow.  not sure about mac but just do this anyway.
             try {
                 _instrBuf = new BufferedReader(new InputStreamReader(_tnc.getInputStream(), TERMINAL_CHARSET));
@@ -283,13 +283,13 @@ public class OMUD_Telnet {
             }
         }
 
-        // receivedNegotiation(): telnet negotiations... 
+        // receivedNegotiation(): telnet negotiations...
         public void receivedNegotiation(int negotiation_code, int option_code) {
             if (_ayt_last_response_time_ms == 0){
                 OMUD.logInfo("Telnet: connected!");
                 _omte.notifyTelnetConnected();
             }
-            _ayt_last_response_time_ms = System.currentTimeMillis();            
+            _ayt_last_response_time_ms = System.currentTimeMillis();
 
             String command = null;
             if (negotiation_code == TelnetNotificationHandler.RECEIVED_DO) {
@@ -302,6 +302,6 @@ public class OMUD_Telnet {
                 command = TELNET_NEG_WONT;
             }
             OMUD.logInfo("Telnet: cmd (" + command + "), opt (" + option_code + ")");
-        }        
+        }
     }
 }

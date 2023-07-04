@@ -67,14 +67,14 @@ public class OMUD_MMUDBlock_Statline extends OMUD_MMUDBlocks.Block{
             if ((pos_equals = _sbBlockData.indexOf("=", 0)) > -1){
                 if (mmc.dataStatline.hp_str.length() == 0)
                     mmc.dataStatline.hp_str = _sbBlockData.substring(0, pos_equals);
-                mmc.dataStatline.hp_cur = Integer.parseInt(_sbBlockData.substring(pos_equals + 1, pos_hp_end));             
+                mmc.dataStatline.hp_cur = Integer.parseInt(_sbBlockData.substring(pos_equals + 1, pos_hp_end));
             }
 
             // ------------------
             // Statline: Remove Extra
             // ------------------
             // check for extra (previous) statlines:
-            // if multiple statlines were sent, 
+            // if multiple statlines were sent,
             // delete all previous and keep the most recent from above.
             if (sbTelnetData.length() > 0){
                 int pos_multi_statline = -1;
@@ -86,5 +86,5 @@ public class OMUD_MMUDBlock_Statline extends OMUD_MMUDBlocks.Block{
         }
 
         return pos_data_found_start;
-    }   
+    }
 }

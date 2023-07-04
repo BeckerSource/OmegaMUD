@@ -12,7 +12,7 @@ public class OMUD_GUIBlinkText{
         pos =    p;
         length = l;
         attr =   at;
-        fg_on =  StyleConstants.getForeground(attr); 
-        fg_off = StyleConstants.getBackground(attr); 
+        fg_on =  StyleConstants.getForeground(attr);
+        fg_off = StyleConstants.getBackground(attr);
     }
 }

@@ -82,13 +82,13 @@ public class OMUD_MMUD{
         "[READY]", // not a real game string, just a state for non-rest and non-med
         "[REST]",
         "[MED]"
-    };  
+    };
 
     // ------------------
     // Item / Equipment Data
     // ------------------
     public static enum eEquipSlot{
-        NONE, 		// not a real slot
+        NONE,       // not a real slot
         WEAPON,
         OFFHAND,
         HEAD,
@@ -129,7 +129,7 @@ public class OMUD_MMUD{
         "(finger)",
         "(worn)",
         "(nowhere)"
-    };  
+    };
 
     // ------------------
     // Coin/Money Types
@@ -200,10 +200,10 @@ public class OMUD_MMUD{
     // ------------------
     public static class DataCoins{
         public int runic =   0;
-        public int plat =    0; 
-        public int gold =    0; 
-        public int silver =  0; 
-        public int copper =  0; 
+        public int plat =    0;
+        public int gold =    0;
+        public int silver =  0;
+        public int copper =  0;
         public DataCoins(){}
         public DataCoins(DataCoins dc){copy(dc);}
         private void copy(DataCoins dc){
@@ -263,10 +263,10 @@ public class OMUD_MMUD{
 
         DataItem(String n)  {name = n;}
         DataItem(DataItem item){
-            id =    		item.id;
+            id =            item.id;
             qty =           item.qty;
-            name =  		new String(item.name);
-            equip_slot = 	item.equip_slot;
+            name =          new String(item.name);
+            equip_slot =    item.equip_slot;
         }
     }
 
@@ -278,10 +278,10 @@ public class OMUD_MMUD{
 
         DataSpell(){}
         DataSpell(DataSpell spell){
-        	level = 		spell.level;
-        	cost  = 		spell.cost;
-        	name_short = 	new String(spell.name_short);
-        	name_long = 	new String(spell.name_long);
+            level =         spell.level;
+            cost  =         spell.cost;
+            name_short =    new String(spell.name_short);
+            name_long =     new String(spell.name_long);
         }
     }
 
@@ -519,7 +519,7 @@ public class OMUD_MMUD{
                 if (sbPrice.length() == 0)
                     sbPrice.append("FREE");
                 return sbPrice.toString();
-            }        
+            }
         }
         public ArrayList<ShopItem> shop_items = new ArrayList<ShopItem>();
 
@@ -537,7 +537,7 @@ public class OMUD_MMUD{
 
         public eBlockType getType(){return eBlockType.SPELLS;}
         public DataSpells(){}
-        public DataSpells(DataSpells ds){           
+        public DataSpells(DataSpells ds){
             for (int i = 0; i < ds.spells.size(); ++i)
                 spells.add(new DataSpell(ds.spells.get(i)));
         }
@@ -566,7 +566,7 @@ public class OMUD_MMUD{
         DataWho(){}
         DataWho(DataWho dw){
              for (int i = 0; i < dw.chars.size(); ++i)
-                chars.add(new DataWhoChar(dw.chars.get(i)));           
+                chars.add(new DataWhoChar(dw.chars.get(i)));
         }
     }
 

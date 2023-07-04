@@ -38,7 +38,7 @@ public class OMUD{
     // BBS Locations
     // ------------------
     public static enum eBBSLocation{
-        OFFLINE, 
+        OFFLINE,
         BBS,
         MUD_MENU,
         MUD_EDITOR,
@@ -74,8 +74,8 @@ public class OMUD{
     }
 
     public static final Color[] ANSI_COLORS_BOLD = {
-        new Color( 85,  85,  85), 
-        new Color(240,   0,   0), 
+        new Color( 85,  85,  85),
+        new Color(240,   0,   0),
         new Color(  0, 240,   0),
         new Color(240, 240,   0),
         new Color(  0,   0, 240),
@@ -84,8 +84,8 @@ public class OMUD{
         new Color(240, 240, 240)
     };
     public static final Color[] ANSI_COLORS_NORM = {
-        new Color(  0,   0,   0), 
-        new Color(170,   0,   0), 
+        new Color(  0,   0,   0),
+        new Color(170,   0,   0),
         new Color(  0, 170,   0),
         new Color(170,  85,   0),
         new Color(  0,   0, 170),
@@ -95,7 +95,7 @@ public class OMUD{
     };
     public static final Color[] ANSI_COLORS_DIM = {
         new Color( 42,  42,  42), // dim untested on both fg/bg for accuracy - leaving for visibility when found
-        new Color( 85,   0,   0), 
+        new Color( 85,   0,   0),
         new Color(  0,  85,   0),
         new Color( 85,  85,   0),
         new Color(  0,   0,  85),
@@ -108,7 +108,7 @@ public class OMUD{
     public static final Color TERMINAL_LOCAL_INFO_FG = new Color(232, 232, 232);
     public static final Color TERMINAL_LOCAL_INFO_BG = new Color(0, 0, 164);
     public static final Color GUI_BG = new Color(42, 42, 42);
-    
+
     // --------------
     // ASCII Codes (Decimal)
     // --------------
@@ -259,5 +259,5 @@ public class OMUD{
             if (!found)
                 arrlDest.add(arrlNew.get(i));
         }
-    }    
+    }
 }

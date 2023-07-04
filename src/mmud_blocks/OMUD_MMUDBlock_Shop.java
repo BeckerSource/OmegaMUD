@@ -55,7 +55,7 @@ public class OMUD_MMUDBlock_Shop extends OMUD_MMUDBlocks.Block{
                     }
                 }
                 mmc.dataShop.shop_items.add(item);
-            }                       
+            }
         } else if ((pos_data_found_start = findData(sbTelnetData, pos_offset, true, false, MSTR_SHOP_NO, "")) > -1){
             mmc.dataShop = new OMUD_MMUD.DataShop();
         }

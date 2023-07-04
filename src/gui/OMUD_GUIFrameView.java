@@ -230,13 +230,13 @@ public class OMUD_GUIFrameView extends JFrame{
 
             SwingUtilities.invokeLater(new Runnable(){public void run(){
                 _inputTelnet.requestFocus();
-            }});        
+            }});
         }
     }
 
     private class IL_TglSelected implements ItemListener {
         public void itemStateChanged(ItemEvent event) {
-            _inputTelnet.setSingleMode(event.getStateChange() == ItemEvent.SELECTED ? true : false);            
+            _inputTelnet.setSingleMode(event.getStateChange() == ItemEvent.SELECTED ? true : false);
             SwingUtilities.invokeLater(new Runnable(){public void run(){
                 _inputTelnet.requestFocus();
             }});

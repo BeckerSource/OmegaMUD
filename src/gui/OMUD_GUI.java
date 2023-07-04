@@ -21,7 +21,7 @@ public class OMUD_GUI implements OMUD_ITextInputEvents, OMUD_ITelnetEvents, OMUD
             _omt  = new OMUD_Telnet(this, _omtp);
         } catch (Exception e) {
             OMUD.logError("Error creating core OmegaMUD objects:" + e.getMessage());
-        }                
+        }
 
         // --------------
         // GUI
@@ -32,7 +32,7 @@ public class OMUD_GUI implements OMUD_ITextInputEvents, OMUD_ITelnetEvents, OMUD
 
         //_fView.setLocationRelativeTo(null); // center in main display
         Dimension size = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice().getDefaultConfiguration().getBounds().getSize();
-        _fChars.setSize(_fChars.getMinimumSize());      
+        _fChars.setSize(_fChars.getMinimumSize());
         _fInfo.setLocation((int) (size.getWidth() - _fInfo.getSize().getWidth()) - 50, (int) _fChars.getSize().getHeight() + 50);
         _fView.setLocation((int) (size.getWidth() - (_fView.getSize().getWidth() * 1.5)), _fInfo.getLocation().y + 100);
         _fChars.setLocation(_fInfo.getLocation().x, 50);
@@ -80,7 +80,7 @@ public class OMUD_GUI implements OMUD_ITextInputEvents, OMUD_ITelnetEvents, OMUD
 
     // --------------
     // MUD Events
-    // --------------    
+    // --------------
     public void requestMUDData(OMUD_MMUD.DataBlock.eBlockType block_type){
         String strCmd = "";
         if (block_type == OMUD_MMUD.DataBlock.eBlockType.SPELLS)
@@ -102,73 +102,73 @@ public class OMUD_GUI implements OMUD_ITextInputEvents, OMUD_ITelnetEvents, OMUD
             _fView.processMUDLocation(eLoc);
         }});
     }
-    
+
     public void notifyMUDStatline(final OMUD_MMUD.DataStatline dataStatline){
         SwingUtilities.invokeLater(new Runnable(){public void run(){
             _fView.processMUDStatline(dataStatline);
         }});
     }
-    
+
     public void notifyMUDExp(final OMUD_MMUD.DataExp dataExp){
         SwingUtilities.invokeLater(new Runnable(){public void run(){
             _fView.processMUDExp(dataExp);
         }});
     }
-    
+
     public void notifyMUDUserCmd(final String strText){
         SwingUtilities.invokeLater(new Runnable(){public void run(){
             _fView.processMUDUserCmd(strText);
             _fInfo.processMUDUserCmd(strText);
         }});
-    }    
-    
-    public void notifyMUDUnknown(final String strText){        
+    }
+
+    public void notifyMUDUnknown(final String strText){
         SwingUtilities.invokeLater(new Runnable(){public void run(){
             OMUD.logToFile(OMUD.LOG_FILENAME_UNKNOWN, strText);
         }});
     }
 
-    public void notifyMUDOther(final String strText){        
+    public void notifyMUDOther(final String strText){
         SwingUtilities.invokeLater(new Runnable(){public void run(){
             _fInfo.processMUDOther(strText);
         }});
     }
-        
+
     public void notifyMUDRoom(final OMUD_MMUD.DataRoom dataRoom){
         SwingUtilities.invokeLater(new Runnable(){public void run(){
             _fView.processMUDRoom(dataRoom);
             _fInfo.processMUDRoom(dataRoom);
         }});
     }
-    
+
     public void notifyMUDInv(final OMUD_MMUD.DataInv dataInv){
         SwingUtilities.invokeLater(new Runnable(){public void run(){
             _fInfo.processMUDInv(dataInv);
         }});
     }
-    
+
     public void notifyMUDStats(final OMUD_MMUD.DataStats dataStats){
         SwingUtilities.invokeLater(new Runnable(){public void run(){
             _fInfo.processMUDStats(dataStats);
         }});
     }
-    
+
     public void notifyMUDShop(final OMUD_MMUD.DataShop dataShop, final String strRoomID, final String strRoomName){
         SwingUtilities.invokeLater(new Runnable(){public void run(){
             _fInfo.processMUDShop(dataShop, strRoomID, strRoomName);
         }});
     }
-    
+
     public void notifyMUDSpells(final OMUD_MMUD.DataSpells dataSpells){
         SwingUtilities.invokeLater(new Runnable(){public void run(){
             _fInfo.processMUDSpells(dataSpells);
-        }});        
+        }});
     }
 
     public void notifyMUDWho(final OMUD_MMUD.DataWho dataWho){
         SwingUtilities.invokeLater(new Runnable(){public void run(){
             _fInfo.processMUDWho(dataWho);
-        }});        
+        }});
     }
 
     public void notifyMUDParty(){}

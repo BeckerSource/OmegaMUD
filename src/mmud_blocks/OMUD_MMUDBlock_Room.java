@@ -105,8 +105,8 @@ public class OMUD_MMUDBlock_Room extends OMUD_MMUDBlocks.Block{
 
             mmc.dataRoom.name = _sbBlockData.substring(0, pos_right + 1).trim();
             // create Megamud RoomID after the exit data is built above...
-            mmc.dataRoom.roomID = 
-                OMUD_MEGA.getRoomNameHash(mmc.dataRoom.name) + 
+            mmc.dataRoom.roomID =
+                OMUD_MEGA.getRoomNameHash(mmc.dataRoom.name) +
                 OMUD_MEGA.getRoomExitsCode(mmc.dataRoom.arrlExits);
 
         // ------------------
@@ -116,7 +116,7 @@ public class OMUD_MMUDBlock_Room extends OMUD_MMUDBlocks.Block{
             cleanData(_sbBlockData, true, false);
             ArrayList<String> arrlNew = new ArrayList<String>();
             splitCommaListToArray(_sbBlockData.toString(), arrlNew);
-            // special: reset coins - 
+            // special: reset coins -
             // coins and their full count are always shown on first search, so reset coins to avoid extra string processing...
             buildItemList(arrlNew, (mmc.dataRoom.coins_hidden = new OMUD_MMUD.DataCoins()), mmc.dataRoom.arrlItemsHidden, null);
 
@@ -125,7 +125,7 @@ public class OMUD_MMUDBlock_Room extends OMUD_MMUDBlocks.Block{
         // ------------------
         } else if ((pos_data_found_start = findData(sbTelnetData, pos_offset, true, false, MSTR_SEARCH_NONE, "")) > -1){
             //omme.notifyMUDOther("[ROOM_SEARCH_NONE]\n");
-        }           
+        }
 
         return pos_data_found_start;
     }

@@ -86,7 +86,7 @@ public class OMUD_ANSI{
                  color = OMUD.ANSI_COLORS_DIM[eac.ordinal()];
             else color = OMUD.ANSI_COLORS_NORM[eac.ordinal()];
         } else {
-            // NOTE: background color set calc requires checking 
+            // NOTE: background color set calc requires checking
             // if the server has actually set the BG color. If not, use full black.
             // Also, "dim BG" is untested/unverified for accuracy.
             if (ansi.isBold() && ansi.isBGSet())

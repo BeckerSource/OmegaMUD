@@ -34,7 +34,7 @@ public class OMUD_MMUDBlock_Stats extends OMUD_MMUDBlocks.Block{
     public int findBlockData(OMUD_MMUDChar mmc, StringBuilder sbTelnetData, int pos_offset){
         int pos_data_found_start = -1;
 
-        if ((pos_data_found_start = findData(sbTelnetData, pos_offset, true, true, MSTR_NAME, "")) > -1){   
+        if ((pos_data_found_start = findData(sbTelnetData, pos_offset, true, true, MSTR_NAME, "")) > -1){
             cleanData(_sbBlockData, false, true);
             mmc.dataStats = new OMUD_MMUD.DataStats();
 
@@ -58,7 +58,7 @@ public class OMUD_MMUDBlock_Stats extends OMUD_MMUDBlocks.Block{
                     if (tokens.length == 2){
                         mmc.dataStats.lives = Integer.parseInt(tokens[0]);
                         mmc.dataStats.cp =    Integer.parseInt(tokens[1]);
-                    }                       
+                    }
                     pos_right = pos_left - 1;
 
                     // found a last name if split...
@@ -106,7 +106,7 @@ public class OMUD_MMUDBlock_Stats extends OMUD_MMUDBlocks.Block{
                             pos_right = pos_left - 1;
                         }
                     }
-                }               
+                }
 
                 // ------------------
                 // Row4: Hits + AC + Thievery
@@ -132,7 +132,7 @@ public class OMUD_MMUDBlock_Stats extends OMUD_MMUDBlocks.Block{
                             if (tokens.length == 2){
                                 mmc.dataStatline.hp_cur = Integer.parseInt(tokens[0]);
                                 mmc.dataStatline.hp_max = Integer.parseInt(tokens[1]);
-                            }                       
+                            }
                             pos_right = pos_left - 1;
                         }
                     }

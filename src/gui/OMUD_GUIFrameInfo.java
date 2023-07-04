@@ -24,7 +24,7 @@ public class OMUD_GUIFrameInfo extends JFrame {
         MUD_WHO
     }
 
-    private SimpleDateFormat    _sdf =          null; 
+    private SimpleDateFormat    _sdf =          null;
     private OMUD_IMUDEvents     _omme =         null;
     private OMUD_GUITextField   _lblInvRunic =  null;
     private OMUD_GUITextField   _lblInvPlat =   null;
@@ -281,7 +281,7 @@ public class OMUD_GUIFrameInfo extends JFrame {
 
         StringBuilder sb = new StringBuilder();
         sb.append("\n[InvEnc]: (" + dataInv.enc_level + ") " + dataInv.enc_cur + "/" + dataInv.enc_max + String.format(" [%.0f", ((float) dataInv.enc_cur / dataInv.enc_max) * 100) + "%]");
-        
+
         sb.append("\n\n--------------------\n");
         sb.append("[InvItemsWorn]\n");
         sb.append("--------------------\n");
@@ -293,7 +293,7 @@ public class OMUD_GUIFrameInfo extends JFrame {
                 sb.append(OMUD.getFillString(" ", fill_len));
             sb.append(" " + dataInv.arrlWorn.get(i).name + "\n");
         }
-        
+
         sb.append("\n--------------------\n");
         sb.append("[InvItems] (*=WORN)\n");
         sb.append("--------------------\n");
@@ -303,13 +303,13 @@ public class OMUD_GUIFrameInfo extends JFrame {
             else sb.append("  ");
             sb.append("(" + dataInv.arrlItems.get(i).qty + ") " + dataInv.arrlItems.get(i).name + "\n");
         }
-        
+
         sb.append("\n--------------------\n");
         sb.append("[InvKeys]\n");
         sb.append("--------------------\n");
         for (int i = 0; i < dataInv.arrlKeys.size(); ++i)
             sb.append(dataInv.arrlKeys.get(i).name + "\n");
-        
+
         _txtInv.setText(sb.toString());
         _txtInv.setCaretPosition(0);
 
@@ -353,7 +353,7 @@ public class OMUD_GUIFrameInfo extends JFrame {
         sb.append("\n[MR]: "        + dataStats.mr);
 
         _txtStats.setText(sb.toString());
-        _txtStats.setCaretPosition(0);            
+        _txtStats.setCaretPosition(0);
     }
 
     public void processMUDShop(final OMUD_MMUD.DataShop dataShop, final String strRoomID, final String strRoomName){

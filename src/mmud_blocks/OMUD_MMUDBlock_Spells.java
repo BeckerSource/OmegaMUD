@@ -15,7 +15,7 @@ public class OMUD_MMUDBlock_Spells extends OMUD_MMUDBlocks.Block{
 
         if ((pos_data_found_start = findData(sbTelnetData, pos_offset, true, true, MSTR_SPELLS, "")) > -1 ||
             (pos_data_found_start = findData(sbTelnetData, pos_offset, true, true, MSTR_POWERS, "")) > -1){
-            
+
             // remove color prefix from first row...
             if (_sbBlockData.indexOf(MSTR_COLOR_PRE, 0) == 0)
                 _sbBlockData.delete(0, MSTR_COLOR_PRE.length());

@@ -3,7 +3,7 @@ import java.util.ArrayList;
 public class OMUD_MMUDBlocks{
     // ------------------
     // Block
-    // ------------------   
+    // ------------------
     public static abstract class Block{
         protected class CmdText{
             public String   text  =     "";
@@ -56,11 +56,11 @@ public class OMUD_MMUDBlocks{
                     } else {
                         pos_endseq_right = pos_endseq_left;
                         valid_range = true;
-                    }               
+                    }
                 } else valid_range = false;
 
                 // check range and get start sequence left/starte...
-                if (valid_range && 
+                if (valid_range &&
                     (pos_startseq_left = sbTelnetData.lastIndexOf(strStartSeq, pos_endseq_left)) > -1){
 
                     // check ranges based on if has dynamic text...
@@ -82,7 +82,7 @@ public class OMUD_MMUDBlocks{
                         }
                         // delete the data in the buffer...
                         sbTelnetData.delete(pos_startseq_left, pos_endseq_right + (offset_is_lf ? 1 : 0) + 1); // +1 for exclusive
-                    } else pos_startseq_left = -1; 
+                    } else pos_startseq_left = -1;
                 }
             }
             return pos_startseq_left;
@@ -98,7 +98,7 @@ public class OMUD_MMUDBlocks{
                     // if matching ansi end is not found, just delete the escape char.
                     if (pos_ansi_end == -1)
                         pos_ansi_end = i + 1;   // +1 for exclusive end
-                    else pos_ansi_end++;        // 
+                    else pos_ansi_end++;        //
                     sbData.delete(i--, pos_ansi_end); // move 'i' back after delete so that we pick up the first char after the delete
 
                 } else if (trim_lf_spc){
@@ -108,7 +108,7 @@ public class OMUD_MMUDBlocks{
                         pos_last_char = i;
                         if (pos_first_char == -1)
                             pos_first_char = i;
-                    }               
+                    }
                 }
             }
 
@@ -117,7 +117,7 @@ public class OMUD_MMUDBlocks{
                 if (pos_last_char + 1 <= sbData.length() - 1)
                     sbData.delete(pos_last_char + 1, sbData.length()); // +1 to move forward to begin at space after last char
                 if (pos_first_char > 0)
-                    sbData.delete(0, pos_first_char);           
+                    sbData.delete(0, pos_first_char);
             }
         }
 
@@ -198,14 +198,14 @@ public class OMUD_MMUDBlocks{
                     }
 
                     // check for existing and update quantities...
-                    if (!is_coin){                    
+                    if (!is_coin){
                         for (int j = 0; j < arrlItems.size() && !is_dupe; ++j)
                             if ((is_dupe = ri.name.equals(arrlItems.get(j).name))){
                                 // inventory: worn item with extra non-worn in inv -
                                 // keep the counter on the original equipped item
                                 if (arrlItems.get(j).equip_slot != OMUD_MMUD.eEquipSlot.NONE)
-                                    arrlItems.get(j).qty = ri.qty + 1; 
-                                // else this is from a search and the greater quantity should be updated 
+                                    arrlItems.get(j).qty = ri.qty + 1;
+                                // else this is from a search and the greater quantity should be updated
                                 // based on the search results...
                                 else if (ri.qty > arrlItems.get(j).qty)
                                     arrlItems.get(j).qty = ri.qty;
@@ -214,7 +214,7 @@ public class OMUD_MMUDBlocks{
                 }
 
                 if (!is_coin && !is_dupe)
-                    arrlItems.add(ri);                    
+                    arrlItems.add(ri);
             }
         }
     }
@@ -238,7 +238,7 @@ public class OMUD_MMUDBlocks{
         // ------------------
         // Command Blocks
         // ------------------
-        _arrlBlocks.add(new OMUD_MMUDBlock_Room()); 
+        _arrlBlocks.add(new OMUD_MMUDBlock_Room());
         _arrlBlocks.add(new OMUD_MMUDBlock_Exp());
         _arrlBlocks.add(new OMUD_MMUDBlock_Inventory());
         _arrlBlocks.add(new OMUD_MMUDBlock_Stats());
@@ -246,7 +246,7 @@ public class OMUD_MMUDBlocks{
         _arrlBlocks.add(new OMUD_MMUDBlock_Spells());
         _arrlBlocks.add(new OMUD_MMUDBlock_Who());
         _arrlBlocks.add(new OMUD_MMUDBlock_Editor());       // NOTE: editor should always be at the end!
-        _bpos_cmd_editor = _arrlBlocks.size() - 1;          // 
+        _bpos_cmd_editor = _arrlBlocks.size() - 1;          //
         // ------------------
         // Other Line Blocks
         // ------------------
@@ -273,7 +273,7 @@ public class OMUD_MMUDBlocks{
                         mmc.ablk.update(i, "", _arrlBlocks.get(i).getStatlineWait(), _arrlBlocks.get(i).getDataType());
             // else parse the active block...
             } else {
-                pos_cmd_data_found_start = _arrlBlocks.get(mmc.ablk.block_pos).findBlockData(mmc, sbTelnetData, pos_data_found_start);            
+                pos_cmd_data_found_start = _arrlBlocks.get(mmc.ablk.block_pos).findBlockData(mmc, sbTelnetData, pos_data_found_start);
             }
 
             if (pos_cmd_data_found_start > -1)
@@ -302,5 +302,5 @@ public class OMUD_MMUDBlocks{
             if ((strFoundCmdFull = _arrlBlocks.get(i).matchCmdText(strCmd)) != null)
                 ablk.update(i, strFoundCmdFull, _arrlBlocks.get(i).getStatlineWait(), _arrlBlocks.get(i).getDataType());
         return ablk.block_pos == _bpos_cmd_editor;
-    }   
+    }
 }

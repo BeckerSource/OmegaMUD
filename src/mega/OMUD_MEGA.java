@@ -79,10 +79,10 @@ public class OMUD_MEGA{
 
         // return as ##### - see notes at bottom of file...
         String strExitsCode = new String(
-            Integer.toHexString(u_d) + 
-            Integer.toHexString(se_sw) + 
-            Integer.toHexString(ne_nw) + 
-            Integer.toHexString(e_w) + 
+            Integer.toHexString(u_d) +
+            Integer.toHexString(se_sw) +
+            Integer.toHexString(ne_nw) +
+            Integer.toHexString(e_w) +
             Integer.toHexString(n_s)
         ).toUpperCase();
         return strExitsCode;
@@ -91,7 +91,7 @@ public class OMUD_MEGA{
     // -----------------
     // MegaMUD RoomID: Room Name Hash: ### (in hex)
     // -----------------
-    // [1] loop/get the decimal value of each char in the room name 
+    // [1] loop/get the decimal value of each char in the room name
     // [2] multiple the char in the loop by the iterator count (1-based)
     // [3] sum/concat those values
     // [4] get the hex value of the result
@@ -115,7 +115,7 @@ public class OMUD_MEGA{
 
 /*
 ----------------
-MP File Format 
+MP File Format
 ----------------
 [Loop Path Name][Author Name]       <-- User: Loop Path Name (Loops Only), Author Name
 [NEWH:Newhaven:Newhaven Town]       <-- MEGA Start Room: Generated Prefix, MEGA "Goto Tree" Group, MEGA "Goto Tree" Node Name

@@ -48,7 +48,7 @@ public class OMUD_Buffer{
             _pos_top_left = delete_start;
             resetRows();
         } else if (_update_rows_edit) {
-            _sbText.delete(delete_start, delete_end);           
+            _sbText.delete(delete_start, delete_end);
         }
     }
 

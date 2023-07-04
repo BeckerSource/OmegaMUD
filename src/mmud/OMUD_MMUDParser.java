@@ -26,7 +26,7 @@ public class OMUD_MMUDParser {
     // ------------------
     private OMUD.eBBSLocation       _eBBSLoc =      OMUD.eBBSLocation.BBS;
     private OMUD_IMUDEvents         _omme =         null;
-    private OMUD_MMUDChar           _mmc =          null;   
+    private OMUD_MMUDChar           _mmc =          null;
     private StringBuilder           _sbDataTelnet = null;
     private static OMUD_MMUDBlocks  _s_blocks =     new OMUD_MMUDBlocks();
 
@@ -36,7 +36,7 @@ public class OMUD_MMUDParser {
         resetData(OMUD.eBBSLocation.BBS);
     }
 
-    private void resetData(OMUD.eBBSLocation eBBSLoc){      
+    private void resetData(OMUD.eBBSLocation eBBSLoc){
         _eBBSLoc = eBBSLoc;
         _mmc = new OMUD_MMUDChar();
     }
@@ -44,7 +44,7 @@ public class OMUD_MMUDParser {
     public void appendChar(char c)          {_sbDataTelnet.append(c);}
     public void appendSB(StringBuilder sb)  {_sbDataTelnet.append(sb);}
     public void deleteLastChar(){
-        if (_sbDataTelnet.length() > 0) 
+        if (_sbDataTelnet.length() > 0)
             _sbDataTelnet.deleteCharAt(_sbDataTelnet.length() - 1);
     }
 
@@ -58,7 +58,7 @@ public class OMUD_MMUDParser {
     // keeps track of the total delete length from zero for the telnet data buffer.
     private int updateParseDeleteLen(int pos_data_found_start, int pos_buf_delete_len){
         if (pos_data_found_start < pos_buf_delete_len || pos_buf_delete_len == 0)
-            pos_buf_delete_len = pos_data_found_start;      
+            pos_buf_delete_len = pos_data_found_start;
         return pos_buf_delete_len;
     }
 
@@ -121,7 +121,7 @@ public class OMUD_MMUDParser {
             // ------------------
             // Find User Commands
             // ------------------
-            // only process user commands and line blocks when not inside an editor (training stats, input prompt, etc.) - 
+            // only process user commands and line blocks when not inside an editor (training stats, input prompt, etc.) -
             // sbCmd can be null if there are no current commands in the telnet array...
             if (_eBBSLoc != OMUD.eBBSLocation.MUD_EDITOR && sbCmd != null && sbCmd.length() > 0 && _sbDataTelnet.length() > 0){
                 // always wait for statline if we have a command -
@@ -161,7 +161,7 @@ public class OMUD_MMUDParser {
                          _mmc.got_statline = true;
 
                         String strSpellsCmd = OMUD_MMUD.DataBlock.CMD_STRINGS[OMUD_MMUD.DataBlock.eBlockType.SPELLS.ordinal()];
-                        if ( _mmc.dataStatline.ma_str.length() > 0 && 
+                        if ( _mmc.dataStatline.ma_str.length() > 0 &&
                             !_mmc.dataStatline.ma_str.equals(OMUD_MMUD.DataStatline.MA_STR))
                             strSpellsCmd = OMUD_MMUD.DataBlock.CMD_SPELLS_KAI;
                         _omme.notifyMUDInit(new String(_mmc.strWelcome), strSpellsCmd);
