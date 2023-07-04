@@ -139,6 +139,21 @@ public class OMUD_MMUDBlocks{
                 arrlItems.add(item.trim());
         }
 
+        protected boolean getCoins(OMUD_MMUD.DataCoins coins, int qty, String strText){
+            boolean coin_match = false;
+                 if ((coin_match = (strText.indexOf(OMUD_MMUD.COIN_ITEM_STRINGS[OMUD_MMUD.eCoinType.RUNIC.ordinal()], 0))      > -1))
+                coins.runic =   qty;
+            else if ((coin_match = (strText.indexOf(OMUD_MMUD.COIN_ITEM_STRINGS[OMUD_MMUD.eCoinType.PLATINUM.ordinal()], 0))   > -1))
+                coins.plat =    qty;
+            else if ((coin_match = (strText.indexOf(OMUD_MMUD.COIN_ITEM_STRINGS[OMUD_MMUD.eCoinType.GOLD.ordinal()], 0))       > -1))
+                coins.gold =    qty;
+            else if ((coin_match = (strText.indexOf(OMUD_MMUD.COIN_ITEM_STRINGS[OMUD_MMUD.eCoinType.SILVER.ordinal()], 0))     > -1))
+                coins.silver =  qty;
+            else if ((coin_match = (strText.indexOf(OMUD_MMUD.COIN_ITEM_STRINGS[OMUD_MMUD.eCoinType.COPPER.ordinal()], 0))     > -1))
+                coins.copper =  qty;
+            return coin_match;
+        }
+
         protected void buildItemList(ArrayList<String> arrlNew, OMUD_MMUD.DataCoins coins, ArrayList<OMUD_MMUD.DataItem> arrlItems, ArrayList<OMUD_MMUD.DataItem> arrlItemsWorn){
             for (int i = 0; i < arrlNew.size(); ++i){
                 OMUD_MMUD.DataItem ri = new OMUD_MMUD.DataItem(arrlNew.get(i));
@@ -175,19 +190,9 @@ public class OMUD_MMUDBlocks{
 
                             // get coin counts - coins always displayed first and in order,
                             // so can exit early if out-of-range or if copper is found...
-                            if (i < OMUD_MMUD.COIN_TYPE_STRINGS.length){
-                                for (int j = 0; j < OMUD_MMUD.COIN_TYPE_STRINGS.length && coins.copper == 0; ++j){
-                                         if ((is_coin = (ri.name.indexOf(OMUD_MMUD.COIN_TYPE_STRINGS[OMUD_MMUD.eCoinType.RUNIC.ordinal()], 0))      > -1))
-                                        coins.runic =   ri.qty;
-                                    else if ((is_coin = (ri.name.indexOf(OMUD_MMUD.COIN_TYPE_STRINGS[OMUD_MMUD.eCoinType.PLATINUM.ordinal()], 0))   > -1))
-                                        coins.plat =    ri.qty;
-                                    else if ((is_coin = (ri.name.indexOf(OMUD_MMUD.COIN_TYPE_STRINGS[OMUD_MMUD.eCoinType.GOLD.ordinal()], 0))       > -1))
-                                        coins.gold =    ri.qty;
-                                    else if ((is_coin = (ri.name.indexOf(OMUD_MMUD.COIN_TYPE_STRINGS[OMUD_MMUD.eCoinType.SILVER.ordinal()], 0))     > -1))
-                                        coins.silver =  ri.qty;
-                                    else if ((is_coin = (ri.name.indexOf(OMUD_MMUD.COIN_TYPE_STRINGS[OMUD_MMUD.eCoinType.COPPER.ordinal()], 0))     > -1))
-                                        coins.copper =  ri.qty;
-                                }
+                            if (i < OMUD_MMUD.COIN_ITEM_STRINGS.length){
+                                for (int j = 0; j < OMUD_MMUD.COIN_ITEM_STRINGS.length && coins.copper == 0; ++j)
+                                    is_coin = getCoins(coins, ri.qty, ri.name);
                             }
                         }
                     }

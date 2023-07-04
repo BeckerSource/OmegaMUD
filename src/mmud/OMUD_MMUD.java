@@ -139,16 +139,33 @@ public class OMUD_MMUD{
         SILVER,
         GOLD,
         PLATINUM,
-        RUNIC               // BBS can have custom runic name
+        RUNIC
     }
 
-    // base (singular) full names
     public static final String[] COIN_TYPE_STRINGS = {
-        "copper farthing",
-        "silver noble",
-        "gold crown",
-        "platinum piece",
-        "adamantite piece"  // BBS can have custom runic name "runic piece" (adamantite for testing)
+        "copper",
+        "silver",
+        "gold",
+        "platinum",
+        "adamantite"    // BBS can have custom runic name
+    };
+
+    // singular coind end-types
+    public static final String[] COIN_DESC_STRINGS = {
+        "farthing",
+        "noble",
+        "crown",
+        "piece",
+        "piece"
+    };
+
+    // base (singular) full names
+    public static final String[] COIN_ITEM_STRINGS = {
+        COIN_TYPE_STRINGS[eCoinType.COPPER.ordinal()]   + " " + COIN_DESC_STRINGS[eCoinType.COPPER.ordinal()],
+        COIN_TYPE_STRINGS[eCoinType.SILVER.ordinal()]   + " " + COIN_DESC_STRINGS[eCoinType.SILVER.ordinal()],
+        COIN_TYPE_STRINGS[eCoinType.GOLD.ordinal()]     + " " + COIN_DESC_STRINGS[eCoinType.GOLD.ordinal()],
+        COIN_TYPE_STRINGS[eCoinType.PLATINUM.ordinal()] + " " + COIN_DESC_STRINGS[eCoinType.PLATINUM.ordinal()],
+        COIN_TYPE_STRINGS[eCoinType.RUNIC.ordinal()]    + " " + COIN_DESC_STRINGS[eCoinType.RUNIC.ordinal()]
     };
 
     // ------------------
@@ -188,12 +205,53 @@ public class OMUD_MMUD{
         public int silver =  0; 
         public int copper =  0; 
         public DataCoins(){}
-        public DataCoins(DataCoins dc){
+        public DataCoins(DataCoins dc){copy(dc);}
+        private void copy(DataCoins dc){
             runic =   dc.runic;
             plat =    dc.plat;
             gold =    dc.gold;
             silver =  dc.silver;
             copper =  dc.copper;
+        }
+
+        public void convert(boolean convert_up){
+            DataCoins dc = new DataCoins(this);
+
+            // convert up: get max coins for each type...
+            if (convert_up){
+                if (copper  >= 100){
+                    dc.silver   = copper / 100;
+                    dc.copper   = copper % 100;
+                }
+                if (silver  >= 100){
+                    dc.gold     = silver / 100;
+                    dc.silver   = silver % 100;
+                }
+                if (gold    >= 100){
+                    dc.plat     = gold   / 100;
+                    dc.gold     = gold   % 100;
+                }
+                if (plat    >= 100){
+                    dc.runic   += plat   / 100;
+                    dc.plat     = plat   % 100;
+                }
+
+            // convert all down to copper...
+            } else {
+                dc.plat     += dc.runic  * 100;
+                dc.runic     = 0;
+
+                dc.gold     += dc.plat   * 100;
+                dc.plat      = 0;
+
+                dc.silver   += dc.gold   * 100;
+                dc.gold      = 0;
+
+                dc.copper   += dc.silver * 100;
+                dc.silver    = 0;
+            }
+
+            copy(dc);
         }
     }
 
@@ -433,16 +491,35 @@ public class OMUD_MMUD{
 
     public static class DataShop extends DataBlock{
         public static class ShopItem{
-            public String   name =  "";
-            public int      qty =   0;
-            public String   price = ""; // string for now, change later when conversions in place
+            public String       name =      "";
+            public int          qty =       0;
+            public DataCoins    coins =     new DataCoins();
+            public boolean      can_use =   true;
 
             public ShopItem(){}
             public ShopItem(ShopItem si){
-                name =  new String(si.name);
-                qty =   si.qty;
-                price = new String(si.price);
+                name =      new String(si.name);
+                qty =       si.qty;
+                coins =     new DataCoins(si.coins);
+                can_use =   si.can_use;
             }
+
+            public String getPriceString(){
+                StringBuilder sbPrice = new StringBuilder();
+                if (coins.runic     > 0)
+                    sbPrice.append(coins.runic + " " + COIN_TYPE_STRINGS[eCoinType.RUNIC.ordinal()]);
+                if (coins.plat      > 0)
+                    sbPrice.append((sbPrice.length() > 0 ? ", " : "") + coins.plat    + " " + COIN_TYPE_STRINGS[eCoinType.PLATINUM.ordinal()]);
+                if (coins.gold      > 0)
+                    sbPrice.append((sbPrice.length() > 0 ? ", " : "") + coins.gold    + " " + COIN_TYPE_STRINGS[eCoinType.GOLD.ordinal()]);
+                if (coins.silver    > 0)
+                    sbPrice.append((sbPrice.length() > 0 ? ", " : "") + coins.silver  + " " + COIN_TYPE_STRINGS[eCoinType.SILVER.ordinal()]);
+                if (coins.copper    > 0)
+                    sbPrice.append((sbPrice.length() > 0 ? ", " : "") + coins.copper  + " " + COIN_TYPE_STRINGS[eCoinType.COPPER.ordinal()]);
+                if (sbPrice.length() == 0)
+                    sbPrice.append("FREE");
+                return sbPrice.toString();
+            }        
         }
         public ArrayList<ShopItem> shop_items = new ArrayList<ShopItem>();
 

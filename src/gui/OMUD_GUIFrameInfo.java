@@ -187,7 +187,7 @@ public class OMUD_GUIFrameInfo extends JFrame {
             StringBuilder sbTermDebug = new StringBuilder();
             for (int i = 0; i < OMUD.TERMINAL_ROWS; ++i){
                 strRow = omb.getRowText(i);
-                sbTermDebug.append(String.format("[%02d]", i + 1) + (strRow.length() > 0 ? " " : "_"));
+                sbTermDebug.append(String.format("%02d]", i + 1) + (strRow.length() > 0 ? " " : "_"));
 
                 is_buffer_row = i == omb.getRowNum();
                 if (is_buffer_row)
@@ -201,7 +201,7 @@ public class OMUD_GUIFrameInfo extends JFrame {
                 sbTermDebug.append("\n");
             }
             sbTermDebug.append("-------------------------------------------------------------------------------------\n");
-            sbTermDebug.append("     12345678901234567890123456789012345678901234567890123456789012345678901234567890\n");
+            sbTermDebug.append("    12345678901234567890123456789012345678901234567890123456789012345678901234567890\n");
             sbTermDebug.append("-------------------------------------------------------------------------------------\n");
             sbTermDebug.append("BLC/BTL/BSZ: " + omb.getLineCount() + ", " + omb.getTopLeftPos() + ", " + omb.getText().length() + "\n");
             sbTermDebug.append("ROW/COL: " + (omb.getRowNum() + 1) + ", " + (omb.getColNum() + 1) + "\n");
@@ -363,16 +363,21 @@ public class OMUD_GUIFrameInfo extends JFrame {
         sb.append("[RoomID]: "      + strRoomID);
         sb.append("\n[RoomName]: "  + strRoomName);
         sb.append("\n\n--------------------\n");
-        sb.append("[Qty] Name: Price\n");
+        sb.append("[Qty] Name: Price (*=NO USE)\n");
         sb.append("--------------------\n");
         for (int i = 0; i < dataShop.shop_items.size(); ++i){
-            sb.append("[" + dataShop.shop_items.get(i).qty + "]:\t" + dataShop.shop_items.get(i).name);
+            sb.append("[");
+            if (dataShop.shop_items.get(i).qty < 10)
+                sb.append(" ");
+            sb.append(dataShop.shop_items.get(i).qty + "]: ");
+            sb.append(dataShop.shop_items.get(i).can_use ? "  " : "* ");
+            sb.append(dataShop.shop_items.get(i).name);
 
             int fill_len = 30 - dataShop.shop_items.get(i).name.length();
             if (fill_len > 0)
                sb.append(OMUD.getFillString(" ", fill_len));
 
-            sb.append(dataShop.shop_items.get(i).price + "\n");
+            sb.append(dataShop.shop_items.get(i).getPriceString() + "\n");
         }
 
         _txtShop.setText(sb.toString());
