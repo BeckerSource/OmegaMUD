@@ -70,7 +70,7 @@ public class OMUD_MMUD{
     }
 
     // ------------------
-    // Char Data
+    // Char States
     // ------------------
     public static enum eRestState{
         READY, // not a real game state, just a state for non-rest/med
@@ -83,6 +83,7 @@ public class OMUD_MMUD{
         "[REST]",
         "[MED]"
     };
+    public static final String MSTR_COMBAT_STATE = "[COMBAT]";
 
     // ------------------
     // Item / Equipment Data
@@ -292,8 +293,7 @@ public class OMUD_MMUD{
             SHOP,
             SPELLS,
             WHO,
-            PARTY,
-            DEBUG
+            PARTY
         }
 
         public static final String[] CMD_STRINGS = {
@@ -305,25 +305,25 @@ public class OMUD_MMUD{
             "list",
             "spells",
             "who",
-            "party",
-            ""
+            "party"
         };
-        public static final String CMD_SPELLS_KAI = "powers";
+        public static final String MSTR_CMD_SPELLS_KAI = "powers";
 
         public abstract eBlockType getType();
     }
 
     public static class DataStatline extends DataBlock{
-        public int      hp_cur =    0;
-        public int      hp_max =    0;
-        public int      ma_cur =    0;
-        public int      ma_max =    0;
-        public boolean  hp_mod =    false;
-        public boolean  ma_mod =    false;
-        public String   hp_str =    "";
-        public String   ma_str =    "";
-        public eRestState rest =    eRestState.READY;
-        public static final String MA_STR = "MA";
+        public int      hp_cur =        0;
+        public int      hp_max =        0;
+        public int      ma_cur =        0;
+        public int      ma_max =        0;
+        public boolean  hp_mod =        false;
+        public boolean  ma_mod =        false;
+        public String   hp_str =        "";
+        public String   ma_str =        "";
+        public boolean  in_combat =     false;
+        public eRestState rest_state =  eRestState.READY;
+        public static final String MSTR_SLINE_MA = "MA";
 
         public eBlockType getType(){return eBlockType.STATLINE;}
         public DataStatline(){}
@@ -336,7 +336,8 @@ public class OMUD_MMUD{
             ma_mod = dsl.ma_mod;
             hp_str = new String(dsl.hp_str);
             ma_str = new String(dsl.ma_str);
-            rest =   dsl.rest;
+            in_combat =  dsl.in_combat;
+            rest_state = dsl.rest_state;
         }
     }
 
@@ -580,15 +581,5 @@ public class OMUD_MMUD{
         public ArrayList<PartyMember> members = new ArrayList<PartyMember>();
 
         public eBlockType getType(){return eBlockType.PARTY;}
-    }
-
-    public static class DataDebug extends DataBlock{
-        public String debug_text = "";
-
-        public eBlockType getType(){return eBlockType.DEBUG;}
-        public DataDebug(){}
-        public DataDebug(DataDebug dd){
-            debug_text = new String(dd.debug_text);
-        }
     }
 }

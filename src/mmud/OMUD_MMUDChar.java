@@ -1,9 +1,10 @@
 public class OMUD_MMUDChar{
     public static class ActiveBlock{
         public static final int BPOS_INVALID = -1;
-        public int      block_pos =     BPOS_INVALID;
-        public String   strCmdText =    "?";
-        public boolean  statline_wait = false;
+        public int              block_pos =     BPOS_INVALID;
+        public String           strCmdText =    "?";
+        public boolean          statline_wait = false;
+        public StringBuilder    sbDebug =       new StringBuilder();
         public OMUD_MMUD.DataBlock.eBlockType data_type = OMUD_MMUD.DataBlock.eBlockType.ROOM;
 
         public ActiveBlock(boolean sw, OMUD_MMUD.DataBlock.eBlockType dt){
@@ -29,6 +30,5 @@ public class OMUD_MMUDChar{
     public OMUD_MMUD.DataSpells     dataSpells =    new OMUD_MMUD.DataSpells();
     public OMUD_MMUD.DataWho        dataWho =       new OMUD_MMUD.DataWho();
     public OMUD_MMUD.DataParty      dataParty =     new OMUD_MMUD.DataParty();
-    public OMUD_MMUD.DataDebug      dataDebug =     new OMUD_MMUD.DataDebug();
     public ActiveBlock ablk = new ActiveBlock(false, OMUD_MMUD.DataBlock.eBlockType.ROOM);
 }

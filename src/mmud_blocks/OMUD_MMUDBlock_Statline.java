@@ -14,10 +14,10 @@ public class OMUD_MMUDBlock_Statline extends OMUD_MMUDBlocks.Block{
         if ((pos_data_found_start = findData(sbTelnetData, sbTelnetData.length() - 1, false, true, MSTR_STATLINE_PRE, MSTR_STATLINE_END)) > -1){
 
             // PREFIX: statline after stats has an ANSI reset prefix...
-            pos_data_found_start = checkPrefix("Statline Stats Prefix", sbTelnetData, pos_data_found_start, MSTR_PREFIX_RESET_WHBL);
+            pos_data_found_start = checkPrefix("Statline after Stats", mmc.ablk.sbDebug, sbTelnetData, pos_data_found_start, MSTR_PREFIX_RESET_WHBL);
 
             // default to active first...
-            mmc.dataStatline.rest = OMUD_MMUD.eRestState.READY;
+            mmc.dataStatline.rest_state = OMUD_MMUD.eRestState.READY;
 
             // ------------------
             // Statline: Resting/Meditation: MA/KAI Chars
@@ -27,10 +27,10 @@ public class OMUD_MMUDBlock_Statline extends OMUD_MMUDBlocks.Block{
                 int pos_rest_start = 0;
                 if ((pos_rest_start = sbTelnetData.indexOf(MSTR_STATLINE_MED, pos_data_found_start)) > -1){
                     sbTelnetData.delete(pos_rest_start, pos_rest_start + MSTR_STATLINE_MED.length());
-                    mmc.dataStatline.rest = OMUD_MMUD.eRestState.MED;
+                    mmc.dataStatline.rest_state = OMUD_MMUD.eRestState.MED;
                 } else if ((pos_rest_start = sbTelnetData.indexOf(MSTR_STATLINE_REST, pos_data_found_start)) > -1){
                     sbTelnetData.delete(pos_rest_start, pos_rest_start + MSTR_STATLINE_REST.length());
-                    mmc.dataStatline.rest = OMUD_MMUD.eRestState.REST;
+                    mmc.dataStatline.rest_state = OMUD_MMUD.eRestState.REST;
                 }
             }
 
@@ -38,15 +38,15 @@ public class OMUD_MMUDBlock_Statline extends OMUD_MMUDBlocks.Block{
             // Statline: Resting/Meditation: Non-MA/KAI Chars
             // ------------------
             // Non-MA/KAI chars: if not found above, try inside of the statline...
-            if (mmc.dataStatline.rest == OMUD_MMUD.eRestState.READY){
+            if (mmc.dataStatline.rest_state == OMUD_MMUD.eRestState.READY){
                 int pos_rest_start = 0;
                 if ((pos_rest_start = _sbBlockData.indexOf(MSTR_STATLINE_REST, 0)) > -1){
                     _sbBlockData.delete(pos_rest_start, pos_rest_start + MSTR_STATLINE_REST.length());
-                    mmc.dataStatline.rest = OMUD_MMUD.eRestState.REST;
+                    mmc.dataStatline.rest_state = OMUD_MMUD.eRestState.REST;
                 // not sure if non-MA/KAI chars would ever use meditate?
                 } else if ((pos_rest_start = _sbBlockData.indexOf(MSTR_STATLINE_MED, 0)) > -1){
                     _sbBlockData.delete(pos_rest_start, pos_rest_start + MSTR_STATLINE_MED.length());
-                    mmc.dataStatline.rest = OMUD_MMUD.eRestState.MED;
+                    mmc.dataStatline.rest_state = OMUD_MMUD.eRestState.MED;
                 }
             }
 

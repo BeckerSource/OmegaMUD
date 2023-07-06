@@ -100,7 +100,7 @@ public class OMUD_MMUDBlock_Room extends OMUD_MMUDBlocks.Block{
                 pos_data_found_start = 0;
             // PREFIX: if room name is shown after a move command, it will have a white/black reset prefix...
             } else {
-                pos_data_found_start = checkPrefix("Room Name After Move", sbTelnetData, pos_data_found_start, MSTR_PREFIX_RESET_WHBL);
+                pos_data_found_start = checkPrefix("Room Name After Move", mmc.ablk.sbDebug, sbTelnetData, pos_data_found_start, MSTR_PREFIX_RESET_WHBL);
             }
 
             mmc.dataRoom.name = _sbBlockData.substring(0, pos_right + 1).trim();
@@ -126,8 +126,7 @@ public class OMUD_MMUDBlock_Room extends OMUD_MMUDBlocks.Block{
         // Search: No Items
         // ------------------
         } else if ((pos_data_found_start = findData(sbTelnetData, pos_offset, true, false, MSTR_SEARCH_NONE, "")) > -1){
-            mmc.ablk.data_type = OMUD_MMUD.DataBlock.eBlockType.DEBUG;
-            mmc.dataDebug.debug_text = "[ROOM_SEARCH_NONE]\n";
+            mmc.ablk.sbDebug.append("[ROOM_SEARCH_NONE]\n");
         }
 
         return pos_data_found_start;

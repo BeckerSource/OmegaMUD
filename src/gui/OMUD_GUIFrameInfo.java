@@ -217,8 +217,8 @@ public class OMUD_GUIFrameInfo extends JFrame {
         _txtCmds.setText(_txtCmds.getText() + _sdf.format(new Date()) + ": " + strText + "\n");
     }
 
-    public void processMUDDebug(final OMUD_MMUD.DataDebug dataDebug){
-        _txtMudDbg.setText(_txtMudDbg.getText() + _sdf.format(new Date()) + ": " + dataDebug.debug_text + "\n");
+    public void processMUDDebug(final String strDebugText){
+        _txtMudDbg.setText(_txtMudDbg.getText() + _sdf.format(new Date()) + ": " + strDebugText + "\n");
         _txtMudDbg.setCaretPosition(_txtMudDbg.getText().length());
     }
 

@@ -6,7 +6,7 @@ public class OMUD_MMUDBlock_Spells extends OMUD_MMUDBlocks.Block{
     public boolean getStatlineWait(){return true;}
     public OMUD_MMUDBlock_Spells(){
         _arrlCmdText.add(new CmdText(OMUD_MMUD.DataBlock.CMD_STRINGS[OMUD_MMUD.DataBlock.eBlockType.SPELLS.ordinal()], 2));
-        _arrlCmdText.add(new CmdText(OMUD_MMUD.DataBlock.CMD_SPELLS_KAI, 2));
+        _arrlCmdText.add(new CmdText(OMUD_MMUD.DataBlock.MSTR_CMD_SPELLS_KAI, 2));
     }
 
     public int findBlockData(OMUD_MMUDChar mmc, StringBuilder sbTelnetData, int pos_offset){

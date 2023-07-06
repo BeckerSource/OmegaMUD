@@ -152,8 +152,8 @@ public class OMUD_GUIFrameView extends JFrame{
 
     private void layoutV1Char(GridBagLayout gbl){
         GridBagConstraints gblc = new GridBagConstraints();
-        _lblCharMegaID.setPreferredSize(    new Dimension(75,   25));
-        _lblCharState.setPreferredSize(     new Dimension(40,   25));
+        _lblCharMegaID.setPreferredSize(    new Dimension(85,   25));
+        _lblCharState.setPreferredSize(     new Dimension(50,   25));
         _lblCharStatline.setPreferredSize(  new Dimension(150,  25));
         _lblCharExp.setPreferredSize(       new Dimension(150,  25));
         _lblCharLastCmd.setPreferredSize(   new Dimension(150,  25));
@@ -314,7 +314,9 @@ public class OMUD_GUIFrameView extends JFrame{
     }
 
     public void processMUDStatline(final OMUD_MMUD.DataStatline dataStatline){
-        _lblCharState.setText(OMUD_MMUD.REST_STATE_STRINGS[dataStatline.rest.ordinal()]);
+        _lblCharState.setText(dataStatline.in_combat ?
+            OMUD_MMUD.MSTR_COMBAT_STATE : 
+            OMUD_MMUD.REST_STATE_STRINGS[dataStatline.rest_state.ordinal()]);
 
         StringBuilder sb = new StringBuilder();
         sb.append(dataStatline.hp_str + "=" + dataStatline.hp_cur + "/" + dataStatline.hp_max);

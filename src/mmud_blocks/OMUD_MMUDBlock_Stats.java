@@ -39,7 +39,7 @@ public class OMUD_MMUDBlock_Stats extends OMUD_MMUDBlocks.Block{
             cleanData(_sbBlockData, false, true);
 
             // PREFIX: normal stat command has a prefix, coming from a new char creation does not...
-            pos_data_found_start = checkPrefix("Stat Command (not new char)", sbTelnetData, pos_data_found_start, MSTR_PREFIX_RESET_WHBL);
+            pos_data_found_start = checkPrefix("Stats from User Cmd and not New Char", mmc.ablk.sbDebug, sbTelnetData, pos_data_found_start, MSTR_PREFIX_RESET_WHBL);
 
             // split by lines...
             String[] lines = _sbBlockData.toString().split("\n");

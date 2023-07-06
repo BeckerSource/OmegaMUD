@@ -60,8 +60,7 @@ public class OMUD_MMUDBlock_Shop extends OMUD_MMUDBlocks.Block{
                 mmc.dataShop.shop_items.add(item);
             }
         } else if ((pos_data_found_start = findData(sbTelnetData, pos_offset, true, false, MSTR_SHOP_NO, "")) > -1){
-            mmc.ablk.data_type = OMUD_MMUD.DataBlock.eBlockType.DEBUG;
-            mmc.dataDebug.debug_text = "[NO_SHOP_IN_ROOM]\n";
+            mmc.ablk.sbDebug.append("[NO_SHOP_IN_ROOM]\n");
         }
 
         return pos_data_found_start;

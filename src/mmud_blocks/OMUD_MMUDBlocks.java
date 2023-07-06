@@ -121,13 +121,14 @@ public class OMUD_MMUDBlocks{
         }
 
         // checkPrefix(): some mud strings have a possible prefix - check for it and remove it -
-        // NOTE: strReasonDbg is just for internal visual/coding reference.  Not a string required for function.
-        protected int checkPrefix(String strReasonDbg, StringBuilder sbTelnetData, int pos_offset, String strPrefix){
+        // NOTE: strDbgReason is just for internal visual/coding reference.  Not a string required for function.
+        protected int checkPrefix(String strDbgReason, StringBuilder sbDbgReason, StringBuilder sbTelnetData, int pos_offset, String strPrefix){
             int prefix_len = strPrefix.length();
             int pos_start = pos_offset - prefix_len;
             if (pos_start >= 0 && sbTelnetData.substring(pos_start, pos_start + prefix_len).equals(strPrefix)){
                 sbTelnetData.delete(pos_start, pos_start + prefix_len);
                 pos_offset = pos_start;
+                sbDbgReason.append("Block Prefix Found/Removed: " + strDbgReason + "\n");
             }
             return pos_offset;
         }
