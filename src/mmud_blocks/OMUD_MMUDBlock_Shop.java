@@ -17,6 +17,8 @@ public class OMUD_MMUDBlock_Shop extends OMUD_MMUDBlocks.Block{
 
         if ((pos_data_found_start = findData(sbTelnetData, pos_offset, true, true, MSTR_SHOP_YES, "")) > -1){
             mmc.dataShop = new OMUD_MMUD.DataShop();
+            mmc.dataShop.megaID =   mmc.dataRoom.megaID;
+            mmc.dataShop.roomName = mmc.dataRoom.name;
 
             int pos_left = 0;
             int pos_right = 0;
@@ -48,8 +50,9 @@ public class OMUD_MMUDBlock_Shop extends OMUD_MMUDBlocks.Block{
                         // get price/coins (checks for free): price defaults to zero...
                         if (!strPrice.equals(MSTR_FREE) &&
                             (pos_right = strPrice.indexOf(" ", 0)) > -1){
-                            int coins_qty = Integer.parseInt(strPrice.substring(0, pos_right));
-                            getCoins(item.coins, coins_qty, strPrice.substring(pos_right + 1, strPrice.length()));
+                            findCoins(item.coins, 
+                                Integer.parseInt(strPrice.substring(0, pos_right)), 
+                                strPrice.substring(pos_right + 1, strPrice.length()));
                             item.coins.convert(true); // default up-conversion
                         }
                     }
@@ -57,7 +60,7 @@ public class OMUD_MMUDBlock_Shop extends OMUD_MMUDBlocks.Block{
                 mmc.dataShop.shop_items.add(item);
             }
         } else if ((pos_data_found_start = findData(sbTelnetData, pos_offset, true, false, MSTR_SHOP_NO, "")) > -1){
-            mmc.dataShop = new OMUD_MMUD.DataShop();
+            //mmc.dataShop = new OMUD_MMUD.DataShop();
         }
 
         return pos_data_found_start;

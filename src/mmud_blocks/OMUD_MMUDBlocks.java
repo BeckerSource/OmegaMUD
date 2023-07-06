@@ -139,7 +139,7 @@ public class OMUD_MMUDBlocks{
                 arrlItems.add(item.trim());
         }
 
-        protected boolean getCoins(OMUD_MMUD.DataCoins coins, int qty, String strText){
+        protected boolean findCoins(OMUD_MMUD.DataCoins coins, int qty, String strText){
             boolean coin_match = false;
                  if ((coin_match = (strText.indexOf(OMUD_MMUD.COIN_ITEM_STRINGS[OMUD_MMUD.eCoinType.RUNIC.ordinal()], 0))      > -1))
                 coins.runic =   qty;
@@ -188,12 +188,12 @@ public class OMUD_MMUDBlocks{
                             ri.qty =  Integer.parseInt(strFirstWord);
                             ri.name = ri.name.substring(pos_left + 1, ri.name.length());
 
-                            // get coin counts - coins always displayed first and in order,
+                            // coin item names always have two words, so check for another space first for efficiency and 
+                            // then coin names - coins are always displayed first and in order,
                             // so can exit early if out-of-range or if copper is found...
-                            if (i < OMUD_MMUD.COIN_ITEM_STRINGS.length){
+                            if (ri.name.indexOf(" ", 0) > -1)
                                 for (int j = 0; j < OMUD_MMUD.COIN_ITEM_STRINGS.length && coins.copper == 0; ++j)
-                                    is_coin = getCoins(coins, ri.qty, ri.name);
-                            }
+                                    is_coin = findCoins(coins, ri.qty, ri.name);
                         }
                     }
 

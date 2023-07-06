@@ -105,7 +105,7 @@ public class OMUD_MMUDBlock_Room extends OMUD_MMUDBlocks.Block{
 
             mmc.dataRoom.name = _sbBlockData.substring(0, pos_right + 1).trim();
             // create Megamud RoomID after the exit data is built above...
-            mmc.dataRoom.roomID =
+            mmc.dataRoom.megaID =
                 OMUD_MEGA.getRoomNameHash(mmc.dataRoom.name) +
                 OMUD_MEGA.getRoomExitsCode(mmc.dataRoom.arrlExits);
 

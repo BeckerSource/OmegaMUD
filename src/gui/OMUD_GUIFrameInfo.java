@@ -57,12 +57,12 @@ public class OMUD_GUIFrameInfo extends JFrame {
         _sdf = new SimpleDateFormat("yyyy-MM-dd_kk-mm-ss");
 
         // inventory stuff...
-        _lblInvRunic =  new OMUD_GUITextField("Runic: ?",  false, true);
-        _lblInvPlat =   new OMUD_GUITextField("Plat: ?",   false, true);
-        _lblInvGold =   new OMUD_GUITextField("Gold: ?",   false, true);
-        _lblInvSilver = new OMUD_GUITextField("Silver: ?", false, true);
-        _lblInvCopper = new OMUD_GUITextField("Copper: ?", false, true);
-        _lblInvWealth = new OMUD_GUITextField("Wealth: ?", false, true);
+        _lblInvRunic =  new OMUD_GUITextField("Runic: ?",  false, true, false);
+        _lblInvPlat =   new OMUD_GUITextField("Plat: ?",   false, true, false);
+        _lblInvGold =   new OMUD_GUITextField("Gold: ?",   false, true, false);
+        _lblInvSilver = new OMUD_GUITextField("Silver: ?", false, true, false);
+        _lblInvCopper = new OMUD_GUITextField("Copper: ?", false, true, false);
+        _lblInvWealth = new OMUD_GUITextField("Wealth: ?", false, true, false);
 
         // tabs...
         _pnlInv =       new JPanel();
@@ -230,7 +230,7 @@ public class OMUD_GUIFrameInfo extends JFrame {
         setTab(eTab.MUD_ROOM);
 
         StringBuilder sb = new StringBuilder();
-        sb.append("[RoomID]: "      + dataRoom.roomID);
+        sb.append("[MegaID]: "      + dataRoom.megaID);
         sb.append("\n[RoomName]: "  + dataRoom.name + " (" + OMUD_MMUD.ROOM_LIGHT_STRINGS[dataRoom.light.ordinal()] + ")");
 
         sb.append("\n\n--------------------\n");
@@ -322,7 +322,7 @@ public class OMUD_GUIFrameInfo extends JFrame {
         _lblInvWealth.setText("W: " +   dataInv.wealth);
     }
 
-    public void processMUDStats(final OMUD_MMUD.DataStats dataStats){
+    public void processMUDStats(final OMUD_MMUD.DataStats dataStats, final OMUD_MMUD.DataStatline dataStatline){
         setTab(eTab.MUD_STATS);
 
         StringBuilder sb = new StringBuilder();
@@ -333,16 +333,19 @@ public class OMUD_GUIFrameInfo extends JFrame {
         sb.append("\n[Level]: "     + dataStats.level);
         sb.append("\n[Lives]: "     + dataStats.lives);
         sb.append("\n[CP]: "        + dataStats.cp);
+        sb.append("\n[HP]: "        + (dataStatline.hp_mod ? "* " : "  ") + dataStatline.hp_cur + "/" + dataStatline.hp_max);
+        if (dataStatline.ma_str.length() > 0)
+            sb.append("\n[" + dataStatline.ma_str + "]: " + (dataStatline.ma_mod ? "* " : "  ") + dataStatline.ma_cur + "/" + dataStatline.ma_max);
+        sb.append("\n--------------------");
+        sb.append("\n[Str]: "       + (dataStats.str_mod    ? "* " : "  ") + dataStats.str);
+        sb.append("\n[Int]: "       + (dataStats.intel_mod  ? "* " : "  ") + dataStats.intel);
+        sb.append("\n[Wil]: "       + (dataStats.wil_mod    ? "* " : "  ") + dataStats.wil);
+        sb.append("\n[Agi]: "       + (dataStats.agi_mod    ? "* " : "  ") + dataStats.agi);
+        sb.append("\n[Hea]: "       + (dataStats.hea_mod    ? "* " : "  ") + dataStats.hea);
+        sb.append("\n[Cha]: "       + (dataStats.cha_mod    ? "* " : "  ") + dataStats.cha);
+        sb.append("\n--------------------");
         sb.append("\n[AC]: "        + dataStats.ac_ac + "/" + dataStats.ac_accy);
         sb.append("\n[SC]: "        + dataStats.sc);
-        sb.append("\n--------------------");
-        sb.append("\n[Str]: "       + dataStats.str     + (dataStats.str_mod    ? " *" : ""));
-        sb.append("\n[Int]: "       + dataStats.intel   + (dataStats.intel_mod  ? " *" : ""));
-        sb.append("\n[Wil]: "       + dataStats.wil     + (dataStats.wil_mod    ? " *" : ""));
-        sb.append("\n[Agi]: "       + dataStats.agi     + (dataStats.agi_mod    ? " *" : ""));
-        sb.append("\n[Hea]: "       + dataStats.hea     + (dataStats.hea_mod    ? " *" : ""));
-        sb.append("\n[Cha]: "       + dataStats.cha     + (dataStats.cha_mod    ? " *" : ""));
-        sb.append("\n--------------------");
         sb.append("\n[Perc]: "      + dataStats.perc);
         sb.append("\n[Stealth]: "   + dataStats.stealth);
         sb.append("\n[Thiev]: "     + dataStats.thievery);
@@ -356,12 +359,12 @@ public class OMUD_GUIFrameInfo extends JFrame {
         _txtStats.setCaretPosition(0);
     }
 
-    public void processMUDShop(final OMUD_MMUD.DataShop dataShop, final String strRoomID, final String strRoomName){
+    public void processMUDShop(final OMUD_MMUD.DataShop dataShop){
         setTab(eTab.MUD_SHOP);
 
         StringBuilder sb = new StringBuilder();
-        sb.append("[RoomID]: "      + strRoomID);
-        sb.append("\n[RoomName]: "  + strRoomName);
+        sb.append("[MegaID]: "      + dataShop.megaID);
+        sb.append("\n[RoomName]: "  + dataShop.roomName);
         sb.append("\n\n--------------------\n");
         sb.append("[Qty] Name: Price (*=NO USE)\n");
         sb.append("--------------------\n");

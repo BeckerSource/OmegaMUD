@@ -27,7 +27,8 @@ public class OMUD_GUIFrameView extends JFrame{
     private OMUD_GUITextField   _lblBBSNetAddr =    null;
     private OMUD_GUITextField   _lblBBSNetPort =    null;
     private OMUD_GUITextField   _lblBBSLoc =        null;
-    private OMUD_GUITextField   _lblCharRoomID =    null;
+    private OMUD_GUITextField   _lblCharMegaID =    null;
+    private OMUD_GUITextField   _lblCharState =     null;
     private OMUD_GUITextField   _lblCharStatline =  null;
     private OMUD_GUITextField   _lblCharExp =       null;
     private OMUD_GUITextField   _lblCharLastCmd =   null;
@@ -60,15 +61,16 @@ public class OMUD_GUIFrameView extends JFrame{
 
         // panel: BBS + telnet...
         _pnlBBS =           new JPanel();
-        _lblBBSNetAddr =    new OMUD_GUITextField("bbs.bearfather.net", true, false);
-        _lblBBSNetPort =    new OMUD_GUITextField("23", true, false);
+        _lblBBSNetAddr =    new OMUD_GUITextField("bbs.bearfather.net", true, false, false);
+        _lblBBSNetPort =    new OMUD_GUITextField("23", true, false, false);
         _lblBBSLoc =        new OMUD_GUITextField();
         _btnBBSConnect =    new JButton("Connect");
         _btnBBSConnect.addActionListener(new AL_BtnConnect());
 
         // char status fields...
         _pnlChar =          new JPanel();
-        _lblCharRoomID =    new OMUD_GUITextField("RID: ?");
+        _lblCharMegaID =    new OMUD_GUITextField("MID: ?");
+        _lblCharState =     new OMUD_GUITextField("State: ?", false, false, true);
         _lblCharStatline =  new OMUD_GUITextField("Statline: ?");
         _lblCharExp =       new OMUD_GUITextField("XP: ?");
         _lblCharLastCmd =   new OMUD_GUITextField("CMD: ?");
@@ -150,17 +152,19 @@ public class OMUD_GUIFrameView extends JFrame{
 
     private void layoutV1Char(GridBagLayout gbl){
         GridBagConstraints gblc = new GridBagConstraints();
-        _lblCharRoomID.setPreferredSize(    new Dimension(60,   25));
+        _lblCharMegaID.setPreferredSize(    new Dimension(75,   25));
+        _lblCharState.setPreferredSize(     new Dimension(40,   25));
         _lblCharStatline.setPreferredSize(  new Dimension(150,  25));
         _lblCharExp.setPreferredSize(       new Dimension(150,  25));
         _lblCharLastCmd.setPreferredSize(   new Dimension(150,  25));
 
         gblc.weightx =      1.0;
         gblc.weighty =      0.0;
-        gblc.gridwidth =    3;
+        gblc.gridwidth =    4;
         gblc.gridheight =   1;
         gblc.fill =         GridBagConstraints.HORIZONTAL;
-        gbl.setConstraints(_lblCharRoomID,      gblc);
+        gbl.setConstraints(_lblCharMegaID,      gblc);
+        gbl.setConstraints(_lblCharState,       gblc);
         gbl.setConstraints(_lblCharStatline,    gblc);
         gbl.setConstraints(_lblCharExp,         gblc);
         gbl.setConstraints(_lblCharLastCmd,     gblc);
@@ -168,7 +172,8 @@ public class OMUD_GUIFrameView extends JFrame{
         gblc.gridwidth =    GridBagConstraints.REMAINDER;
         gbl.setConstraints(_pnlChar, gblc);
         _pnlChar.setLayout(gbl);
-        _pnlChar.add(_lblCharRoomID);
+        _pnlChar.add(_lblCharMegaID);
+        _pnlChar.add(_lblCharState);
         _pnlChar.add(_lblCharStatline);
         _pnlChar.add(_lblCharExp);
         _pnlChar.add(_lblCharLastCmd);
@@ -309,11 +314,12 @@ public class OMUD_GUIFrameView extends JFrame{
     }
 
     public void processMUDStatline(final OMUD_MMUD.DataStatline dataStatline){
+        _lblCharState.setText(OMUD_MMUD.REST_STATE_STRINGS[dataStatline.rest.ordinal()]);
+
         StringBuilder sb = new StringBuilder();
-        sb.append(dataStatline.hp_str + "=" + dataStatline.hp_cur + "/" + dataStatline.hp_max + (dataStatline.hp_mod ? "*" : ""));
+        sb.append(dataStatline.hp_str + "=" + dataStatline.hp_cur + "/" + dataStatline.hp_max);
         if (dataStatline.ma_str.length() > 0)
-            sb.append(", " + dataStatline.ma_str + "=" + dataStatline.ma_cur + "/" + dataStatline.ma_max + (dataStatline.ma_mod ? "*" : ""));
-        sb.append(" " + OMUD_MMUD.REST_STATE_STRINGS[dataStatline.rest.ordinal()]);
+            sb.append(", " + dataStatline.ma_str + "=" + dataStatline.ma_cur + "/" + dataStatline.ma_max);
         _lblCharStatline.setText(sb.toString());
     }
 
@@ -323,6 +329,6 @@ public class OMUD_GUIFrameView extends JFrame{
     }
 
     public void processMUDRoom(final OMUD_MMUD.DataRoom dataRoom){
-        _lblCharRoomID.setText("RID: " + dataRoom.roomID);
+        _lblCharMegaID.setText("MID: " + dataRoom.megaID);
     }
 }

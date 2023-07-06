@@ -11,8 +11,8 @@ interface OMUD_IMUDEvents{
     public void notifyMUDExp(final OMUD_MMUD.DataExp dataExp);
     public void notifyMUDRoom(final OMUD_MMUD.DataRoom dataRoom);
     public void notifyMUDInv(final OMUD_MMUD.DataInv dataInv);
-    public void notifyMUDStats(final OMUD_MMUD.DataStats dataStats);
-    public void notifyMUDShop(final OMUD_MMUD.DataShop dataShop, final String strRoomID, final String strRoomName);
+    public void notifyMUDStats(final OMUD_MMUD.DataStats dataStats, final OMUD_MMUD.DataStatline dataStatline);
+    public void notifyMUDShop(final OMUD_MMUD.DataShop dataShop);
     public void notifyMUDSpells(final OMUD_MMUD.DataSpells dataSpells);
     public void notifyMUDWho(final OMUD_MMUD.DataWho dataWho);
     public void notifyMUDParty();
@@ -180,7 +180,8 @@ public class OMUD_MMUDParser {
                 }
 
                 // notify for statline update and other data that was updated...
-                _omme.notifyMUDStatline(new OMUD_MMUD.DataStatline(_mmc.dataStatline));
+                OMUD_MMUD.DataStatline dStatline = new OMUD_MMUD.DataStatline(_mmc.dataStatline);
+                _omme.notifyMUDStatline(dStatline);
                      if (_mmc.ablk.data_type == OMUD_MMUD.DataBlock.eBlockType.ROOM)
                     _omme.notifyMUDRoom(new OMUD_MMUD.DataRoom(_mmc.dataRoom));
                 else if (_mmc.ablk.data_type == OMUD_MMUD.DataBlock.eBlockType.EXP)
@@ -188,9 +189,9 @@ public class OMUD_MMUDParser {
                 else if (_mmc.ablk.data_type == OMUD_MMUD.DataBlock.eBlockType.INV)
                     _omme.notifyMUDInv(new OMUD_MMUD.DataInv(_mmc.dataInv));
                 else if (_mmc.ablk.data_type == OMUD_MMUD.DataBlock.eBlockType.STATS)
-                    _omme.notifyMUDStats(new OMUD_MMUD.DataStats(_mmc.dataStats));
+                    _omme.notifyMUDStats(new OMUD_MMUD.DataStats(_mmc.dataStats), dStatline);
                 else if (_mmc.ablk.data_type == OMUD_MMUD.DataBlock.eBlockType.SHOP)
-                    _omme.notifyMUDShop(new OMUD_MMUD.DataShop(_mmc.dataShop), new String(_mmc.dataRoom.roomID), new String(_mmc.dataRoom.name));
+                    _omme.notifyMUDShop(new OMUD_MMUD.DataShop(_mmc.dataShop));
                 else if (_mmc.ablk.data_type == OMUD_MMUD.DataBlock.eBlockType.SPELLS)
                     _omme.notifyMUDSpells(new OMUD_MMUD.DataSpells(_mmc.dataSpells));
                 else if (_mmc.ablk.data_type == OMUD_MMUD.DataBlock.eBlockType.WHO)

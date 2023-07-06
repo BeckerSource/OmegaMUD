@@ -341,7 +341,7 @@ public class OMUD_MMUD{
     }
 
     public static class DataRoom extends DataBlock{
-        public String       roomID =        ""; // MegaMUD RoomID
+        public String       megaID =        ""; // MegaMUD RoomID
         public String       name =          "";
         public String       desc =          "";
         public DataCoins    coins =         new DataCoins();
@@ -355,7 +355,7 @@ public class OMUD_MMUD{
         public eBlockType getType(){return eBlockType.ROOM;}
         public DataRoom(){}
         public DataRoom(DataRoom dr){
-            roomID =        new String(dr.roomID);
+            megaID =        new String(dr.megaID);
             name =          new String(dr.name);
             desc =          new String(dr.desc);
             coins =         new DataCoins(dr.coins);
@@ -515,12 +515,15 @@ public class OMUD_MMUD{
                 return sbPrice.toString();
             }
         }
+        public String megaID =      "";
+        public String roomName =    "";
         public ArrayList<ShopItem> shop_items = new ArrayList<ShopItem>();
 
         public eBlockType getType(){return eBlockType.SHOP;}
         public DataShop(){}
         public DataShop(DataShop ds){
-            shop_items.clear();
+            megaID =    new String(ds.megaID);
+            roomName =  new String(ds.roomName);
             for (int i = 0; i < ds.shop_items.size(); ++i)
                 shop_items.add(new ShopItem(ds.shop_items.get(i)));
         }

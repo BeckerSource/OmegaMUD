@@ -147,15 +147,15 @@ public class OMUD_GUI implements OMUD_ITextInputEvents, OMUD_ITelnetEvents, OMUD
         }});
     }
 
-    public void notifyMUDStats(final OMUD_MMUD.DataStats dataStats){
+    public void notifyMUDStats(final OMUD_MMUD.DataStats dataStats, final OMUD_MMUD.DataStatline dataStatline){
         SwingUtilities.invokeLater(new Runnable(){public void run(){
-            _fInfo.processMUDStats(dataStats);
+            _fInfo.processMUDStats(dataStats, dataStatline);
         }});
     }
 
-    public void notifyMUDShop(final OMUD_MMUD.DataShop dataShop, final String strRoomID, final String strRoomName){
+    public void notifyMUDShop(final OMUD_MMUD.DataShop dataShop){
         SwingUtilities.invokeLater(new Runnable(){public void run(){
-            _fInfo.processMUDShop(dataShop, strRoomID, strRoomName);
+            _fInfo.processMUDShop(dataShop);
         }});
     }
 
