@@ -25,18 +25,18 @@ public class OMUD_MMUDBlock_Stats extends OMUD_MMUDBlocks.Block{
     private final String MSTR_MR =          "MagicRes:";
     private final int    MSTR_STAT_ROW_COUNT = 9;
 
-    public boolean getStatlineWait()                    {return true;}
-    public OMUD_MMUD.DataBlock.eBlockType getDataType() {return OMUD_MMUD.DataBlock.eBlockType.STATS;}
+    public boolean getStatlineWait(){return true;}
     public OMUD_MMUDBlock_Stats(){
-        _arrlCmdText.add(new CmdText(OMUD_MMUD.DataBlock.CMD_STRINGS[getDataType().ordinal()], 2));
+        _arrlCmdText.add(new CmdText(OMUD_MMUD.DataBlock.CMD_STRINGS[OMUD_MMUD.DataBlock.eBlockType.STATS.ordinal()], 2));
     }
 
     public int findBlockData(OMUD_MMUDChar mmc, StringBuilder sbTelnetData, int pos_offset){
         int pos_data_found_start = -1;
 
         if ((pos_data_found_start = findData(sbTelnetData, pos_offset, true, true, MSTR_NAME, "")) > -1){
-            cleanData(_sbBlockData, false, true);
+            mmc.ablk.data_type = OMUD_MMUD.DataBlock.eBlockType.STATS;
             mmc.dataStats = new OMUD_MMUD.DataStats();
+            cleanData(_sbBlockData, false, true);
 
             // PREFIX: normal stat command has a prefix, coming from a new char creation does not...
             pos_data_found_start = checkPrefix("Stat Command (not new char)", sbTelnetData, pos_data_found_start, MSTR_PREFIX_RESET_WHBL);

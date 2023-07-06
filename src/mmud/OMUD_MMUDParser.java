@@ -4,7 +4,7 @@ interface OMUD_IMUDEvents{
     public void requestMUDData(OMUD_MMUD.DataBlock.eBlockType block_type);
     public void notifyMUDInit(final String strWelcome, final String strSpellsCmd);
     public void notifyMUDUnknown(final String strText);
-    public void notifyMUDOther(final String strText);
+    public void notifyMUDDebug(final OMUD_MMUD.DataDebug dataDebug);
     public void notifyMUDUserCmd(final String strText);
     public void notifyMUDLocation(final OMUD.eBBSLocation eLoc);
     public void notifyMUDStatline(final OMUD_MMUD.DataStatline dataStatline);
@@ -179,6 +179,18 @@ public class OMUD_MMUDParser {
                     _omme.requestMUDData(OMUD_MMUD.DataBlock.eBlockType.WHO);
                 }
 
+                // find other non-statline blocks that are based on linefeeds (LF+ESC or LF+End)
+                for (int i = 0; i < _sbDataTelnet.length(); ++i){
+                    char char_next = i + 1 < _sbDataTelnet.length() ? _sbDataTelnet.charAt(i + 1) : 0; // 0 val is end of bufer
+                    if (_sbDataTelnet.charAt(i) == OMUD.ASCII_LF && (char_next == OMUD.ASCII_ESC || char_next == 0)){
+                        // parse/strip out line blocks as they are found, reset the iterator to find more until none are found...
+                        if ((pos_data_found_start = _s_blocks.parseLineBlocks(_mmc, _sbDataTelnet, i)) > -1){
+                            pos_buf_delete_len = updateParseDeleteLen(pos_data_found_start, pos_buf_delete_len);
+                            i = pos_data_found_start;
+                        }
+                    }
+                }
+
                 // notify for statline update and other data that was updated...
                 OMUD_MMUD.DataStatline dStatline = new OMUD_MMUD.DataStatline(_mmc.dataStatline);
                 _omme.notifyMUDStatline(dStatline);
@@ -196,25 +208,11 @@ public class OMUD_MMUDParser {
                     _omme.notifyMUDSpells(new OMUD_MMUD.DataSpells(_mmc.dataSpells));
                 else if (_mmc.ablk.data_type == OMUD_MMUD.DataBlock.eBlockType.WHO)
                     _omme.notifyMUDWho(new OMUD_MMUD.DataWho(_mmc.dataWho));
+                else if (_mmc.ablk.data_type == OMUD_MMUD.DataBlock.eBlockType.DEBUG)
+                    _omme.notifyMUDDebug(new OMUD_MMUD.DataDebug(_mmc.dataDebug));
 
                 // reset active block with statline forced as last data type...
                 _mmc.ablk = new OMUD_MMUDChar.ActiveBlock(false, OMUD_MMUD.DataBlock.eBlockType.STATLINE);
-            }
-
-            // ------------------
-            // Find Non-Statline LineBlocks (LF+ESC or LF+End)
-            // ------------------
-            if (_eBBSLoc != OMUD.eBBSLocation.MUD_EDITOR){
-                for (int i = 0; i < _sbDataTelnet.length(); ++i){
-                    char char_next = i + 1 < _sbDataTelnet.length() ? _sbDataTelnet.charAt(i + 1) : 0; // 0 val is end of bufer
-                    if (_sbDataTelnet.charAt(i) == OMUD.ASCII_LF && (char_next == OMUD.ASCII_ESC || char_next == 0)){
-                        // parse/strip out line blocks as they are found, reset the iterator to find more until none are found...
-                        if ((pos_data_found_start = _s_blocks.parseLineBlocks(_mmc, _sbDataTelnet, i)) > -1){
-                            pos_buf_delete_len = updateParseDeleteLen(pos_data_found_start, pos_buf_delete_len);
-                            i = pos_data_found_start;
-                        }
-                    }
-                }
             }
 
             // ------------------

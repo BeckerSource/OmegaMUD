@@ -128,9 +128,9 @@ public class OMUD_GUI implements OMUD_ITextInputEvents, OMUD_ITelnetEvents, OMUD
         }});
     }
 
-    public void notifyMUDOther(final String strText){
+    public void notifyMUDDebug(final OMUD_MMUD.DataDebug dataDebug){
         SwingUtilities.invokeLater(new Runnable(){public void run(){
-            _fInfo.processMUDOther(strText);
+            _fInfo.processMUDDebug(dataDebug);
         }});
     }
 

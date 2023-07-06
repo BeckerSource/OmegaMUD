@@ -1,7 +1,6 @@
 public class OMUD_MMUDBlock_Editor extends OMUD_MMUDBlocks.Block{
 
-    public boolean getStatlineWait()                    {return false;}
-    public OMUD_MMUD.DataBlock.eBlockType getDataType() {return OMUD_MMUD.DataBlock.eBlockType.NONE;}
+    public boolean getStatlineWait(){return false;}
     public OMUD_MMUDBlock_Editor(){
         _arrlCmdText.add(new CmdText("train stats", 11));
         _arrlCmdText.add(new CmdText("set suicide", 5));  // only "set s" required

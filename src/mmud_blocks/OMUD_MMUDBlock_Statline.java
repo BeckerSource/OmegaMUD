@@ -5,8 +5,7 @@ public class OMUD_MMUDBlock_Statline extends OMUD_MMUDBlocks.Block{
     private final String MSTR_STATLINE_REST =       " (Resting) ";
     private final String MSTR_STATLINE_MED =        " (Meditating) ";
 
-    public boolean getStatlineWait()                    {return false;}
-    public OMUD_MMUD.DataBlock.eBlockType getDataType() {return OMUD_MMUD.DataBlock.eBlockType.NONE;}
+    public boolean getStatlineWait(){return false;}
     public OMUD_MMUDBlock_Statline(){}
 
     public int findBlockData(OMUD_MMUDChar mmc, StringBuilder sbTelnetData, int pos_offset){

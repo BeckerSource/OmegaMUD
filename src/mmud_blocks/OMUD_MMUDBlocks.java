@@ -15,8 +15,7 @@ public class OMUD_MMUDBlocks{
         protected StringBuilder      _sbBlockData = new StringBuilder();
 
         public abstract boolean getStatlineWait();
-        public abstract OMUD_MMUD.DataBlock.eBlockType getDataType();
-
+        
         public String matchCmdText(String strCmd){
             String strFoundCmdFull = null;
 
@@ -270,7 +269,7 @@ public class OMUD_MMUDBlocks{
             if (mmc.ablk.block_pos < BPOS_CMDS_START){
                 for (int i = BPOS_CMDS_START; i <= _bpos_cmd_editor && pos_cmd_data_found_start == -1; ++i)
                     if ((pos_cmd_data_found_start = _arrlBlocks.get(i).findBlockData(mmc, sbTelnetData, pos_data_found_start)) > -1)
-                        mmc.ablk.update(i, "", _arrlBlocks.get(i).getStatlineWait(), _arrlBlocks.get(i).getDataType());
+                        mmc.ablk.update(i, "", _arrlBlocks.get(i).getStatlineWait());
             // else parse the active block...
             } else {
                 pos_cmd_data_found_start = _arrlBlocks.get(mmc.ablk.block_pos).findBlockData(mmc, sbTelnetData, pos_data_found_start);
@@ -300,7 +299,7 @@ public class OMUD_MMUDBlocks{
         String strFoundCmdFull = null;
         for (int i = BPOS_CMDS_START; i <= _bpos_cmd_editor && strFoundCmdFull == null; ++i)
             if ((strFoundCmdFull = _arrlBlocks.get(i).matchCmdText(strCmd)) != null)
-                ablk.update(i, strFoundCmdFull, _arrlBlocks.get(i).getStatlineWait(), _arrlBlocks.get(i).getDataType());
+                ablk.update(i, strFoundCmdFull, _arrlBlocks.get(i).getStatlineWait());
         return ablk.block_pos == _bpos_cmd_editor;
     }
 }

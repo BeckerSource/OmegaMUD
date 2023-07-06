@@ -13,10 +13,9 @@ public class OMUD_MMUDBlock_Inventory extends OMUD_MMUDBlocks.Block{
     private final String MSTR_ENC_MID =     " - ";
     private final String MSTR_ENC_END =     "[";
 
-    public boolean getStatlineWait()                    {return true;}
-    public OMUD_MMUD.DataBlock.eBlockType getDataType() {return OMUD_MMUD.DataBlock.eBlockType.INV;}
+    public boolean getStatlineWait(){return true;}
     public OMUD_MMUDBlock_Inventory(){
-        _arrlCmdText.add(new CmdText(OMUD_MMUD.DataBlock.CMD_STRINGS[getDataType().ordinal()], 1));
+        _arrlCmdText.add(new CmdText(OMUD_MMUD.DataBlock.CMD_STRINGS[OMUD_MMUD.DataBlock.eBlockType.INV.ordinal()], 1));
         _arrlCmdText.add(new CmdText("inventory", 4)); // "inve" is min ("in" and "inv" conflict with "invite" so are ignored in mud)
     }
 
@@ -24,8 +23,9 @@ public class OMUD_MMUDBlock_Inventory extends OMUD_MMUDBlocks.Block{
         int pos_data_found_start = -1;
 
         if ((pos_data_found_start = findData(sbTelnetData, pos_offset, true, true, MSTR_INV_PRE, MSTR_INV_END)) > -1){
+            mmc.ablk.data_type = OMUD_MMUD.DataBlock.eBlockType.INV;
+            mmc.dataInv = new OMUD_MMUD.DataInv();            
             cleanData(_sbBlockData, true, true);
-            mmc.dataInv = new OMUD_MMUD.DataInv();
 
             int pos_left =  0;
             int pos_right = _sbBlockData.length() - 1;

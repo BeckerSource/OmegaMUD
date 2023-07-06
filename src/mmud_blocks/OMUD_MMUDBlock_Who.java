@@ -7,23 +7,24 @@ public class OMUD_MMUDBlock_Who extends OMUD_MMUDBlocks.Block{
     private final String MSTR_TITLE_END =   "[32m";
     private final String MSTR_GUILD =       "  of [33m";
 
-    public boolean getStatlineWait()                    {return true;}
-    public OMUD_MMUD.DataBlock.eBlockType getDataType() {return OMUD_MMUD.DataBlock.eBlockType.WHO;}
+    public boolean getStatlineWait(){return true;}
     public OMUD_MMUDBlock_Who(){
-        _arrlCmdText.add(new CmdText(OMUD_MMUD.DataBlock.CMD_STRINGS[getDataType().ordinal()], 3));
+        _arrlCmdText.add(new CmdText(OMUD_MMUD.DataBlock.CMD_STRINGS[OMUD_MMUD.DataBlock.eBlockType.WHO.ordinal()], 3));
     }
 
     public int findBlockData(OMUD_MMUDChar mmc, StringBuilder sbTelnetData, int pos_offset){
         int pos_data_found_start = -1;
 
         if ((pos_data_found_start = findData(sbTelnetData, pos_offset, true, true, MSTR_WHO, "")) > -1){
-            // remove color prefix from first row...
-            if (_sbBlockData.indexOf(MSTR_COLOR_PRE, 0) == 0)
-                _sbBlockData.delete(0, MSTR_COLOR_PRE.length());
+            mmc.ablk.data_type = OMUD_MMUD.DataBlock.eBlockType.WHO;
+            mmc.dataWho = new OMUD_MMUD.DataWho();
 
             int pos_left =  -1;
             int pos_right = -1;
-            mmc.dataWho = new OMUD_MMUD.DataWho();
+
+            // remove color prefix from first row...
+            if (_sbBlockData.indexOf(MSTR_COLOR_PRE, 0) == 0)
+                _sbBlockData.delete(0, MSTR_COLOR_PRE.length());
 
             // split lines, get data...
             String[] lines = _sbBlockData.toString().split("\n");

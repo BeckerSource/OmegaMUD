@@ -3,10 +3,9 @@ public class OMUD_MMUDBlock_Spells extends OMUD_MMUDBlocks.Block{
     private final String MSTR_POWERS =      "[0;37;40m[79D[K[1;37mYou have the following powers:\n[0;35mLevel Kai  Short Spell Name\n";
     private final String MSTR_COLOR_PRE =   "[36m";
 
-    public boolean getStatlineWait()                    {return true;}
-    public OMUD_MMUD.DataBlock.eBlockType getDataType() {return OMUD_MMUD.DataBlock.eBlockType.SPELLS;}
+    public boolean getStatlineWait(){return true;}
     public OMUD_MMUDBlock_Spells(){
-        _arrlCmdText.add(new CmdText(OMUD_MMUD.DataBlock.CMD_STRINGS[getDataType().ordinal()], 2));
+        _arrlCmdText.add(new CmdText(OMUD_MMUD.DataBlock.CMD_STRINGS[OMUD_MMUD.DataBlock.eBlockType.SPELLS.ordinal()], 2));
         _arrlCmdText.add(new CmdText(OMUD_MMUD.DataBlock.CMD_SPELLS_KAI, 2));
     }
 
@@ -15,14 +14,15 @@ public class OMUD_MMUDBlock_Spells extends OMUD_MMUDBlocks.Block{
 
         if ((pos_data_found_start = findData(sbTelnetData, pos_offset, true, true, MSTR_SPELLS, "")) > -1 ||
             (pos_data_found_start = findData(sbTelnetData, pos_offset, true, true, MSTR_POWERS, "")) > -1){
-
-            // remove color prefix from first row...
-            if (_sbBlockData.indexOf(MSTR_COLOR_PRE, 0) == 0)
-                _sbBlockData.delete(0, MSTR_COLOR_PRE.length());
+            mmc.ablk.data_type = OMUD_MMUD.DataBlock.eBlockType.SPELLS;
+            mmc.dataSpells = new OMUD_MMUD.DataSpells();
 
             int pos_left =  -1;
             int pos_right = -1;
-            mmc.dataSpells = new OMUD_MMUD.DataSpells();
+        
+            // remove color prefix from first row...
+            if (_sbBlockData.indexOf(MSTR_COLOR_PRE, 0) == 0)
+                _sbBlockData.delete(0, MSTR_COLOR_PRE.length());
 
             // split lines, get data...
             String[] lines = _sbBlockData.toString().split("\n");

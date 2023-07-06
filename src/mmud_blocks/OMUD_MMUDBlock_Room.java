@@ -16,10 +16,9 @@ public class OMUD_MMUDBlock_Room extends OMUD_MMUDBlocks.Block{
     private final String MSTR_SEARCH_NONE =         "[0;36mYour search revealed nothing.";
     private final String MSTR_SEARCH_PRE =          "[0;37;40m[0;36mYou notice ";
 
-    public boolean getStatlineWait()                    {return true;}
-    public OMUD_MMUD.DataBlock.eBlockType getDataType() {return OMUD_MMUD.DataBlock.eBlockType.ROOM;}
+    public boolean getStatlineWait(){return true;}
     public OMUD_MMUDBlock_Room(){
-        _arrlCmdText.add(new CmdText(OMUD_MMUD.DataBlock.CMD_STRINGS[getDataType().ordinal()], 0)); // 0-len covers LF/enter only (zero-len) and all chars as part of look
+        _arrlCmdText.add(new CmdText(OMUD_MMUD.DataBlock.CMD_STRINGS[OMUD_MMUD.DataBlock.eBlockType.ROOM.ordinal()], 0)); // 0-len covers LF/enter only (zero-len) and all chars as part of look
         _arrlCmdText.add(new CmdText("search", 3)); // only "sea" is required
     }
 
@@ -27,8 +26,9 @@ public class OMUD_MMUDBlock_Room extends OMUD_MMUDBlocks.Block{
         int pos_data_found_start = -1;
 
         if ((pos_data_found_start = findData(sbTelnetData, pos_offset, true, true, MSTR_ROOM_NAME, "")) > -1){
-            cleanData(_sbBlockData, true, true);
+            mmc.ablk.data_type = OMUD_MMUD.DataBlock.eBlockType.ROOM;
             mmc.dataRoom = new OMUD_MMUD.DataRoom();
+            cleanData(_sbBlockData, true, true);
 
             int pos_left  = 0;
             int pos_right = _sbBlockData.length() - 1;
@@ -113,7 +113,9 @@ public class OMUD_MMUDBlock_Room extends OMUD_MMUDBlocks.Block{
         // Search: Found Items
         // ------------------
         } else if ((pos_data_found_start = findData(sbTelnetData, pos_offset, true, true, MSTR_SEARCH_PRE, MSTR_YOU_NOTICE_END)) > -1){
+            mmc.ablk.data_type = OMUD_MMUD.DataBlock.eBlockType.ROOM;
             cleanData(_sbBlockData, true, false);
+
             ArrayList<String> arrlNew = new ArrayList<String>();
             splitCommaListToArray(_sbBlockData.toString(), arrlNew);
             // special: reset coins -
@@ -124,7 +126,8 @@ public class OMUD_MMUDBlock_Room extends OMUD_MMUDBlocks.Block{
         // Search: No Items
         // ------------------
         } else if ((pos_data_found_start = findData(sbTelnetData, pos_offset, true, false, MSTR_SEARCH_NONE, "")) > -1){
-            //omme.notifyMUDOther("[ROOM_SEARCH_NONE]\n");
+            mmc.ablk.data_type = OMUD_MMUD.DataBlock.eBlockType.DEBUG;
+            mmc.dataDebug.debug_text = "[ROOM_SEARCH_NONE]\n";
         }
 
         return pos_data_found_start;

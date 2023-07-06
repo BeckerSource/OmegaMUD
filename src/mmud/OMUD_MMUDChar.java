@@ -11,11 +11,10 @@ public class OMUD_MMUDChar{
             data_type =     dt;
         }
 
-        public void update(int bp, String ct, boolean sw, OMUD_MMUD.DataBlock.eBlockType dt){
+        public void update(int bp, String ct, boolean sw){
             block_pos =     bp;
             strCmdText =    ct;
             statline_wait = sw;
-            data_type =     dt == OMUD_MMUD.DataBlock.eBlockType.NONE ? data_type : dt; // don't update if the data type is NONE
         }
     }
 
@@ -30,5 +29,6 @@ public class OMUD_MMUDChar{
     public OMUD_MMUD.DataSpells     dataSpells =    new OMUD_MMUD.DataSpells();
     public OMUD_MMUD.DataWho        dataWho =       new OMUD_MMUD.DataWho();
     public OMUD_MMUD.DataParty      dataParty =     new OMUD_MMUD.DataParty();
+    public OMUD_MMUD.DataDebug      dataDebug =     new OMUD_MMUD.DataDebug();
     public ActiveBlock ablk = new ActiveBlock(false, OMUD_MMUD.DataBlock.eBlockType.ROOM);
 }

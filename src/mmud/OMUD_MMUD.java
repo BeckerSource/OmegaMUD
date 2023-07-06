@@ -73,13 +73,13 @@ public class OMUD_MMUD{
     // Char Data
     // ------------------
     public static enum eRestState{
-        READY,
+        READY, // not a real game state, just a state for non-rest/med
         REST,
         MED
     }
 
     public static final String[] REST_STATE_STRINGS = {
-        "[READY]", // not a real game string, just a state for non-rest and non-med
+        "[READY]",
         "[REST]",
         "[MED]"
     };
@@ -236,13 +236,13 @@ public class OMUD_MMUD{
             } else {
                 plat    += runic  * 100;
                 runic    = 0;
-
+                // ---------------------
                 gold    += plat   * 100;
                 plat     = 0;
-
+                // ---------------------
                 silver  += gold   * 100;
                 gold     = 0;
-
+                // ---------------------
                 copper  += silver * 100;
                 silver   = 0;
             }
@@ -284,7 +284,6 @@ public class OMUD_MMUD{
     // ------------------
     public static abstract class DataBlock{
         public enum eBlockType{
-            NONE,
             STATLINE,
             ROOM,
             INV,
@@ -293,11 +292,11 @@ public class OMUD_MMUD{
             SHOP,
             SPELLS,
             WHO,
-            PARTY
+            PARTY,
+            DEBUG
         }
 
         public static final String[] CMD_STRINGS = {
-            "",
             "",
             "look",
             "i",
@@ -306,7 +305,8 @@ public class OMUD_MMUD{
             "list",
             "spells",
             "who",
-            "party"
+            "party",
+            ""
         };
         public static final String CMD_SPELLS_KAI = "powers";
 
@@ -580,5 +580,15 @@ public class OMUD_MMUD{
         public ArrayList<PartyMember> members = new ArrayList<PartyMember>();
 
         public eBlockType getType(){return eBlockType.PARTY;}
+    }
+
+    public static class DataDebug extends DataBlock{
+        public String debug_text = "";
+
+        public eBlockType getType(){return eBlockType.DEBUG;}
+        public DataDebug(){}
+        public DataDebug(DataDebug dd){
+            debug_text = new String(dd.debug_text);
+        }
     }
 }

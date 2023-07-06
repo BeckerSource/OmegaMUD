@@ -34,7 +34,7 @@ public class OMUD_GUIFrameInfo extends JFrame {
     private OMUD_GUITextField   _lblInvWealth = null;
     private OMUD_GUITextArea    _txtTermDbg =   null;
     private OMUD_GUITextArea    _txtCmds =      null;
-    private OMUD_GUITextArea    _txtOther =     null;
+    private OMUD_GUITextArea    _txtMudDbg =    null;
     private OMUD_GUITextArea    _txtWelcome =   null;
     private OMUD_GUITextArea    _txtRoom =      null;
     private OMUD_GUITextArea    _txtInv =       null;
@@ -69,7 +69,7 @@ public class OMUD_GUIFrameInfo extends JFrame {
         _pnlInvMoney =  new JPanel();
         _txtTermDbg =   new OMUD_GUITextArea(false);
         _txtCmds =      new OMUD_GUITextArea(false);
-        _txtOther =     new OMUD_GUITextArea(false);
+        _txtMudDbg =    new OMUD_GUITextArea(false);
         _txtWelcome =   new OMUD_GUITextArea(false);
         _txtRoom =      new OMUD_GUITextArea(true);
         _txtInv =       new OMUD_GUITextArea(true);
@@ -79,7 +79,7 @@ public class OMUD_GUIFrameInfo extends JFrame {
         _txtWho =       new OMUD_GUITextArea(false);
         _tabs =         new JTabbedPane(JTabbedPane.TOP, JTabbedPane.WRAP_TAB_LAYOUT);
         _tabs.add("TermDbg",    _txtTermDbg);
-        _tabs.add("MOther",     new JScrollPane(_txtOther));
+        _tabs.add("MDbg",       new JScrollPane(_txtMudDbg));
         _tabs.add("MCmds",      new JScrollPane(_txtCmds));
         _tabs.add("MWelcome",   new JScrollPane(_txtWelcome));
         _tabs.add("MRoom",      new JScrollPane(_txtRoom));
@@ -217,9 +217,9 @@ public class OMUD_GUIFrameInfo extends JFrame {
         _txtCmds.setText(_txtCmds.getText() + _sdf.format(new Date()) + ": " + strText + "\n");
     }
 
-    public void processMUDOther(final String strText){
-        _txtOther.setText(_txtOther.getText() + _sdf.format(new Date()) + ": " + strText + "\n");
-        _txtOther.setCaretPosition(_txtOther.getText().length());
+    public void processMUDDebug(final OMUD_MMUD.DataDebug dataDebug){
+        _txtMudDbg.setText(_txtMudDbg.getText() + _sdf.format(new Date()) + ": " + dataDebug.debug_text + "\n");
+        _txtMudDbg.setCaretPosition(_txtMudDbg.getText().length());
     }
 
     public void processMUDWelcome(final String strText){
