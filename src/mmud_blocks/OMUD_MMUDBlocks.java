@@ -128,7 +128,7 @@ public class OMUD_MMUDBlocks{
             if (pos_start >= 0 && sbTelnetData.substring(pos_start, pos_start + prefix_len).equals(strPrefix)){
                 sbTelnetData.delete(pos_start, pos_start + prefix_len);
                 pos_offset = pos_start;
-                sbDbgReason.append("Block Prefix Found/Removed: " + strDbgReason + "\n");
+                //sbDbgReason.append("Block Prefix Found/Removed: " + strDbgReason + "\n");
             }
             return pos_offset;
         }
