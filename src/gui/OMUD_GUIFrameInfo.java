@@ -81,7 +81,7 @@ public class OMUD_GUIFrameInfo extends JFrame {
         _txtSpells =    new OMUD_GUITextArea(false);
         _txtCombat =    new OMUD_GUITextArea(false);
         _tabs =         new JTabbedPane(JTabbedPane.TOP, JTabbedPane.WRAP_TAB_LAYOUT);
-        _tabs.add("TermDbg",    _txtTermDbg);
+        _tabs.add("TDbg",    _txtTermDbg);
         _tabs.add("MDbg",       new JScrollPane(_txtMudDbg));
         _tabs.add("MCmds",      new JScrollPane(_txtCmds));
         _tabs.add("MWlcm",      new JScrollPane(_txtWelcome));
@@ -452,14 +452,16 @@ public class OMUD_GUIFrameInfo extends JFrame {
 
         StringBuilder sb = new StringBuilder();
         sb.append("--------------------\n");
-        sb.append("Attacker (vs) Attacked (H/M/D) (Action) (Weap)\n");
+        sb.append("Attacker (vs) Attacked (H/M/D/F) (Action) (Weap)\n");
         sb.append("--------------------\n");
         for (int i = 0; i < dataCombat.lines.size(); ++i){
-            sb.append(dataCombat.lines.get(i).unit.name  + " (vs) " + dataCombat.lines.get(i).tgt_name);
-            if (dataCombat.lines.get(i).tgt_miss)
-                 sb.append((dataCombat.lines.get(i).tgt_dodge ? " (DODGE) " : " (MISS) "));
-            else sb.append(" (HIT: " + dataCombat.lines.get(i).tgt_dmg + ") ");
-            sb.append("(" + dataCombat.lines.get(i).action + ")");
+            sb.append(dataCombat.lines.get(i).unit.name);
+            if (dataCombat.lines.get(i).tgt_name.length() > 0);
+                sb.append(" (vs) " + dataCombat.lines.get(i).tgt_name);
+            sb.append(" (" + OMUD_MMUD_DataBlockCombat.CombatLine.MISS_TYPE_STRINGS[dataCombat.lines.get(i).tgt_miss.ordinal()]);
+            if (dataCombat.lines.get(i).tgt_miss == OMUD_MMUD_DataBlockCombat.CombatLine.eMissType.NONE)
+                sb.append(": " + dataCombat.lines.get(i).tgt_dmg);
+            sb.append(") (" + dataCombat.lines.get(i).action + ")");
             if (dataCombat.lines.get(i).weapon.length() > 0)
                 sb.append(" (" + dataCombat.lines.get(i).weapon + ")");
             sb.append("\n");

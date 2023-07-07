@@ -4,6 +4,7 @@ public class OMUD_MMUD_ParseBlockCombat extends OMUD_MMUD_ParseBlocks.ParseBlock
     private final String MSTR_EXP_GAIN_END =        " experience.";
     private final String MSTR_CMBT_ON =             "[79D[K[0;33m*Combat Engaged*";
     private final String MSTR_CMBT_OFF =            "[79D[K[0;33m*Combat Off*";
+    private final String MSTR_CMBT_AT =             " at ";
 
     private final String MSTR_CMBT_THEY_HIT_PRE =   "[79D[K[1m[31m";
     private final String MSTR_CMBT_YOU_HIT_PRE =    "[79D[K[1;31mYou ";
@@ -11,11 +12,14 @@ public class OMUD_MMUD_ParseBlockCombat extends OMUD_MMUD_ParseBlocks.ParseBlock
     private final String MSTR_CMBT_HIT_END =        " damage!";
     private final String MSTR_CMBT_THE_PRE =        "The ";
 
+    private final String MSTR_CMB_YOU_FAIL_PRE =    "[79D[K[0;36mYou attempt to cast ";
+    private final String MSTR_CMB_YOU_FAIL_END =    ", but fail."; 
+
     private final String MSTR_CMBT_MISS_PRE =       "[79D[K[0;36m";
     private final String MSTR_CMBT_YOU_MISS =       "[79D[K[0;36mYou ";
-    private final String MSTR_CMBT_THEY_MISS =      " at you";
     private final String MSTR_CMBT_MISS_END =       "!";
-    private final String MSTR_CMBT_YOU_DODGE =      ", but you dodge out of the way";
+    private final String MSTR_CMBT_DODGE_PRE =      ", but ";
+    private final String MSTR_CMBT_DODGE_END =      " out of the way";
 
     public boolean getStatlineWait(){return false;}
     public OMUD_MMUD_ParseBlockCombat(){}
@@ -37,14 +41,14 @@ public class OMUD_MMUD_ParseBlockCombat extends OMUD_MMUD_ParseBlocks.ParseBlock
             pos_data_found_start = checkPrefix("Combat Broken by Cmd", mmc.ablk.sbDebug, sbTelnetData, pos_data_found_start, MSTR_PREFIX_RESET_WHBL);
 
         // ------------------
-        // Combat: You (I) Hit
+        // Combat: You Hit
         // ------------------
         } else if ((pos_data_found_start = findData(sbTelnetData, pos_offset, true, true, MSTR_CMBT_YOU_HIT_PRE, MSTR_CMBT_HIT_END)) > -1){
             mmc.ablk.data_type = OMUD_MMUD_DataBlock.eBlockType.COMBAT;
             mmc.dataStatline.in_combat = true;
             cleanData(_sbBlockData, true, false);
 
-            OMUD_MMUD_DataBlockCombat.CombatLine cl = new OMUD_MMUD_DataBlockCombat.CombatLine(false);
+            OMUD_MMUD_DataBlockCombat.CombatLine cl = new OMUD_MMUD_DataBlockCombat.CombatLine(OMUD_MMUD_DataBlockCombat.CombatLine.eMissType.NONE);
             cl.unit = new OMUD_MMUD_DataUnit("YOU");
 
             int pos_left =  0;
@@ -58,7 +62,13 @@ public class OMUD_MMUD_ParseBlockCombat extends OMUD_MMUD_ParseBlocks.ParseBlock
                 if (_sbBlockData.substring(pos_left, pos_right).equals(MSTR_CMBT_HIT_FOR)){
                     pos_right = pos_left - 1;
                     if ((pos_left = _sbBlockData.indexOf(" ", 0)) > -1){
-                        cl.action =   _sbBlockData.substring(0, pos_left);
+                        // when casting spells, msg wil lbe "casts spell at target for x damage",
+                        // so find at text for target name...
+                        int pos_left_at = _sbBlockData.lastIndexOf(MSTR_CMBT_AT, pos_right);
+                        if (pos_left_at > -1)
+                            pos_left = pos_left_at + MSTR_CMBT_AT.length() - 1;
+
+                        cl.action = _sbBlockData.substring(0, pos_left_at > -1 ? pos_left_at : pos_left);
                         cl.tgt_name = _sbBlockData.substring(pos_left + 1, pos_right + 1);
                     }
                 }
@@ -74,7 +84,7 @@ public class OMUD_MMUD_ParseBlockCombat extends OMUD_MMUD_ParseBlocks.ParseBlock
             mmc.dataStatline.in_combat = true;
             cleanData(_sbBlockData, true, false);
 
-            OMUD_MMUD_DataBlockCombat.CombatLine cl = new OMUD_MMUD_DataBlockCombat.CombatLine(false);
+            OMUD_MMUD_DataBlockCombat.CombatLine cl = new OMUD_MMUD_DataBlockCombat.CombatLine(OMUD_MMUD_DataBlockCombat.CombatLine.eMissType.NONE);
             
             int pos_left =  0;
             int pos_right = _sbBlockData.length() - 1;
@@ -87,6 +97,12 @@ public class OMUD_MMUD_ParseBlockCombat extends OMUD_MMUD_ParseBlocks.ParseBlock
                 pos_left =  pos_left - MSTR_CMBT_HIT_FOR.length() + 1;
                 if (_sbBlockData.substring(pos_left, pos_right).equals(MSTR_CMBT_HIT_FOR)){
                     pos_right = pos_left - 1;
+
+/*
+[79D[K[1;33mA kobold thief[0;32m sneaks into the room from nowhere.
+[79D[K[1;33mA acid slime[0;32m oozes into the room from nowhere.
+[79D[K[1m[31mThe acid slime whips you with its pseudopod for 5 damage!
+*/
 
                     // find who was hit (you or other)...
                     if ((pos_left = _sbBlockData.lastIndexOf(" ", pos_right)) > -1){
@@ -111,6 +127,20 @@ public class OMUD_MMUD_ParseBlockCombat extends OMUD_MMUD_ParseBlocks.ParseBlock
             mmc.dataCombat.lines.add(cl);
 
         // ------------------
+        // Combat: You Fail Cast
+        // ------------------
+        } else if ((pos_data_found_start = findData(sbTelnetData, pos_offset, true, true, MSTR_CMB_YOU_FAIL_PRE, MSTR_CMB_YOU_FAIL_END)) > -1){
+            mmc.ablk.data_type = OMUD_MMUD_DataBlock.eBlockType.COMBAT;
+            mmc.dataStatline.in_combat = true;
+            cleanData(_sbBlockData, true, false);
+
+            OMUD_MMUD_DataBlockCombat.CombatLine cl = new OMUD_MMUD_DataBlockCombat.CombatLine(OMUD_MMUD_DataBlockCombat.CombatLine.eMissType.FAIL);
+            cl.unit = new OMUD_MMUD_DataUnit("YOU");
+            cl.action = _sbBlockData.toString();
+            // no target on cast fails
+            mmc.dataCombat.lines.add(cl);
+
+        // ------------------
         // Combat: You Miss
         // ------------------
         } else if ((pos_data_found_start = findData(sbTelnetData, pos_offset, true, true, MSTR_CMBT_YOU_MISS, MSTR_CMBT_MISS_END)) > -1){
@@ -118,7 +148,7 @@ public class OMUD_MMUD_ParseBlockCombat extends OMUD_MMUD_ParseBlocks.ParseBlock
             mmc.dataStatline.in_combat = true;
             cleanData(_sbBlockData, true, false);
 
-            OMUD_MMUD_DataBlockCombat.CombatLine cl = new OMUD_MMUD_DataBlockCombat.CombatLine(true);
+            OMUD_MMUD_DataBlockCombat.CombatLine cl = new OMUD_MMUD_DataBlockCombat.CombatLine(OMUD_MMUD_DataBlockCombat.CombatLine.eMissType.MISS);
             cl.unit = new OMUD_MMUD_DataUnit("YOU");
 
             int pos_left =  0;
@@ -141,30 +171,41 @@ public class OMUD_MMUD_ParseBlockCombat extends OMUD_MMUD_ParseBlocks.ParseBlock
             mmc.dataStatline.in_combat = true;
             cleanData(_sbBlockData, true, false);
 
-            OMUD_MMUD_DataBlockCombat.CombatLine cl = new OMUD_MMUD_DataBlockCombat.CombatLine(true);
-            cl.tgt_name = "YOU";
+            OMUD_MMUD_DataBlockCombat.CombatLine cl = new OMUD_MMUD_DataBlockCombat.CombatLine(OMUD_MMUD_DataBlockCombat.CombatLine.eMissType.MISS);
 
             int pos_left =  0;
             int pos_right = 0;
-            if ((pos_right = _sbBlockData.indexOf(MSTR_CMBT_THEY_MISS, pos_left)) > -1 &&
+            if ((pos_right = _sbBlockData.indexOf(MSTR_CMBT_AT, pos_left)) > -1 &&
                 (pos_left =  _sbBlockData.lastIndexOf(" ", pos_right - 1)) > -1){
 
                 int name_prefix_len = 0;
                 if (_sbBlockData.substring(0, MSTR_CMBT_THE_PRE.length()).equals(MSTR_CMBT_THE_PRE))
                     name_prefix_len = MSTR_CMBT_THE_PRE.length();
 
-                cl.unit = new OMUD_MMUD_DataUnit(_sbBlockData.substring(name_prefix_len, pos_left));
+                cl.unit =   new OMUD_MMUD_DataUnit(_sbBlockData.substring(name_prefix_len, pos_left));
                 cl.action = _sbBlockData.substring(pos_left + 1, pos_right);
 
-                // get the attack weapon if shown (some mobs don't show their weapon on a dodge)...
-                pos_left = pos_right + MSTR_CMBT_THEY_MISS.length();
-                if ((pos_right = _sbBlockData.lastIndexOf(MSTR_CMBT_YOU_DODGE, _sbBlockData.length() - 1)) > -1){
-                    pos_right--;
-                    cl.tgt_dodge = true;
-                } else pos_right = _sbBlockData.length() - 1;
-                if (pos_right > pos_left && 
-                    (pos_left = _sbBlockData.lastIndexOf(" ", pos_right)) > -1)
-                    cl.weapon = _sbBlockData.substring(pos_left + 1, pos_right + 1);
+                pos_left =  pos_right + MSTR_CMBT_AT.length();
+                if ((pos_right = _sbBlockData.indexOf(" ", pos_left)) > -1){
+                    // check for dodge (from the end)...
+                    if (_sbBlockData.length() > MSTR_CMBT_DODGE_END.length() &&
+                        _sbBlockData.substring(_sbBlockData.length() - MSTR_CMBT_DODGE_END.length(), _sbBlockData.length()).equals(MSTR_CMBT_DODGE_END)){
+                        cl.tgt_miss = OMUD_MMUD_DataBlockCombat.CombatLine.eMissType.DODGE;
+                        pos_right = _sbBlockData.indexOf(MSTR_CMBT_DODGE_PRE, pos_left);
+                    } else pos_right = _sbBlockData.length();
+
+                    // weapon...
+                    int pos_left_weap = _sbBlockData.lastIndexOf(" ", pos_right - 1);
+                    if (pos_left_weap > pos_left){
+                        cl.weapon = _sbBlockData.substring(pos_left_weap + 1, pos_right);
+                        pos_right = _sbBlockData.indexOf(" ", pos_left); // set right to original pos after name for below
+                    }
+                } else pos_right = _sbBlockData.length();
+
+                // get name...
+                cl.tgt_name = _sbBlockData.substring(pos_left, pos_right);
+                if (cl.tgt_name.equals("you"))
+                    cl.tgt_name = cl.tgt_name.toUpperCase();
             }
 
             mmc.dataCombat.lines.add(cl);

@@ -2,16 +2,29 @@ import java.util.ArrayList;
 
 public class OMUD_MMUD_DataBlockCombat extends OMUD_MMUD_DataBlock{
     public static class CombatLine{
+        public static enum eMissType{
+            NONE,
+            MISS,
+            DODGE,
+            FAIL
+        }
+
+        public static final String[] MISS_TYPE_STRINGS = {
+            "HIT",
+            "MISS",
+            "DODGE",
+            "FAIL"
+        };
+
         public OMUD_MMUD_DataUnit unit = new OMUD_MMUD_DataUnit();
-        public String   weapon =    "";
-        public String   action =    "";
-        public String   tgt_name =  "";
-        public int      tgt_dmg =   0;
-        public boolean  tgt_miss  = false;
-        public boolean  tgt_dodge = false;
+        public String       weapon =    "";
+        public String       action =    "";
+        public String       tgt_name =  "";
+        public int          tgt_dmg =   0;
+        public eMissType    tgt_miss =  eMissType.NONE;
 
         CombatLine(){}
-        CombatLine(boolean miss){tgt_miss = miss;}
+        CombatLine(eMissType miss){tgt_miss = miss;}
         CombatLine(CombatLine cl){
             unit =      new OMUD_MMUD_DataUnit(cl.unit);
             weapon =    new String(cl.weapon);
@@ -19,7 +32,6 @@ public class OMUD_MMUD_DataBlockCombat extends OMUD_MMUD_DataBlock{
             tgt_name =  new String(cl.tgt_name);
             tgt_dmg =   cl.tgt_dmg;
             tgt_miss =  cl.tgt_miss;
-            tgt_dodge = cl.tgt_dodge;
         }
     }
 
