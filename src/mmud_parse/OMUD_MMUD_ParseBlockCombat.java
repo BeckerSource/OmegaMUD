@@ -6,9 +6,8 @@ public class OMUD_MMUD_ParseBlockCombat extends OMUD_MMUD_ParseBlocks.ParseBlock
     private final String MSTR_CMBT_OFF =            "[79D[K[0;33m*Combat Off*";
 
     private final String MSTR_CMBT_THEY_HIT_PRE =   "[79D[K[1m[31m";
-    private final String MSTR_CMBT_THEY_HIT_FOR =   " you for ";
     private final String MSTR_CMBT_YOU_HIT_PRE =    "[79D[K[1;31mYou ";
-    private final String MSTR_CMBT_YOU_HIT_FOR =    " for ";
+    private final String MSTR_CMBT_HIT_FOR =        " for ";
     private final String MSTR_CMBT_HIT_END =        " damage!";
     private final String MSTR_CMBT_THE_PRE =        "The ";
 
@@ -55,8 +54,9 @@ public class OMUD_MMUD_ParseBlockCombat extends OMUD_MMUD_ParseBlocks.ParseBlock
                 cl.tgt_dmg = Integer.parseInt(_sbBlockData.substring(pos_left + 1, pos_right + 1));
 
                 pos_right = pos_left + 1;
-                if (_sbBlockData.substring(pos_left - MSTR_CMBT_YOU_HIT_FOR.length() + 1, pos_right).equals(MSTR_CMBT_YOU_HIT_FOR)){
-                    pos_right = pos_left - MSTR_CMBT_YOU_HIT_FOR.length();
+                pos_left =  pos_left - MSTR_CMBT_HIT_FOR.length() + 1;
+                if (_sbBlockData.substring(pos_left, pos_right).equals(MSTR_CMBT_HIT_FOR)){
+                    pos_right = pos_left - 1;
                     if ((pos_left = _sbBlockData.indexOf(" ", 0)) > -1){
                         cl.action =   _sbBlockData.substring(0, pos_left);
                         cl.tgt_name = _sbBlockData.substring(pos_left + 1, pos_right + 1);
@@ -75,24 +75,35 @@ public class OMUD_MMUD_ParseBlockCombat extends OMUD_MMUD_ParseBlocks.ParseBlock
             cleanData(_sbBlockData, true, false);
 
             OMUD_MMUD_DataBlockCombat.CombatLine cl = new OMUD_MMUD_DataBlockCombat.CombatLine(false);
-            cl.tgt_name = "YOU";
-
+            
             int pos_left =  0;
             int pos_right = _sbBlockData.length() - 1;
             if ((pos_left = _sbBlockData.lastIndexOf(" ", pos_right)) > -1){
 
                 cl.tgt_dmg = Integer.parseInt(_sbBlockData.substring(pos_left + 1, pos_right + 1));
 
+                // match hit "for"...
                 pos_right = pos_left + 1;
-                if (_sbBlockData.substring(pos_left - MSTR_CMBT_THEY_HIT_FOR.length() + 1, pos_right).equals(MSTR_CMBT_THEY_HIT_FOR)){
-                    pos_right = pos_left - MSTR_CMBT_THEY_HIT_FOR.length();
-                    if ((pos_left   = _sbBlockData.lastIndexOf(" ", pos_right)) > -1){
-                        int name_prefix_len = 0;
-                        if (_sbBlockData.substring(0, MSTR_CMBT_THE_PRE.length()).equals(MSTR_CMBT_THE_PRE))
-                            name_prefix_len = MSTR_CMBT_THE_PRE.length();
+                pos_left =  pos_left - MSTR_CMBT_HIT_FOR.length() + 1;
+                if (_sbBlockData.substring(pos_left, pos_right).equals(MSTR_CMBT_HIT_FOR)){
+                    pos_right = pos_left - 1;
 
-                        cl.unit = new OMUD_MMUD_DataUnit(_sbBlockData.substring(name_prefix_len, pos_left));
-                        cl.action = _sbBlockData.substring(pos_left + 1, pos_right + 1);
+                    // find who was hit (you or other)...
+                    if ((pos_left = _sbBlockData.lastIndexOf(" ", pos_right)) > -1){
+                        cl.tgt_name = _sbBlockData.substring(pos_left + 1, pos_right + 1);
+                        if (cl.tgt_name.equals("you"))
+                            cl.tgt_name = cl.tgt_name.toUpperCase();
+
+                        // get other info...
+                        pos_right = pos_left - 1;
+                        if ((pos_left = _sbBlockData.lastIndexOf(" ", pos_right)) > -1){
+                            int name_prefix_len = 0;
+                            if (_sbBlockData.substring(0, MSTR_CMBT_THE_PRE.length()).equals(MSTR_CMBT_THE_PRE))
+                                name_prefix_len = MSTR_CMBT_THE_PRE.length();
+
+                            cl.unit = new OMUD_MMUD_DataUnit(_sbBlockData.substring(name_prefix_len, pos_left));
+                            cl.action = _sbBlockData.substring(pos_left + 1, pos_right + 1);
+                        }
                     }
                 }
             }
