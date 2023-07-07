@@ -1,36 +1,36 @@
 import java.util.ArrayList;
 
 interface OMUD_IMUDEvents{
-    public void requestMUDData(OMUD_MMUD.DataBlock.eBlockType block_type);
+    public void requestMUDData(OMUD_MMUD_DataBlock.eBlockType block_type);
     public void notifyMUDInit(final String strWelcome, final String strSpellsCmd);
     public void notifyMUDUnknown(final String strText);
     public void notifyMUDDebug(final String strDebugText);
     public void notifyMUDUserCmd(final String strText);
     public void notifyMUDLocation(final OMUD.eBBSLocation eLoc);
-    public void notifyMUDStatline(final OMUD_MMUD.DataStatline dataStatline);
-    public void notifyMUDExp(final OMUD_MMUD.DataExp dataExp);
-    public void notifyMUDRoom(final OMUD_MMUD.DataRoom dataRoom);
-    public void notifyMUDInv(final OMUD_MMUD.DataInv dataInv);
-    public void notifyMUDStats(final OMUD_MMUD.DataStats dataStats, final OMUD_MMUD.DataStatline dataStatline);
-    public void notifyMUDShop(final OMUD_MMUD.DataShop dataShop);
-    public void notifyMUDSpells(final OMUD_MMUD.DataSpells dataSpells);
-    public void notifyMUDWho(final OMUD_MMUD.DataWho dataWho);
+    public void notifyMUDStatline(final OMUD_MMUD_DataBlockStatline dataStatline);
+    public void notifyMUDExp(final OMUD_MMUD_DataBlockExp dataExp);
+    public void notifyMUDRoom(final OMUD_MMUD_DataBlockRoom dataRoom);
+    public void notifyMUDInv(final OMUD_MMUD_DataBlockInv dataInv);
+    public void notifyMUDStats(final OMUD_MMUD_DataBlockStats dataStats, final OMUD_MMUD_DataBlockStatline dataStatline);
+    public void notifyMUDShop(final OMUD_MMUD_DataBlockShop dataShop);
+    public void notifyMUDSpells(final OMUD_MMUD_DataBlockSpells dataSpells);
+    public void notifyMUDWho(final OMUD_MMUD_DataBlockWho dataWho);
+    public void notifyMUDCombat(final OMUD_MMUD_DataBlockCombat dataCombat);
     public void notifyMUDParty();
-    public void notifyMUDCombat();
 }
 
-public class OMUD_MMUDParser {
+public class OMUD_MMUD_Parser {
 
     // ------------------
-    // OMUD_MMUDParser
+    // OMUD_MMUD_Parser
     // ------------------
-    private OMUD.eBBSLocation       _eBBSLoc =      OMUD.eBBSLocation.BBS;
-    private OMUD_IMUDEvents         _omme =         null;
-    private OMUD_MMUDChar           _mmc =          null;
-    private StringBuilder           _sbDataTelnet = null;
-    private static OMUD_MMUDBlocks  _s_blocks =     new OMUD_MMUDBlocks();
+    private OMUD.eBBSLocation   _eBBSLoc =      OMUD.eBBSLocation.BBS;
+    private OMUD_IMUDEvents     _omme =         null;
+    private OMUD_MMUD_Char      _mmc =          null;
+    private StringBuilder       _sbDataTelnet = null;
+    private static OMUD_MMUD_ParseBlocks _s_blocks = new OMUD_MMUD_ParseBlocks();
 
-    public OMUD_MMUDParser(OMUD_IMUDEvents omme){
+    public OMUD_MMUD_Parser(OMUD_IMUDEvents omme){
         _omme = omme;
         _sbDataTelnet = new StringBuilder();
         resetData(OMUD.eBBSLocation.BBS);
@@ -38,7 +38,7 @@ public class OMUD_MMUDParser {
 
     private void resetData(OMUD.eBBSLocation eBBSLoc){
         _eBBSLoc = eBBSLoc;
-        _mmc = new OMUD_MMUDChar();
+        _mmc = new OMUD_MMUD_Char();
     }
 
     public void appendChar(char c)          {_sbDataTelnet.append(c);}
@@ -163,23 +163,23 @@ public class OMUD_MMUDParser {
                     if (!_mmc.got_statline){
                          _mmc.got_statline = true;
 
-                        String strSpellsCmd = OMUD_MMUD.DataBlock.CMD_STRINGS[OMUD_MMUD.DataBlock.eBlockType.SPELLS.ordinal()];
+                        String strSpellsCmd = OMUD_MMUD_DataBlock.CMD_STRINGS[OMUD_MMUD_DataBlock.eBlockType.SPELLS.ordinal()];
                         if ( _mmc.dataStatline.ma_str.length() > 0 &&
-                            !_mmc.dataStatline.ma_str.equals(OMUD_MMUD.DataStatline.MSTR_SLINE_MA))
-                            strSpellsCmd = OMUD_MMUD.DataBlock.MSTR_CMD_SPELLS_KAI;
+                            !_mmc.dataStatline.ma_str.equals(OMUD_MMUD_DataBlockStatline.MSTR_SLINE_MA))
+                            strSpellsCmd = OMUD_MMUD_DataBlock.MSTR_CMD_SPELLS_KAI;
                         _omme.notifyMUDInit(new String(_mmc.strWelcome), strSpellsCmd);
                     }
 
                     // some basic auto commands on enter - can make manual/auto modes for this later...
                     if (_mmc.dataRoom.name.length() == 0)
-                        _omme.requestMUDData(OMUD_MMUD.DataBlock.eBlockType.ROOM);
+                        _omme.requestMUDData(OMUD_MMUD_DataBlock.eBlockType.ROOM);
                     if (_mmc.dataStats.name_first.length() == 0)
-                        _omme.requestMUDData(OMUD_MMUD.DataBlock.eBlockType.STATS);
-                    _omme.requestMUDData(OMUD_MMUD.DataBlock.eBlockType.INV);
-                    _omme.requestMUDData(OMUD_MMUD.DataBlock.eBlockType.EXP);
+                        _omme.requestMUDData(OMUD_MMUD_DataBlock.eBlockType.STATS);
+                    _omme.requestMUDData(OMUD_MMUD_DataBlock.eBlockType.INV);
+                    _omme.requestMUDData(OMUD_MMUD_DataBlock.eBlockType.EXP);
                     if (_mmc.dataStatline.ma_str.length() > 0)
-                        _omme.requestMUDData(OMUD_MMUD.DataBlock.eBlockType.SPELLS);
-                    _omme.requestMUDData(OMUD_MMUD.DataBlock.eBlockType.WHO);
+                        _omme.requestMUDData(OMUD_MMUD_DataBlock.eBlockType.SPELLS);
+                    _omme.requestMUDData(OMUD_MMUD_DataBlock.eBlockType.WHO);
                 }
 
                 // ------------------
@@ -195,27 +195,29 @@ public class OMUD_MMUDParser {
                     }
 
                 // notify for statline update and other data that was updated...
-                OMUD_MMUD.DataStatline dStatline = new OMUD_MMUD.DataStatline(_mmc.dataStatline);
+                OMUD_MMUD_DataBlockStatline dStatline = new OMUD_MMUD_DataBlockStatline(_mmc.dataStatline);
                 _omme.notifyMUDStatline(dStatline);
-                     if (_mmc.ablk.data_type == OMUD_MMUD.DataBlock.eBlockType.ROOM)
-                    _omme.notifyMUDRoom(new OMUD_MMUD.DataRoom(_mmc.dataRoom));
-                else if (_mmc.ablk.data_type == OMUD_MMUD.DataBlock.eBlockType.EXP)
-                    _omme.notifyMUDExp(new OMUD_MMUD.DataExp(_mmc.dataExp));
-                else if (_mmc.ablk.data_type == OMUD_MMUD.DataBlock.eBlockType.INV)
-                    _omme.notifyMUDInv(new OMUD_MMUD.DataInv(_mmc.dataInv));
-                else if (_mmc.ablk.data_type == OMUD_MMUD.DataBlock.eBlockType.STATS)
-                    _omme.notifyMUDStats(new OMUD_MMUD.DataStats(_mmc.dataStats), dStatline);
-                else if (_mmc.ablk.data_type == OMUD_MMUD.DataBlock.eBlockType.SHOP)
-                    _omme.notifyMUDShop(new OMUD_MMUD.DataShop(_mmc.dataShop));
-                else if (_mmc.ablk.data_type == OMUD_MMUD.DataBlock.eBlockType.SPELLS)
-                    _omme.notifyMUDSpells(new OMUD_MMUD.DataSpells(_mmc.dataSpells));
-                else if (_mmc.ablk.data_type == OMUD_MMUD.DataBlock.eBlockType.WHO)
-                    _omme.notifyMUDWho(new OMUD_MMUD.DataWho(_mmc.dataWho));
+                     if (_mmc.ablk.data_type == OMUD_MMUD_DataBlock.eBlockType.ROOM)
+                    _omme.notifyMUDRoom(new OMUD_MMUD_DataBlockRoom(_mmc.dataRoom));
+                else if (_mmc.ablk.data_type == OMUD_MMUD_DataBlock.eBlockType.EXP)
+                    _omme.notifyMUDExp(new OMUD_MMUD_DataBlockExp(_mmc.dataExp));
+                else if (_mmc.ablk.data_type == OMUD_MMUD_DataBlock.eBlockType.INV)
+                    _omme.notifyMUDInv(new OMUD_MMUD_DataBlockInv(_mmc.dataInv));
+                else if (_mmc.ablk.data_type == OMUD_MMUD_DataBlock.eBlockType.STATS)
+                    _omme.notifyMUDStats(new OMUD_MMUD_DataBlockStats(_mmc.dataStats), dStatline);
+                else if (_mmc.ablk.data_type == OMUD_MMUD_DataBlock.eBlockType.SHOP)
+                    _omme.notifyMUDShop(new OMUD_MMUD_DataBlockShop(_mmc.dataShop));
+                else if (_mmc.ablk.data_type == OMUD_MMUD_DataBlock.eBlockType.SPELLS)
+                    _omme.notifyMUDSpells(new OMUD_MMUD_DataBlockSpells(_mmc.dataSpells));
+                else if (_mmc.ablk.data_type == OMUD_MMUD_DataBlock.eBlockType.WHO)
+                    _omme.notifyMUDWho(new OMUD_MMUD_DataBlockWho(_mmc.dataWho));
+                else if (_mmc.ablk.data_type == OMUD_MMUD_DataBlock.eBlockType.COMBAT)
+                    _omme.notifyMUDCombat(new OMUD_MMUD_DataBlockCombat(_mmc.dataCombat));
                 if (_mmc.ablk.sbDebug.length() > 0)
                     _omme.notifyMUDDebug(_mmc.ablk.sbDebug.toString());
 
                 // reset active block with statline forced as last data type...
-                _mmc.ablk = new OMUD_MMUDChar.ActiveBlock(false, OMUD_MMUD.DataBlock.eBlockType.STATLINE);
+                _mmc.ablk = new OMUD_MMUD_Char.ActiveDataBlock(false, OMUD_MMUD_DataBlock.eBlockType.STATLINE);
             }
 
             // ------------------

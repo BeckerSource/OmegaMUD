@@ -1,6 +1,6 @@
 import java.util.ArrayList;
 
-public class OMUD_MMUDBlock_Inventory extends OMUD_MMUDBlocks.Block{
+public class OMUD_MMUD_ParseBlockInventory extends OMUD_MMUD_ParseBlocks.ParseBlock{
     private final String MSTR_INV_PRE =     "[0;37;40m[0;37;40m[79D[KYou are carrying ";
     private final String MSTR_INV_END =     "%][0m";
     private final String MSTR_NO_ITEMS =    "Nothing!";
@@ -14,17 +14,17 @@ public class OMUD_MMUDBlock_Inventory extends OMUD_MMUDBlocks.Block{
     private final String MSTR_ENC_END =     "[";
 
     public boolean getStatlineWait(){return true;}
-    public OMUD_MMUDBlock_Inventory(){
-        _arrlCmdText.add(new CmdText(OMUD_MMUD.DataBlock.CMD_STRINGS[OMUD_MMUD.DataBlock.eBlockType.INV.ordinal()], 1));
+    public OMUD_MMUD_ParseBlockInventory(){
+        _arrlCmdText.add(new CmdText(OMUD_MMUD_DataBlock.CMD_STRINGS[OMUD_MMUD_DataBlock.eBlockType.INV.ordinal()], 1));
         _arrlCmdText.add(new CmdText("inventory", 4)); // "inve" is min ("in" and "inv" conflict with "invite" so are ignored in mud)
     }
 
-    public int findBlockData(OMUD_MMUDChar mmc, StringBuilder sbTelnetData, int pos_offset){
+    public int findBlockData(OMUD_MMUD_Char mmc, StringBuilder sbTelnetData, int pos_offset){
         int pos_data_found_start = -1;
 
         if ((pos_data_found_start = findData(sbTelnetData, pos_offset, true, true, MSTR_INV_PRE, MSTR_INV_END)) > -1){
-            mmc.ablk.data_type = OMUD_MMUD.DataBlock.eBlockType.INV;
-            mmc.dataInv = new OMUD_MMUD.DataInv();            
+            mmc.ablk.data_type = OMUD_MMUD_DataBlock.eBlockType.INV;
+            mmc.dataInv = new OMUD_MMUD_DataBlockInv();            
             cleanData(_sbBlockData, true, true);
 
             int pos_left =  0;
@@ -67,7 +67,7 @@ public class OMUD_MMUDBlock_Inventory extends OMUD_MMUDBlocks.Block{
                     ArrayList<String> arrlKeys = new ArrayList<String>();
                     splitCommaListToArray(strKeys, arrlKeys);
                     for (int i = 0; i < arrlKeys.size(); ++i)
-                        mmc.dataInv.arrlKeys.add(new OMUD_MMUD.DataItem(arrlKeys.get(i)));
+                        mmc.dataInv.arrlKeys.add(new OMUD_MMUD_DataItem(arrlKeys.get(i)));
                 } //else mmc.dataInv.keys_str = "(no keys carried)";
                 pos_right = pos_left - 1;
             }
@@ -80,7 +80,7 @@ public class OMUD_MMUDBlock_Inventory extends OMUD_MMUDBlocks.Block{
             if (!strItems.equals(MSTR_NO_ITEMS)){
                 ArrayList<String> arrlNew = new ArrayList<String>();
                 splitCommaListToArray(strItems, arrlNew);
-                buildItemList(arrlNew, mmc.dataInv.coins, mmc.dataInv.arrlItems, mmc.dataInv.arrlWorn);
+                buildItems(arrlNew, mmc.dataInv.arrlItems, mmc.dataInv.coins, mmc.dataInv.arrlWorn);
             } // else mmc.dataInv.items_str = "(no items carried)";
         }
 

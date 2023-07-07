@@ -1,21 +1,21 @@
-public class OMUD_MMUDBlock_Spells extends OMUD_MMUDBlocks.Block{
+public class OMUD_MMUD_ParseBlockSpells extends OMUD_MMUD_ParseBlocks.ParseBlock{
     private final String MSTR_SPELLS =      "[0;37;40m[79D[K[1;37mYou have the following spells:\n[0;35mLevel Mana Short Spell Name\n";
     private final String MSTR_POWERS =      "[0;37;40m[79D[K[1;37mYou have the following powers:\n[0;35mLevel Kai  Short Spell Name\n";
     private final String MSTR_COLOR_PRE =   "[36m";
 
     public boolean getStatlineWait(){return true;}
-    public OMUD_MMUDBlock_Spells(){
-        _arrlCmdText.add(new CmdText(OMUD_MMUD.DataBlock.CMD_STRINGS[OMUD_MMUD.DataBlock.eBlockType.SPELLS.ordinal()], 2));
-        _arrlCmdText.add(new CmdText(OMUD_MMUD.DataBlock.MSTR_CMD_SPELLS_KAI, 2));
+    public OMUD_MMUD_ParseBlockSpells(){
+        _arrlCmdText.add(new CmdText(OMUD_MMUD_DataBlock.CMD_STRINGS[OMUD_MMUD_DataBlock.eBlockType.SPELLS.ordinal()], 2));
+        _arrlCmdText.add(new CmdText(OMUD_MMUD_DataBlock.MSTR_CMD_SPELLS_KAI, 2));
     }
 
-    public int findBlockData(OMUD_MMUDChar mmc, StringBuilder sbTelnetData, int pos_offset){
+    public int findBlockData(OMUD_MMUD_Char mmc, StringBuilder sbTelnetData, int pos_offset){
         int pos_data_found_start = -1;
 
         if ((pos_data_found_start = findData(sbTelnetData, pos_offset, true, true, MSTR_SPELLS, "")) > -1 ||
             (pos_data_found_start = findData(sbTelnetData, pos_offset, true, true, MSTR_POWERS, "")) > -1){
-            mmc.ablk.data_type = OMUD_MMUD.DataBlock.eBlockType.SPELLS;
-            mmc.dataSpells = new OMUD_MMUD.DataSpells();
+            mmc.ablk.data_type = OMUD_MMUD_DataBlock.eBlockType.SPELLS;
+            mmc.dataSpells = new OMUD_MMUD_DataBlockSpells();
 
             int pos_left =  -1;
             int pos_right = -1;
@@ -29,7 +29,7 @@ public class OMUD_MMUDBlock_Spells extends OMUD_MMUDBlocks.Block{
             for (String line: lines){
                 line = line.trim();
 
-                OMUD_MMUD.DataSpell spell = new OMUD_MMUD.DataSpell();
+                OMUD_MMUD_DataBlockSpells.Spell spell = new OMUD_MMUD_DataBlockSpells.Spell();
 
                 String[] tokens = line.split(" +"); // regex remove multiple spaces
                 if (tokens.length >= 4){

@@ -1,4 +1,4 @@
-public class OMUD_MMUDBlock_Shop extends OMUD_MMUDBlocks.Block{
+public class OMUD_MMUD_ParseBlockShop extends OMUD_MMUD_ParseBlocks.ParseBlock{
     private final String MSTR_SHOP_YES =    "[0;37;40m[0;37;40m[79D[KThe following items are for sale here:\n\n[0;32mItem                          [36mQuantity    Price\n------------------------------------------------------\n";
     private final String MSTR_SHOP_NO =     "[0;37;40m[1;31;40mYou cannot LIST if you are not in a shop!\n";
     private final String MSTR_ITEM_NAME =   "[32m";
@@ -7,16 +7,16 @@ public class OMUD_MMUDBlock_Shop extends OMUD_MMUDBlocks.Block{
     private final String MSTR_FREE =        "Free";
 
     public boolean getStatlineWait(){return true;}
-    public OMUD_MMUDBlock_Shop(){
-        _arrlCmdText.add(new CmdText(OMUD_MMUD.DataBlock.CMD_STRINGS[OMUD_MMUD.DataBlock.eBlockType.SHOP.ordinal()], 3));
+    public OMUD_MMUD_ParseBlockShop(){
+        _arrlCmdText.add(new CmdText(OMUD_MMUD_DataBlock.CMD_STRINGS[OMUD_MMUD_DataBlock.eBlockType.SHOP.ordinal()], 3));
     }
 
-    public int findBlockData(OMUD_MMUDChar mmc, StringBuilder sbTelnetData, int pos_offset){
+    public int findBlockData(OMUD_MMUD_Char mmc, StringBuilder sbTelnetData, int pos_offset){
         int pos_data_found_start = -1;
 
         if ((pos_data_found_start = findData(sbTelnetData, pos_offset, true, true, MSTR_SHOP_YES, "")) > -1){
-            mmc.ablk.data_type = OMUD_MMUD.DataBlock.eBlockType.SHOP;
-            mmc.dataShop = new OMUD_MMUD.DataShop();
+            mmc.ablk.data_type = OMUD_MMUD_DataBlock.eBlockType.SHOP;
+            mmc.dataShop = new OMUD_MMUD_DataBlockShop();
             mmc.dataShop.megaID =   mmc.dataRoom.megaID;
             mmc.dataShop.roomName = mmc.dataRoom.name;
 
@@ -24,7 +24,7 @@ public class OMUD_MMUDBlock_Shop extends OMUD_MMUDBlocks.Block{
             int pos_right = 0;
             String[] tokens = _sbBlockData.toString().split("\n");
             for (String token : tokens){
-                OMUD_MMUD.DataShop.ShopItem item = new OMUD_MMUD.DataShop.ShopItem();
+                OMUD_MMUD_DataBlockShop.ShopItem item = new OMUD_MMUD_DataBlockShop.ShopItem();
 
                 // ---------------
                 // Item Name

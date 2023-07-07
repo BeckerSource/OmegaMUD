@@ -313,10 +313,10 @@ public class OMUD_GUIFrameView extends JFrame{
         _lblCharLastCmd.setText("CMD: " + strText);
     }
 
-    public void processMUDStatline(final OMUD_MMUD.DataStatline dataStatline){
+    public void processMUDStatline(final OMUD_MMUD_DataBlockStatline dataStatline){
         _lblCharState.setText(dataStatline.in_combat ?
-            OMUD_MMUD.MSTR_COMBAT_STATE : 
-            OMUD_MMUD.REST_STATE_STRINGS[dataStatline.rest_state.ordinal()]);
+            OMUD_MMUD_DataBlockStatline.MSTR_COMBAT_STATE : 
+            OMUD_MMUD_DataBlockStatline.REST_STATE_STRINGS[dataStatline.rest_state.ordinal()]);
 
         StringBuilder sb = new StringBuilder();
         sb.append(dataStatline.hp_str + "=" + dataStatline.hp_cur + "/" + dataStatline.hp_max);
@@ -325,12 +325,12 @@ public class OMUD_GUIFrameView extends JFrame{
         _lblCharStatline.setText(sb.toString());
     }
 
-    public void processMUDExp(final OMUD_MMUD.DataExp dataExp){
+    public void processMUDExp(final OMUD_MMUD_DataBlockExp dataExp){
         _lblCharExp.setText("XP: " + dataExp.next_rem + String.format(" (%.0f", ((float) dataExp.cur_total / dataExp.next_total) * 100) + "%) [" + dataExp.cur_total + "/" + dataExp.next_total + "]");
         _lblCharExp.setCaretPosition(0);
     }
 
-    public void processMUDRoom(final OMUD_MMUD.DataRoom dataRoom){
+    public void processMUDRoom(final OMUD_MMUD_DataBlockRoom dataRoom){
         _lblCharMegaID.setText("MID: " + dataRoom.megaID);
     }
 }

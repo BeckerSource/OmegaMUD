@@ -1,4 +1,4 @@
-public class OMUD_MMUDBlock_Exp extends OMUD_MMUDBlocks.Block{
+public class OMUD_MMUD_ParseBlockExp extends OMUD_MMUD_ParseBlocks.ParseBlock{
     private final String MSTR_EXP_PRE =             "[0;37;40m[0;32mExp: [36m";
     private final String MSTR_EXP_END =             "%]";
     private final String MSTR_EXP_LEVEL =           "Level:";
@@ -6,16 +6,16 @@ public class OMUD_MMUDBlock_Exp extends OMUD_MMUDBlocks.Block{
     private final String MSTR_EXP_NEXT_TOTAL_END =  ")";
 
     public boolean getStatlineWait(){return true;}
-    public OMUD_MMUDBlock_Exp(){
-        _arrlCmdText.add(new CmdText(OMUD_MMUD.DataBlock.CMD_STRINGS[OMUD_MMUD.DataBlock.eBlockType.EXP.ordinal()], 3));
+    public OMUD_MMUD_ParseBlockExp(){
+        _arrlCmdText.add(new CmdText(OMUD_MMUD_DataBlock.CMD_STRINGS[OMUD_MMUD_DataBlock.eBlockType.EXP.ordinal()], 3));
     }
 
-    public int findBlockData(OMUD_MMUDChar mmc, StringBuilder sbTelnetData, int pos_offset){
+    public int findBlockData(OMUD_MMUD_Char mmc, StringBuilder sbTelnetData, int pos_offset){
         int pos_data_found_start = -1;
 
         if ((pos_data_found_start = findData(sbTelnetData, pos_offset, true, true, MSTR_EXP_PRE, MSTR_EXP_END)) > -1){
-            mmc.ablk.data_type = OMUD_MMUD.DataBlock.eBlockType.EXP;
-            mmc.dataExp = new OMUD_MMUD.DataExp();
+            mmc.ablk.data_type = OMUD_MMUD_DataBlock.eBlockType.EXP;
+            mmc.dataExp = new OMUD_MMUD_DataBlockExp();
             cleanData(_sbBlockData, false, true);
 
             int pos_left =  0;

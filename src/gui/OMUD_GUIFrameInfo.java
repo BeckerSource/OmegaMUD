@@ -16,12 +16,13 @@ public class OMUD_GUIFrameInfo extends JFrame {
         MUD_OTHER,
         MUD_CMDS,
         MUD_WELCOME,
+        MUD_WHO,
         MUD_ROOM,
         MUD_INV,
         MUD_STATS,
         MUD_SHOP,
         MUD_SPELLS,
-        MUD_WHO
+        MUD_COMBAT,
     }
 
     private SimpleDateFormat    _sdf =          null;
@@ -36,12 +37,13 @@ public class OMUD_GUIFrameInfo extends JFrame {
     private OMUD_GUITextArea    _txtCmds =      null;
     private OMUD_GUITextArea    _txtMudDbg =    null;
     private OMUD_GUITextArea    _txtWelcome =   null;
+    private OMUD_GUITextArea    _txtWho =       null;
     private OMUD_GUITextArea    _txtRoom =      null;
     private OMUD_GUITextArea    _txtInv =       null;
     private OMUD_GUITextArea    _txtStats =     null;
     private OMUD_GUITextArea    _txtShop =      null;
     private OMUD_GUITextArea    _txtSpells =    null;
-    private OMUD_GUITextArea    _txtWho =       null;
+    private OMUD_GUITextArea    _txtCombat =    null;
     private JPanel              _pnlInv =       null;
     private JPanel              _pnlInvMoney =  null;
     private JTabbedPane         _tabs =         null;
@@ -71,23 +73,25 @@ public class OMUD_GUIFrameInfo extends JFrame {
         _txtCmds =      new OMUD_GUITextArea(false);
         _txtMudDbg =    new OMUD_GUITextArea(false);
         _txtWelcome =   new OMUD_GUITextArea(false);
+        _txtWho =       new OMUD_GUITextArea(false);
         _txtRoom =      new OMUD_GUITextArea(true);
         _txtInv =       new OMUD_GUITextArea(true);
         _txtStats =     new OMUD_GUITextArea(false);
         _txtShop =      new OMUD_GUITextArea(false);
         _txtSpells =    new OMUD_GUITextArea(false);
-        _txtWho =       new OMUD_GUITextArea(false);
+        _txtCombat =    new OMUD_GUITextArea(false);
         _tabs =         new JTabbedPane(JTabbedPane.TOP, JTabbedPane.WRAP_TAB_LAYOUT);
         _tabs.add("TermDbg",    _txtTermDbg);
         _tabs.add("MDbg",       new JScrollPane(_txtMudDbg));
         _tabs.add("MCmds",      new JScrollPane(_txtCmds));
-        _tabs.add("MWelcome",   new JScrollPane(_txtWelcome));
+        _tabs.add("MWlcm",      new JScrollPane(_txtWelcome));
+        _tabs.add("MWho",       new JScrollPane(_txtWho));
         _tabs.add("MRoom",      new JScrollPane(_txtRoom));
         _tabs.add("MInv",       new JScrollPane(_pnlInv));
         _tabs.add("MStats",     new JScrollPane(_txtStats));
         _tabs.add("MShop",      new JScrollPane(_txtShop));
         _tabs.add("MSpells",    new JScrollPane(_txtSpells));
-        _tabs.add("MWho",       new JScrollPane(_txtWho));
+        _tabs.add("MCmbt",      new JScrollPane(_txtCombat));
         _tabs.addMouseListener(new ML_Tabs());
         add(_tabs);
 
@@ -156,17 +160,17 @@ public class OMUD_GUIFrameInfo extends JFrame {
                 _tab_prev = eTab.values()[_tabs.getSelectedIndex()];
 
                      if (_tab_prev == eTab.MUD_ROOM)
-                    _omme.requestMUDData(OMUD_MMUD.DataBlock.eBlockType.ROOM);
+                    _omme.requestMUDData(OMUD_MMUD_DataBlock.eBlockType.ROOM);
                 else if (_tab_prev == eTab.MUD_INV)
-                    _omme.requestMUDData(OMUD_MMUD.DataBlock.eBlockType.INV);
+                    _omme.requestMUDData(OMUD_MMUD_DataBlock.eBlockType.INV);
                 else if (_tab_prev == eTab.MUD_STATS)
-                    _omme.requestMUDData(OMUD_MMUD.DataBlock.eBlockType.STATS);
+                    _omme.requestMUDData(OMUD_MMUD_DataBlock.eBlockType.STATS);
                 else if (_tab_prev == eTab.MUD_SHOP)
-                    _omme.requestMUDData(OMUD_MMUD.DataBlock.eBlockType.SHOP);
+                    _omme.requestMUDData(OMUD_MMUD_DataBlock.eBlockType.SHOP);
                 else if (_tab_prev == eTab.MUD_SPELLS)
-                    _omme.requestMUDData(OMUD_MMUD.DataBlock.eBlockType.SPELLS);
+                    _omme.requestMUDData(OMUD_MMUD_DataBlock.eBlockType.SPELLS);
                 else if (_tab_prev == eTab.MUD_WHO)
-                    _omme.requestMUDData(OMUD_MMUD.DataBlock.eBlockType.WHO);
+                    _omme.requestMUDData(OMUD_MMUD_DataBlock.eBlockType.WHO);
             }
         }
     }
@@ -226,12 +230,12 @@ public class OMUD_GUIFrameInfo extends JFrame {
         _txtWelcome.setText(strText);
     }
 
-    public void processMUDRoom(final OMUD_MMUD.DataRoom dataRoom){
+    public void processMUDRoom(final OMUD_MMUD_DataBlockRoom dataRoom){
         setTab(eTab.MUD_ROOM);
 
         StringBuilder sb = new StringBuilder();
         sb.append("[MegaID]: "      + dataRoom.megaID);
-        sb.append("\n[RoomName]: "  + dataRoom.name + " (" + OMUD_MMUD.ROOM_LIGHT_STRINGS[dataRoom.light.ordinal()] + ")");
+        sb.append("\n[RoomName]: "  + dataRoom.name + " (" + OMUD_MMUD_DataBlockRoom.ROOM_LIGHT_STRINGS[dataRoom.light.ordinal()] + ")");
 
         sb.append("\n\n--------------------\n");
         sb.append("[RoomCoins] (*=HIDDEN)\n");
@@ -259,13 +263,13 @@ public class OMUD_GUIFrameInfo extends JFrame {
         sb.append("[RoomUnits]\n");
         sb.append("--------------------\n");
         for (int i = 0; i < dataRoom.arrlUnits.size(); ++i)
-            sb.append(dataRoom.arrlUnits.get(i) + "\n");
+            sb.append(dataRoom.arrlUnits.get(i).name + "\n");
 
         sb.append("\n--------------------\n");
         sb.append("[RoomExits]\n");
         sb.append("--------------------\n");
         for (int i = 0; i < dataRoom.arrlExits.size(); ++i)
-            sb.append(OMUD_MMUD.EXIT_DIR_STRINGS[dataRoom.arrlExits.get(i).eDir.ordinal()] + "\n");
+            sb.append(OMUD_MMUD_DataExit.EXIT_DIR_STRINGS[dataRoom.arrlExits.get(i).eDir.ordinal()] + "\n");
 
         sb.append("\n--------------------\n");
         sb.append("[RoomDesc]\n");
@@ -276,7 +280,7 @@ public class OMUD_GUIFrameInfo extends JFrame {
         _txtRoom.setCaretPosition(0);
     }
 
-    public void processMUDInv(final OMUD_MMUD.DataInv dataInv){
+    public void processMUDInv(final OMUD_MMUD_DataBlockInv dataInv){
         setTab(eTab.MUD_INV);
 
         StringBuilder sb = new StringBuilder();
@@ -286,7 +290,7 @@ public class OMUD_GUIFrameInfo extends JFrame {
         sb.append("[InvItemsWorn]\n");
         sb.append("--------------------\n");
         for (int i = 0; i < dataInv.arrlWorn.size(); ++i){
-            String strSlot = OMUD_MMUD.EQUIP_SLOT_STRINGS[dataInv.arrlWorn.get(i).equip_slot.ordinal()].toUpperCase();
+            String strSlot = OMUD_MMUD_DataItem.EQUIP_SLOT_STRINGS[dataInv.arrlWorn.get(i).equip_slot.ordinal()].toUpperCase();
             sb.append(strSlot);
             int fill_len = 10 - strSlot.length();
             if (fill_len > 0)
@@ -298,7 +302,7 @@ public class OMUD_GUIFrameInfo extends JFrame {
         sb.append("[InvItems] (*=WORN)\n");
         sb.append("--------------------\n");
         for (int i = 0; i < dataInv.arrlItems.size(); ++i){
-            if (dataInv.arrlItems.get(i).equip_slot != OMUD_MMUD.eEquipSlot.NONE)
+            if (dataInv.arrlItems.get(i).equip_slot != OMUD_MMUD_DataItem.eEquipSlot.NONE)
                  sb.append("* ");
             else sb.append("  ");
             sb.append("(" + dataInv.arrlItems.get(i).qty + ") " + dataInv.arrlItems.get(i).name + "\n");
@@ -322,7 +326,7 @@ public class OMUD_GUIFrameInfo extends JFrame {
         _lblInvWealth.setText("W: " +   dataInv.wealth);
     }
 
-    public void processMUDStats(final OMUD_MMUD.DataStats dataStats, final OMUD_MMUD.DataStatline dataStatline){
+    public void processMUDStats(final OMUD_MMUD_DataBlockStats dataStats, final OMUD_MMUD_DataBlockStatline dataStatline){
         setTab(eTab.MUD_STATS);
 
         StringBuilder sb = new StringBuilder();
@@ -359,7 +363,7 @@ public class OMUD_GUIFrameInfo extends JFrame {
         _txtStats.setCaretPosition(0);
     }
 
-    public void processMUDShop(final OMUD_MMUD.DataShop dataShop){
+    public void processMUDShop(final OMUD_MMUD_DataBlockShop dataShop){
         setTab(eTab.MUD_SHOP);
 
         StringBuilder sb = new StringBuilder();
@@ -387,7 +391,7 @@ public class OMUD_GUIFrameInfo extends JFrame {
         _txtShop.setCaretPosition(0);
     }
 
-    public void processMUDSpells(final OMUD_MMUD.DataSpells dataSpells){
+    public void processMUDSpells(final OMUD_MMUD_DataBlockSpells dataSpells){
         setTab(eTab.MUD_SPELLS);
 
         StringBuilder sb = new StringBuilder();
@@ -403,7 +407,7 @@ public class OMUD_GUIFrameInfo extends JFrame {
         _txtSpells.setCaretPosition(0);
     }
 
-    public void processMUDWho(final OMUD_MMUD.DataWho dataWho){
+    public void processMUDWho(final OMUD_MMUD_DataBlockWho dataWho){
         setTab(eTab.MUD_WHO);
 
         StringBuilder sb = new StringBuilder();
@@ -422,7 +426,7 @@ public class OMUD_GUIFrameInfo extends JFrame {
                 sb.append(OMUD.getFillString(" ", fill_len));
 
             // align...
-            String strAlign = OMUD_MMUD.ALIGNMENT_STRINGS[dataWho.chars.get(i).alignment.ordinal()];
+            String strAlign = OMUD_MMUD_DataBlockWho.ALIGNMENT_STRINGS[dataWho.chars.get(i).alignment.ordinal()];
             sb.append(" (" + strAlign);
             fill_len = 8 - strAlign.length();
             if (fill_len > 0)
@@ -441,5 +445,27 @@ public class OMUD_GUIFrameInfo extends JFrame {
 
         _txtWho.setText(sb.toString());
         _txtWho.setCaretPosition(0);
+    }
+
+    public void processMUDCombat(final OMUD_MMUD_DataBlockCombat dataCombat){        
+        setTab(eTab.MUD_COMBAT);
+
+        StringBuilder sb = new StringBuilder();
+        sb.append("--------------------\n");
+        sb.append("Attacker (vs) Attacked (H/M/D) (Action) (Weap)\n");
+        sb.append("--------------------\n");
+        for (int i = 0; i < dataCombat.lines.size(); ++i){
+            sb.append(dataCombat.lines.get(i).unit.name  + " (vs) " + dataCombat.lines.get(i).tgt_name);
+            if (dataCombat.lines.get(i).tgt_miss)
+                 sb.append((dataCombat.lines.get(i).tgt_dodge ? " (DODGE) " : " (MISS) "));
+            else sb.append(" (HIT: " + dataCombat.lines.get(i).tgt_dmg + ") ");
+            sb.append("(" + dataCombat.lines.get(i).action + ")");
+            if (dataCombat.lines.get(i).weapon.length() > 0)
+                sb.append(" (" + dataCombat.lines.get(i).weapon + ")");
+            sb.append("\n");
+        }
+
+        _txtCombat.setText(sb.toString());
+        _txtCombat.setCaretPosition(0);
     }
 }

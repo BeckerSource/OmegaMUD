@@ -4,7 +4,7 @@ public class OMUD_TelnetParser{
     private OMUD_ITelnetEvents          _omte =         null;
     private OMUD_ANSI                   _ansi =         null; // pseudo cursor to save stles/colors during parser
     private OMUD_Buffer                 _omb =          null;
-    private OMUD_MMUDParser             _mmp =          null;
+    private OMUD_MMUD_Parser            _mmp =          null;
     private ArrayList<OMUD_IBufferMod>  _arrlBMods =    null;
     private StringBuilder               _sbEscSeq =     null;
     private StringBuilder               _sbNewData =    null;
@@ -14,7 +14,7 @@ public class OMUD_TelnetParser{
     public OMUD_TelnetParser(OMUD_ITelnetEvents omte, OMUD_IMUDEvents omme){
         _omte = omte;
         _omb = new OMUD_Buffer();
-        _mmp = new OMUD_MMUDParser(omme);
+        _mmp = new OMUD_MMUD_Parser(omme);
         _arrlBMods = new ArrayList<OMUD_IBufferMod>();
         _sbEscSeq = new StringBuilder();
         _sbNewData = new StringBuilder();

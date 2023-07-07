@@ -1,10 +1,10 @@
 import java.util.ArrayList;
 
-public class OMUD_MMUDBlocks{
+public class OMUD_MMUD_ParseBlocks{
     // ------------------
-    // Block
+    // ParseBlock
     // ------------------
-    public static abstract class Block{
+    public static abstract class ParseBlock{
         protected class CmdText{
             public String   text  =     "";
             public int      min_len =   0;
@@ -34,7 +34,7 @@ public class OMUD_MMUDBlocks{
             return strFoundCmdFull;
         }
 
-        public abstract int findBlockData(OMUD_MMUDChar mmc, StringBuilder sbTelnetData, int pos_offset);
+        public abstract int findBlockData(OMUD_MMUD_Char mmc, StringBuilder sbTelnetData, int pos_offset);
         protected int findData(StringBuilder sbTelnetData, int pos_offset, boolean offset_is_lf, boolean has_dynamic_text, String strStartSeq, String strEndSeq){
             int pos_endseq_left =    -1;
             int pos_endseq_right =   -1;
@@ -128,7 +128,7 @@ public class OMUD_MMUDBlocks{
             if (pos_start >= 0 && sbTelnetData.substring(pos_start, pos_start + prefix_len).equals(strPrefix)){
                 sbTelnetData.delete(pos_start, pos_start + prefix_len);
                 pos_offset = pos_start;
-                //sbDbgReason.append("Block Prefix Found/Removed: " + strDbgReason + "\n");
+                //sbDbgReason.append("ParseBlock Prefix Found/Removed: " + strDbgReason + "\n");
             }
             return pos_offset;
         }
@@ -139,24 +139,24 @@ public class OMUD_MMUDBlocks{
                 arrlItems.add(item.trim());
         }
 
-        protected boolean findCoins(OMUD_MMUD.DataCoins coins, int qty, String strText){
+        protected boolean findCoins(OMUD_MMUD_DataCoins coins, int qty, String strText){
             boolean coin_match = false;
-                 if ((coin_match = (strText.indexOf(OMUD_MMUD.COIN_ITEM_STRINGS[OMUD_MMUD.eCoinType.RUNIC.ordinal()], 0))      > -1))
+                 if ((coin_match = (strText.indexOf(OMUD_MMUD_DataCoins.COIN_ITEM_STRINGS[OMUD_MMUD_DataCoins.eCoinType.RUNIC.ordinal()], 0))      > -1))
                 coins.runic =   qty;
-            else if ((coin_match = (strText.indexOf(OMUD_MMUD.COIN_ITEM_STRINGS[OMUD_MMUD.eCoinType.PLATINUM.ordinal()], 0))   > -1))
+            else if ((coin_match = (strText.indexOf(OMUD_MMUD_DataCoins.COIN_ITEM_STRINGS[OMUD_MMUD_DataCoins.eCoinType.PLATINUM.ordinal()], 0))   > -1))
                 coins.plat =    qty;
-            else if ((coin_match = (strText.indexOf(OMUD_MMUD.COIN_ITEM_STRINGS[OMUD_MMUD.eCoinType.GOLD.ordinal()], 0))       > -1))
+            else if ((coin_match = (strText.indexOf(OMUD_MMUD_DataCoins.COIN_ITEM_STRINGS[OMUD_MMUD_DataCoins.eCoinType.GOLD.ordinal()], 0))       > -1))
                 coins.gold =    qty;
-            else if ((coin_match = (strText.indexOf(OMUD_MMUD.COIN_ITEM_STRINGS[OMUD_MMUD.eCoinType.SILVER.ordinal()], 0))     > -1))
+            else if ((coin_match = (strText.indexOf(OMUD_MMUD_DataCoins.COIN_ITEM_STRINGS[OMUD_MMUD_DataCoins.eCoinType.SILVER.ordinal()], 0))     > -1))
                 coins.silver =  qty;
-            else if ((coin_match = (strText.indexOf(OMUD_MMUD.COIN_ITEM_STRINGS[OMUD_MMUD.eCoinType.COPPER.ordinal()], 0))     > -1))
+            else if ((coin_match = (strText.indexOf(OMUD_MMUD_DataCoins.COIN_ITEM_STRINGS[OMUD_MMUD_DataCoins.eCoinType.COPPER.ordinal()], 0))     > -1))
                 coins.copper =  qty;
             return coin_match;
         }
 
-        protected void buildItemList(ArrayList<String> arrlNew, OMUD_MMUD.DataCoins coins, ArrayList<OMUD_MMUD.DataItem> arrlItems, ArrayList<OMUD_MMUD.DataItem> arrlItemsWorn){
+        protected void buildItems(ArrayList<String> arrlNew, ArrayList<OMUD_MMUD_DataItem> arrlItems, OMUD_MMUD_DataCoins coins, ArrayList<OMUD_MMUD_DataItem> arrlItemsWorn){
             for (int i = 0; i < arrlNew.size(); ++i){
-                OMUD_MMUD.DataItem ri = new OMUD_MMUD.DataItem(arrlNew.get(i));
+                OMUD_MMUD_DataItem ri = new OMUD_MMUD_DataItem(arrlNew.get(i));
 
                 boolean is_coin = false;
                 boolean is_dupe = false;
@@ -164,16 +164,16 @@ public class OMUD_MMUDBlocks{
                 // if inventory call (worn non-null), set worn items...
                 if (arrlItemsWorn != null && ri.name.charAt(ri.name.length() - 1) == ')'){
                     int pos_slot_start = -1;
-                    for (int j = OMUD_MMUD.eEquipSlot.WEAPON.ordinal(); j < OMUD_MMUD.EQUIP_SLOT_STRINGS.length && pos_slot_start == -1; ++j)
-                        if ((pos_slot_start = ri.name.lastIndexOf(OMUD_MMUD.EQUIP_SLOT_STRINGS[j], ri.name.length() - 1)) > -1){
-                            ri.equip_slot = OMUD_MMUD.eEquipSlot.values()[j];
+                    for (int j = OMUD_MMUD_DataItem.eEquipSlot.WEAPON.ordinal(); j < OMUD_MMUD_DataItem.EQUIP_SLOT_STRINGS.length && pos_slot_start == -1; ++j)
+                        if ((pos_slot_start = ri.name.lastIndexOf(OMUD_MMUD_DataItem.EQUIP_SLOT_STRINGS[j], ri.name.length() - 1)) > -1){
+                            ri.equip_slot = OMUD_MMUD_DataItem.eEquipSlot.values()[j];
                             ri.name = ri.name.substring(0, pos_slot_start - 1); // remove slot and trailing space (-1)
                             arrlItemsWorn.add(ri);
                         }
                 }
 
                 // non-equipped: check for quantity prefixes and dupes...
-                if (ri.equip_slot == OMUD_MMUD.eEquipSlot.NONE){
+                if (ri.equip_slot == OMUD_MMUD_DataItem.eEquipSlot.NONE){
 
                     // check for quantity prefix...
                     int pos_left = -1;
@@ -192,7 +192,7 @@ public class OMUD_MMUDBlocks{
                             // then coin names - coins are always displayed first and in order,
                             // so can exit early if out-of-range or if copper is found...
                             if (ri.name.indexOf(" ", 0) > -1)
-                                for (int j = 0; j < OMUD_MMUD.COIN_ITEM_STRINGS.length && coins.copper == 0; ++j)
+                                for (int j = 0; j < OMUD_MMUD_DataCoins.COIN_ITEM_STRINGS.length && coins.copper == 0; ++j)
                                     is_coin = findCoins(coins, ri.qty, ri.name);
                         }
                     }
@@ -203,7 +203,7 @@ public class OMUD_MMUDBlocks{
                             if ((is_dupe = ri.name.equals(arrlItems.get(j).name))){
                                 // inventory: worn item with extra non-worn in inv -
                                 // keep the counter on the original equipped item
-                                if (arrlItems.get(j).equip_slot != OMUD_MMUD.eEquipSlot.NONE)
+                                if (arrlItems.get(j).equip_slot != OMUD_MMUD_DataItem.eEquipSlot.NONE)
                                     arrlItems.get(j).qty = ri.qty + 1;
                                 // else this is from a search and the greater quantity should be updated
                                 // based on the search results...
@@ -220,47 +220,48 @@ public class OMUD_MMUDBlocks{
     }
 
     // ------------------
-    // OMUD_MMUDBlocks
+    // OMUD_MMUD_ParseBlocks
     // ------------------
-    private OMUD_MMUDBlock_BBSMenu      _blkBBSMenu = null;
-    private ArrayList<Block>            _arrlBlocks = null;
+    private OMUD_MMUD_ParseBlockBBSMenu _blkBBSMenu = null;
+    private ArrayList<ParseBlock>       _arrlBlocks = null;
     private int _bpos_cmd_editor =      0;
     private final int BPOS_STATLINE =   0;
     private final int BPOS_CMDS_START = 1;
 
-    public OMUD_MMUDBlocks(){
-        _arrlBlocks = new ArrayList<Block>();
+    public OMUD_MMUD_ParseBlocks(){
+        _arrlBlocks = new ArrayList<ParseBlock>();
         // ==================
         // ------------------
         // Statline
         // ------------------
-        _arrlBlocks.add(new OMUD_MMUDBlock_Statline());     // BPOS_STATLINE
+        _arrlBlocks.add(new OMUD_MMUD_ParseBlockStatline());     // BPOS_STATLINE
         // ------------------
         // Command Blocks
         // ------------------
-        _arrlBlocks.add(new OMUD_MMUDBlock_Room());
-        _arrlBlocks.add(new OMUD_MMUDBlock_Exp());
-        _arrlBlocks.add(new OMUD_MMUDBlock_Inventory());
-        _arrlBlocks.add(new OMUD_MMUDBlock_Stats());
-        _arrlBlocks.add(new OMUD_MMUDBlock_Shop());
-        _arrlBlocks.add(new OMUD_MMUDBlock_Spells());
-        _arrlBlocks.add(new OMUD_MMUDBlock_Who());
-        _arrlBlocks.add(new OMUD_MMUDBlock_Editor());       // NOTE: editor should always be at the end!
-        _bpos_cmd_editor = _arrlBlocks.size() - 1;          //
+        _arrlBlocks.add(new OMUD_MMUD_ParseBlockRoom());
+        _arrlBlocks.add(new OMUD_MMUD_ParseBlockExp());
+        _arrlBlocks.add(new OMUD_MMUD_ParseBlockInventory());
+        _arrlBlocks.add(new OMUD_MMUD_ParseBlockStats());
+        _arrlBlocks.add(new OMUD_MMUD_ParseBlockShop());
+        _arrlBlocks.add(new OMUD_MMUD_ParseBlockSpells());
+        _arrlBlocks.add(new OMUD_MMUD_ParseBlockWho());
+        _arrlBlocks.add(new OMUD_MMUD_ParseBlockEditor());      // NOTE: editor should always be at the end!
+        _bpos_cmd_editor = _arrlBlocks.size() - 1;              //
         // ------------------
         // Other Line Blocks
         // ------------------
-        _arrlBlocks.add(new OMUD_MMUDBlock_Other());
+        _arrlBlocks.add(new OMUD_MMUD_ParseBlockCombat());
+        _arrlBlocks.add(new OMUD_MMUD_ParseBlockOther());
         // ==================
 
         // ------------------
         // MUD Menu (separate)
         // ------------------
         // somewhat unique so keep this separate...
-        _blkBBSMenu = new OMUD_MMUDBlock_BBSMenu();
+        _blkBBSMenu = new OMUD_MMUD_ParseBlockBBSMenu();
     }
 
-    public int parseStatline(OMUD_MMUDChar mmc, StringBuilder sbTelnetData){
+    public int parseStatline(OMUD_MMUD_Char mmc, StringBuilder sbTelnetData){
         int pos_data_found_start = _arrlBlocks.get(BPOS_STATLINE).findBlockData(mmc, sbTelnetData, 0);
         if (pos_data_found_start > -1 && sbTelnetData.length() > 0){
 
@@ -283,20 +284,20 @@ public class OMUD_MMUDBlocks{
         return pos_data_found_start;
     }
 
-    public int parseLineBlocks(OMUD_MMUDChar mmc, StringBuilder sbTelnetData, int pos_offset){
+    public int parseLineBlocks(OMUD_MMUD_Char mmc, StringBuilder sbTelnetData, int pos_offset){
         int pos_data_found_start = -1;
         for (int i = _bpos_cmd_editor + 1; i < _arrlBlocks.size() && pos_data_found_start == -1; ++i)
             pos_data_found_start = _arrlBlocks.get(i).findBlockData(mmc, sbTelnetData, pos_offset);
         return pos_data_found_start;
     }
 
-    public int parseBBSMenu(OMUD_MMUDChar mmc, StringBuilder sbTelnetData){
+    public int parseBBSMenu(OMUD_MMUD_Char mmc, StringBuilder sbTelnetData){
         return _blkBBSMenu.findBlockData(mmc, sbTelnetData, 0);
     }
 
     // findCmd(): main external call to match a user-input command (assumes passed in as lower-case)
     // returns true if at an in-game menu/editor (train stats, etc.)
-    public boolean findCmd(String strCmd, OMUD_MMUDChar.ActiveBlock ablk){
+    public boolean findCmd(String strCmd, OMUD_MMUD_Char.ActiveDataBlock ablk){
         String strFoundCmdFull = null;
         for (int i = BPOS_CMDS_START; i <= _bpos_cmd_editor && strFoundCmdFull == null; ++i)
             if ((strFoundCmdFull = _arrlBlocks.get(i).matchCmdText(strCmd)) != null)

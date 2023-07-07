@@ -53,28 +53,28 @@ public class OMUD_MEGA{
     // -----------------
     // MegaMUD RoomID: Exits Code #####
     // -----------------
-    public static String getRoomExitsCode(ArrayList<OMUD_MMUD.RoomExit> arrExits){
+    public static String getRoomExitsCode(ArrayList<OMUD_MMUD_DataExit> arrExits){
         int u_d =   0;
         int se_sw = 0;
         int ne_nw = 0;
         int e_w =   0;
         int n_s =   0;
         int door_mod = 1;
-        OMUD_MMUD.eExitDir edir = OMUD_MMUD.eExitDir.NONE;
+        OMUD_MMUD_DataExit.eExitDir edir = OMUD_MMUD_DataExit.eExitDir.NONE;
         for (int i = 0; i < arrExits.size(); ++i){
             edir =      arrExits.get(i).eDir;
-            door_mod =  arrExits.get(i).eDoor == OMUD_MMUD.eDoorType.NONE ? 1 : 2;
+            door_mod =  arrExits.get(i).eDoor == OMUD_MMUD_DataExit.eDoorType.NONE ? 1 : 2;
             // changed ordering from above for processing efficiency (more common exits on top)...
-                 if (edir == OMUD_MMUD.eExitDir.NORTH)  n_s     += (1 * door_mod);
-            else if (edir == OMUD_MMUD.eExitDir.SOUTH)  n_s     += (4 * door_mod);
-            else if (edir == OMUD_MMUD.eExitDir.EAST)   e_w     += (1 * door_mod);
-            else if (edir == OMUD_MMUD.eExitDir.WEST)   e_w     += (4 * door_mod);
-            else if (edir == OMUD_MMUD.eExitDir.SE) se_sw   += (1 * door_mod);
-            else if (edir == OMUD_MMUD.eExitDir.SW) se_sw   += (4 * door_mod);
-            else if (edir == OMUD_MMUD.eExitDir.NE) ne_nw   += (1 * door_mod);
-            else if (edir == OMUD_MMUD.eExitDir.NW) ne_nw   += (4 * door_mod);
-            else if (edir == OMUD_MMUD.eExitDir.UP)     u_d     += (1 * door_mod);
-            else if (edir == OMUD_MMUD.eExitDir.DOWN)   u_d     += (4 * door_mod);
+                 if (edir == OMUD_MMUD_DataExit.eExitDir.NORTH)  n_s     += (1 * door_mod);
+            else if (edir == OMUD_MMUD_DataExit.eExitDir.SOUTH)  n_s     += (4 * door_mod);
+            else if (edir == OMUD_MMUD_DataExit.eExitDir.EAST)   e_w     += (1 * door_mod);
+            else if (edir == OMUD_MMUD_DataExit.eExitDir.WEST)   e_w     += (4 * door_mod);
+            else if (edir == OMUD_MMUD_DataExit.eExitDir.SE) se_sw   += (1 * door_mod);
+            else if (edir == OMUD_MMUD_DataExit.eExitDir.SW) se_sw   += (4 * door_mod);
+            else if (edir == OMUD_MMUD_DataExit.eExitDir.NE) ne_nw   += (1 * door_mod);
+            else if (edir == OMUD_MMUD_DataExit.eExitDir.NW) ne_nw   += (4 * door_mod);
+            else if (edir == OMUD_MMUD_DataExit.eExitDir.UP)     u_d     += (1 * door_mod);
+            else if (edir == OMUD_MMUD_DataExit.eExitDir.DOWN)   u_d     += (4 * door_mod);
         }
 
         // return as ##### - see notes at bottom of file...

@@ -1,4 +1,4 @@
-public class OMUD_MMUDBlock_Stats extends OMUD_MMUDBlocks.Block{
+public class OMUD_MMUD_ParseBlockStats extends OMUD_MMUD_ParseBlocks.ParseBlock{
     private final String MSTR_PREFIX_RESET_WHBL = "[0;37;40m";
     private final String MSTR_NAME =        "[79D[K[0m[32mName:";
     private final String MSTR_LIVES =       "Lives/CP:";
@@ -26,16 +26,16 @@ public class OMUD_MMUDBlock_Stats extends OMUD_MMUDBlocks.Block{
     private final int    MSTR_STAT_ROW_COUNT = 9;
 
     public boolean getStatlineWait(){return true;}
-    public OMUD_MMUDBlock_Stats(){
-        _arrlCmdText.add(new CmdText(OMUD_MMUD.DataBlock.CMD_STRINGS[OMUD_MMUD.DataBlock.eBlockType.STATS.ordinal()], 2));
+    public OMUD_MMUD_ParseBlockStats(){
+        _arrlCmdText.add(new CmdText(OMUD_MMUD_DataBlock.CMD_STRINGS[OMUD_MMUD_DataBlock.eBlockType.STATS.ordinal()], 2));
     }
 
-    public int findBlockData(OMUD_MMUDChar mmc, StringBuilder sbTelnetData, int pos_offset){
+    public int findBlockData(OMUD_MMUD_Char mmc, StringBuilder sbTelnetData, int pos_offset){
         int pos_data_found_start = -1;
 
         if ((pos_data_found_start = findData(sbTelnetData, pos_offset, true, true, MSTR_NAME, "")) > -1){
-            mmc.ablk.data_type = OMUD_MMUD.DataBlock.eBlockType.STATS;
-            mmc.dataStats = new OMUD_MMUD.DataStats();
+            mmc.ablk.data_type = OMUD_MMUD_DataBlock.eBlockType.STATS;
+            mmc.dataStats = new OMUD_MMUD_DataBlockStats();
             cleanData(_sbBlockData, false, true);
 
             // PREFIX: normal stat command has a prefix, coming from a new char creation does not...

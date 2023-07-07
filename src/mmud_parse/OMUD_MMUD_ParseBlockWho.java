@@ -1,4 +1,4 @@
-public class OMUD_MMUDBlock_Who extends OMUD_MMUDBlocks.Block{
+public class OMUD_MMUD_ParseBlockWho extends OMUD_MMUD_ParseBlocks.ParseBlock{
     private final String MSTR_WHO =         "[0;37;40m[79D[K[1;33m         Current Adventurers\n[1;30m         ===================\n\n";
     private final String MSTR_COLOR_PRE =   "[0m";
     private final String MSTR_LINE_END =    " [37m ";
@@ -8,16 +8,16 @@ public class OMUD_MMUDBlock_Who extends OMUD_MMUDBlocks.Block{
     private final String MSTR_GUILD =       "  of [33m";
 
     public boolean getStatlineWait(){return true;}
-    public OMUD_MMUDBlock_Who(){
-        _arrlCmdText.add(new CmdText(OMUD_MMUD.DataBlock.CMD_STRINGS[OMUD_MMUD.DataBlock.eBlockType.WHO.ordinal()], 3));
+    public OMUD_MMUD_ParseBlockWho(){
+        _arrlCmdText.add(new CmdText(OMUD_MMUD_DataBlock.CMD_STRINGS[OMUD_MMUD_DataBlock.eBlockType.WHO.ordinal()], 3));
     }
 
-    public int findBlockData(OMUD_MMUDChar mmc, StringBuilder sbTelnetData, int pos_offset){
+    public int findBlockData(OMUD_MMUD_Char mmc, StringBuilder sbTelnetData, int pos_offset){
         int pos_data_found_start = -1;
 
         if ((pos_data_found_start = findData(sbTelnetData, pos_offset, true, true, MSTR_WHO, "")) > -1){
-            mmc.ablk.data_type = OMUD_MMUD.DataBlock.eBlockType.WHO;
-            mmc.dataWho = new OMUD_MMUD.DataWho();
+            mmc.ablk.data_type = OMUD_MMUD_DataBlock.eBlockType.WHO;
+            mmc.dataWho = new OMUD_MMUD_DataBlockWho();
 
             int pos_left =  -1;
             int pos_right = -1;
@@ -34,7 +34,7 @@ public class OMUD_MMUDBlock_Who extends OMUD_MMUDBlocks.Block{
                 if ((pos_right = line.lastIndexOf(MSTR_LINE_END, line.length() - 1)) > -1){
                     line = line.substring(0, pos_right);
 
-                    OMUD_MMUD.DataWho.DataWhoChar whoChar = new OMUD_MMUD.DataWho.DataWhoChar();
+                    OMUD_MMUD_DataBlockWho.WhoChar whoChar = new OMUD_MMUD_DataBlockWho.WhoChar();
 
                     // ---------------
                     // Left/Right Sections
@@ -61,9 +61,9 @@ public class OMUD_MMUDBlock_Who extends OMUD_MMUDBlocks.Block{
                             pos_right = pos_left - 1;
                             String strAlign = strLeft.substring(0, pos_right).trim();
                             if (strAlign.length() > 0){
-                                for (int i = OMUD_MMUD.eAlignment.NEUTRAL.ordinal() + 1; i < OMUD_MMUD.ALIGNMENT_STRINGS.length; ++i)
-                                    if (strAlign.lastIndexOf(OMUD_MMUD.ALIGNMENT_STRINGS[i], strAlign.length() - 1) > -1){
-                                        whoChar.alignment = OMUD_MMUD.eAlignment.values()[i];
+                                for (int i = OMUD_MMUD_DataBlockWho.eAlignment.NEUTRAL.ordinal() + 1; i < OMUD_MMUD_DataBlockWho.ALIGNMENT_STRINGS.length; ++i)
+                                    if (strAlign.lastIndexOf(OMUD_MMUD_DataBlockWho.ALIGNMENT_STRINGS[i], strAlign.length() - 1) > -1){
+                                        whoChar.alignment = OMUD_MMUD_DataBlockWho.eAlignment.values()[i];
                                         break;
                                     }
                             }

@@ -36,7 +36,7 @@ Command line run example for Java 1.6 version of OmegaMUD:
 * Toggle between single and multi-char input (send) type.
 * Command throttling/queueing. Helpful for commands like search, pick, and bash.
 * MegaMUD RoomID generation for backward MegaMUD support.
-* MajorMUD string parsing:
+* Currently parsed MajorMUD data:
   * BBS Menu Detection
   * Editor Support + Prompt Detection
   * Statline
@@ -47,6 +47,7 @@ Command line run example for Java 1.6 version of OmegaMUD:
   * Shops
   * Spells
   * Who's Online
+  * Basic Combat
 
 ## Tested Systems
 WinXP, Win7, Win8, Win10\
