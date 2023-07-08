@@ -98,14 +98,17 @@ public class OMUD_MMUD_ParseBlockCombat extends OMUD_MMUD_ParseBlocks.ParseBlock
             int pos_tgt_left  = 0;
             pos_right = strCrop.length() - 1;
             
-            // find target name from room unit array if needed...
+            // find target name...
             if (cl.tgt_name.length() == 0){
-                if ((pos_tgt_left = strCrop.lastIndexOf(MSTR_CMBT_YOU_TGT_SPC, pos_right)) > -1)
-                     cl.tgt_name = MSTR_CMBT_YOU_CAPS;
-                else pos_tgt_left = findUnitName(cl, mmc.dataRoom.arrlUnits, strCrop, false);                
+                if ((pos_tgt_left = strCrop.lastIndexOf(MSTR_CMBT_YOU_TGT_SPC, pos_right)) > -1){
+                    cl.tgt_name = MSTR_CMBT_YOU_CAPS;
+                } else if ((pos_tgt_left = findUnitName(cl, mmc.dataRoom.arrlUnits, strCrop, false)) == -1){
+                    cl.tgt_name = "???";
+                    pos_tgt_left = pos_right;
+                }
             } else pos_tgt_left = pos_right;
 
-            // find unit name from room unit array if needed...
+            // find unit name...
             if (cl.unit.name.length() == 0){
                 if ((pos_unit_left  = findUnitName(cl, mmc.dataRoom.arrlUnits, strCrop, true)) > -1){
                      pos_unit_left += cl.unit.name.length() + 1; // +1 skip space to next word after name
