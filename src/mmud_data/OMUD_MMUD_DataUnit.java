@@ -1,7 +1,7 @@
 public class OMUD_MMUD_DataUnit{
     public int      mmex_id =   0;
     public int      dmg_taken = 0;
-    public String   name =      "YOU";
+    public String   name =      "";
     public String   desc =      "";
 
     public OMUD_MMUD_DataUnit(){}

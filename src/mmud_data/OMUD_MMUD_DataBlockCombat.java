@@ -3,7 +3,7 @@ import java.util.ArrayList;
 public class OMUD_MMUD_DataBlockCombat extends OMUD_MMUD_DataBlock{
     public static class CombatLine{
         public static enum eMissType{
-            NONE,
+            HIT,
             MISS,
             DODGE,
             FAIL
@@ -22,7 +22,7 @@ public class OMUD_MMUD_DataBlockCombat extends OMUD_MMUD_DataBlock{
         public String       tgt_weapon =    "";
         public int          tgt_dmg =       0;
         public int          tgt_exp =       0;
-        public eMissType    tgt_miss =      eMissType.NONE;
+        public eMissType    tgt_miss =      eMissType.HIT;
 
         CombatLine(){}
         CombatLine(eMissType miss){tgt_miss = miss;}
@@ -50,11 +50,13 @@ public class OMUD_MMUD_DataBlockCombat extends OMUD_MMUD_DataBlock{
     public ArrayList<CombatRound> rounds = new ArrayList<CombatRound>();
     */
 
+    public int exp_gained = 0;
     public ArrayList<CombatLine> lines = new ArrayList<CombatLine>();
 
     public eBlockType getType(){return eBlockType.COMBAT;}
     OMUD_MMUD_DataBlockCombat(){}
     OMUD_MMUD_DataBlockCombat(OMUD_MMUD_DataBlockCombat dc){
+        exp_gained = dc.exp_gained;
         //for (int i = 0; i < dc.rounds.size(); ++i)
         //    rounds.add(new CombatRound(dc.rounds.get(i)));
         for (int i = 0; i < dc.lines.size(); ++i)
