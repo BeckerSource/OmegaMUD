@@ -199,10 +199,17 @@ public class OMUD_MMUD_Parser {
                 _omme.notifyMUDStatline(dStatline);
                      if (_mmc.ablk.data_type == OMUD_MMUD_DataBlock.eBlockType.ROOM)
                     _omme.notifyMUDRoom(new OMUD_MMUD_DataBlockRoom(_mmc.dataRoom));
-                else if (_mmc.ablk.data_type == OMUD_MMUD_DataBlock.eBlockType.EXP)
-                    _omme.notifyMUDExp(new OMUD_MMUD_DataBlockExp(_mmc.dataExp));
+                else if (_mmc.ablk.data_type == OMUD_MMUD_DataBlock.eBlockType.COMBAT){
+                    _omme.notifyMUDCombat(new OMUD_MMUD_DataBlockCombat(_mmc.dataCombat));
+                    if (_mmc.dataExp.combat_gain > 0){
+                        _omme.notifyMUDExp(new OMUD_MMUD_DataBlockExp(_mmc.dataExp));
+                        _mmc.dataExp.combat_gain = 0;
+                    }
+                }
                 else if (_mmc.ablk.data_type == OMUD_MMUD_DataBlock.eBlockType.INV)
                     _omme.notifyMUDInv(new OMUD_MMUD_DataBlockInv(_mmc.dataInv));
+                else if (_mmc.ablk.data_type == OMUD_MMUD_DataBlock.eBlockType.EXP)
+                    _omme.notifyMUDExp(new OMUD_MMUD_DataBlockExp(_mmc.dataExp));
                 else if (_mmc.ablk.data_type == OMUD_MMUD_DataBlock.eBlockType.STATS)
                     _omme.notifyMUDStats(new OMUD_MMUD_DataBlockStats(_mmc.dataStats), dStatline);
                 else if (_mmc.ablk.data_type == OMUD_MMUD_DataBlock.eBlockType.SHOP)
@@ -211,8 +218,6 @@ public class OMUD_MMUD_Parser {
                     _omme.notifyMUDSpells(new OMUD_MMUD_DataBlockSpells(_mmc.dataSpells));
                 else if (_mmc.ablk.data_type == OMUD_MMUD_DataBlock.eBlockType.WHO)
                     _omme.notifyMUDWho(new OMUD_MMUD_DataBlockWho(_mmc.dataWho));
-                else if (_mmc.ablk.data_type == OMUD_MMUD_DataBlock.eBlockType.COMBAT)
-                    _omme.notifyMUDCombat(new OMUD_MMUD_DataBlockCombat(_mmc.dataCombat));
                 if (_mmc.ablk.sbDebug.length() > 0)
                     _omme.notifyMUDDebug(_mmc.ablk.sbDebug.toString());
 

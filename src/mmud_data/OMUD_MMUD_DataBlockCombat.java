@@ -17,21 +17,23 @@ public class OMUD_MMUD_DataBlockCombat extends OMUD_MMUD_DataBlock{
         };
 
         public OMUD_MMUD_DataUnit unit = new OMUD_MMUD_DataUnit();
-        public String       weapon =    "";
-        public String       action =    "";
-        public String       tgt_name =  "";
-        public int          tgt_dmg =   0;
-        public eMissType    tgt_miss =  eMissType.NONE;
+        public String       unit_action =   "";
+        public String       tgt_name =      "";
+        public String       tgt_weapon =    "";
+        public int          tgt_dmg =       0;
+        public int          tgt_exp =       0;
+        public eMissType    tgt_miss =      eMissType.NONE;
 
         CombatLine(){}
         CombatLine(eMissType miss){tgt_miss = miss;}
         CombatLine(CombatLine cl){
-            unit =      new OMUD_MMUD_DataUnit(cl.unit);
-            weapon =    new String(cl.weapon);
-            action =    new String(cl.action);
-            tgt_name =  new String(cl.tgt_name);
-            tgt_dmg =   cl.tgt_dmg;
-            tgt_miss =  cl.tgt_miss;
+            unit =          new OMUD_MMUD_DataUnit(cl.unit);
+            unit_action =   new String(cl.unit_action);
+            tgt_name =      new String(cl.tgt_name);
+            tgt_weapon =    new String(cl.tgt_weapon);
+            tgt_dmg =       cl.tgt_dmg;
+            tgt_exp =       cl.tgt_exp;
+            tgt_miss =      cl.tgt_miss;
         }
     }
 

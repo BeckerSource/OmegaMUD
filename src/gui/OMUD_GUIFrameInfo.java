@@ -456,14 +456,16 @@ public class OMUD_GUIFrameInfo extends JFrame {
         sb.append("--------------------\n");
         for (int i = 0; i < dataCombat.lines.size(); ++i){
             sb.append(dataCombat.lines.get(i).unit.name);
-            if (dataCombat.lines.get(i).tgt_name.length() > 0);
+            if (dataCombat.lines.get(i).tgt_name.length() > 0)
                 sb.append(" (vs) " + dataCombat.lines.get(i).tgt_name);
             sb.append(" (" + OMUD_MMUD_DataBlockCombat.CombatLine.MISS_TYPE_STRINGS[dataCombat.lines.get(i).tgt_miss.ordinal()]);
             if (dataCombat.lines.get(i).tgt_miss == OMUD_MMUD_DataBlockCombat.CombatLine.eMissType.NONE)
                 sb.append(": " + dataCombat.lines.get(i).tgt_dmg);
-            sb.append(") (" + dataCombat.lines.get(i).action + ")");
-            if (dataCombat.lines.get(i).weapon.length() > 0)
-                sb.append(" (" + dataCombat.lines.get(i).weapon + ")");
+            sb.append(") (" + dataCombat.lines.get(i).unit_action + ")");
+            if (dataCombat.lines.get(i).tgt_weapon.length() > 0)
+                sb.append(" (" + dataCombat.lines.get(i).tgt_weapon + ")");
+            if (dataCombat.lines.get(i).tgt_exp > 0)
+                sb.append(" (+XP: " + dataCombat.lines.get(i).tgt_exp + ")");
             sb.append("\n");
         }
 

@@ -21,6 +21,14 @@ public class OMUD_MMUD_ParseBlockCombat extends OMUD_MMUD_ParseBlocks.ParseBlock
     private final String MSTR_CMBT_DODGE_PRE =      ", but ";
     private final String MSTR_CMBT_DODGE_END =      " out of the way";
 
+/*
+[79D[K[1;33mA kobold thief[0;32m sneaks into the room from nowhere.
+[79D[K[1;33mA acid slime[0;32m oozes into the room from nowhere.
+[79D[K[1;31mAcid burns you for 2 damage!
+[79D[K[1m[31mThe acid slime whips you with its pseudopod for 5 damage!
+[79D[K[79D[KThe giant rat falls to the ground with a tortured squeak.
+*/
+
     public boolean getStatlineWait(){return false;}
     public OMUD_MMUD_ParseBlockCombat(){}
 
@@ -31,12 +39,14 @@ public class OMUD_MMUD_ParseBlockCombat extends OMUD_MMUD_ParseBlocks.ParseBlock
         // Combat: On
         // ------------------
         if ((pos_data_found_start = findData(sbTelnetData, pos_offset, true, false, MSTR_CMBT_ON, "")) > -1){
+            mmc.ablk.data_type = OMUD_MMUD_DataBlock.eBlockType.COMBAT;
             mmc.dataStatline.in_combat = true;
 
         // ------------------
         // Combat: Off
         // ------------------
         } else if ((pos_data_found_start = findData(sbTelnetData, pos_offset, true, false, MSTR_CMBT_OFF, "")) > -1){
+            mmc.ablk.data_type = OMUD_MMUD_DataBlock.eBlockType.COMBAT;
             mmc.dataStatline.in_combat = false;
             pos_data_found_start = checkPrefix("Combat Broken by Cmd", mmc.ablk.sbDebug, sbTelnetData, pos_data_found_start, MSTR_PREFIX_RESET_WHBL);
 
@@ -49,7 +59,7 @@ public class OMUD_MMUD_ParseBlockCombat extends OMUD_MMUD_ParseBlocks.ParseBlock
             cleanData(_sbBlockData, true, false);
 
             OMUD_MMUD_DataBlockCombat.CombatLine cl = new OMUD_MMUD_DataBlockCombat.CombatLine(OMUD_MMUD_DataBlockCombat.CombatLine.eMissType.NONE);
-            cl.unit = new OMUD_MMUD_DataUnit("YOU");
+            cl.unit = new OMUD_MMUD_DataUnit();
 
             int pos_left =  0;
             int pos_right = _sbBlockData.length() - 1;
@@ -68,8 +78,8 @@ public class OMUD_MMUD_ParseBlockCombat extends OMUD_MMUD_ParseBlocks.ParseBlock
                         if (pos_left_at > -1)
                             pos_left = pos_left_at + MSTR_CMBT_AT.length() - 1;
 
-                        cl.action = _sbBlockData.substring(0, pos_left_at > -1 ? pos_left_at : pos_left);
-                        cl.tgt_name = _sbBlockData.substring(pos_left + 1, pos_right + 1);
+                        cl.unit_action = _sbBlockData.substring(0, pos_left_at > -1 ? pos_left_at : pos_left);
+                        cl.tgt_name =    _sbBlockData.substring(pos_left + 1, pos_right + 1);
                     }
                 }
             }
@@ -98,12 +108,6 @@ public class OMUD_MMUD_ParseBlockCombat extends OMUD_MMUD_ParseBlocks.ParseBlock
                 if (_sbBlockData.substring(pos_left, pos_right).equals(MSTR_CMBT_HIT_FOR)){
                     pos_right = pos_left - 1;
 
-/*
-[79D[K[1;33mA kobold thief[0;32m sneaks into the room from nowhere.
-[79D[K[1;33mA acid slime[0;32m oozes into the room from nowhere.
-[79D[K[1m[31mThe acid slime whips you with its pseudopod for 5 damage!
-*/
-
                     // find who was hit (you or other)...
                     if ((pos_left = _sbBlockData.lastIndexOf(" ", pos_right)) > -1){
                         cl.tgt_name = _sbBlockData.substring(pos_left + 1, pos_right + 1);
@@ -117,8 +121,8 @@ public class OMUD_MMUD_ParseBlockCombat extends OMUD_MMUD_ParseBlocks.ParseBlock
                             if (_sbBlockData.substring(0, MSTR_CMBT_THE_PRE.length()).equals(MSTR_CMBT_THE_PRE))
                                 name_prefix_len = MSTR_CMBT_THE_PRE.length();
 
-                            cl.unit = new OMUD_MMUD_DataUnit(_sbBlockData.substring(name_prefix_len, pos_left));
-                            cl.action = _sbBlockData.substring(pos_left + 1, pos_right + 1);
+                            cl.unit =        new OMUD_MMUD_DataUnit(_sbBlockData.substring(name_prefix_len, pos_left));
+                            cl.unit_action = _sbBlockData.substring(pos_left + 1, pos_right + 1);
                         }
                     }
                 }
@@ -135,8 +139,8 @@ public class OMUD_MMUD_ParseBlockCombat extends OMUD_MMUD_ParseBlocks.ParseBlock
             cleanData(_sbBlockData, true, false);
 
             OMUD_MMUD_DataBlockCombat.CombatLine cl = new OMUD_MMUD_DataBlockCombat.CombatLine(OMUD_MMUD_DataBlockCombat.CombatLine.eMissType.FAIL);
-            cl.unit = new OMUD_MMUD_DataUnit("YOU");
-            cl.action = _sbBlockData.toString();
+            cl.unit =        new OMUD_MMUD_DataUnit();
+            cl.unit_action = _sbBlockData.toString();
             // no target on cast fails
             mmc.dataCombat.lines.add(cl);
 
@@ -149,12 +153,12 @@ public class OMUD_MMUD_ParseBlockCombat extends OMUD_MMUD_ParseBlocks.ParseBlock
             cleanData(_sbBlockData, true, false);
 
             OMUD_MMUD_DataBlockCombat.CombatLine cl = new OMUD_MMUD_DataBlockCombat.CombatLine(OMUD_MMUD_DataBlockCombat.CombatLine.eMissType.MISS);
-            cl.unit = new OMUD_MMUD_DataUnit("YOU");
+            cl.unit = new OMUD_MMUD_DataUnit();
 
             int pos_left =  0;
             int pos_right = 0;
-            if ((pos_right = _sbBlockData.indexOf(" ", pos_left)) > -1)
-                cl.action = _sbBlockData.substring(pos_left, pos_right);
+            if ((pos_right =     _sbBlockData.indexOf(" ", pos_left)) > -1)
+                cl.unit_action = _sbBlockData.substring(pos_left, pos_right);
 
             // skip " at " and get the attacked name...
             pos_left = pos_right + 1;
@@ -182,8 +186,8 @@ public class OMUD_MMUD_ParseBlockCombat extends OMUD_MMUD_ParseBlocks.ParseBlock
                 if (_sbBlockData.substring(0, MSTR_CMBT_THE_PRE.length()).equals(MSTR_CMBT_THE_PRE))
                     name_prefix_len = MSTR_CMBT_THE_PRE.length();
 
-                cl.unit =   new OMUD_MMUD_DataUnit(_sbBlockData.substring(name_prefix_len, pos_left));
-                cl.action = _sbBlockData.substring(pos_left + 1, pos_right);
+                cl.unit =           new OMUD_MMUD_DataUnit(_sbBlockData.substring(name_prefix_len, pos_left));
+                cl.unit_action =    _sbBlockData.substring(pos_left + 1, pos_right);
 
                 pos_left =  pos_right + MSTR_CMBT_AT.length();
                 if ((pos_right = _sbBlockData.indexOf(" ", pos_left)) > -1){
@@ -197,8 +201,8 @@ public class OMUD_MMUD_ParseBlockCombat extends OMUD_MMUD_ParseBlocks.ParseBlock
                     // weapon...
                     int pos_left_weap = _sbBlockData.lastIndexOf(" ", pos_right - 1);
                     if (pos_left_weap > pos_left){
-                        cl.weapon = _sbBlockData.substring(pos_left_weap + 1, pos_right);
-                        pos_right = _sbBlockData.indexOf(" ", pos_left); // set right to original pos after name for below
+                        cl.tgt_weapon = _sbBlockData.substring(pos_left_weap + 1, pos_right);
+                        pos_right =     _sbBlockData.indexOf(" ", pos_left); // set right to original pos after name for below
                     }
                 } else pos_right = _sbBlockData.length();
 
@@ -214,12 +218,21 @@ public class OMUD_MMUD_ParseBlockCombat extends OMUD_MMUD_ParseBlocks.ParseBlock
         // EXP Gained
         // ------------------
         } else if ((pos_data_found_start = findData(sbTelnetData, pos_offset, true, true, MSTR_EXP_GAIN_PRE, MSTR_EXP_GAIN_END)) > -1){
-            mmc.ablk.data_type = OMUD_MMUD_DataBlock.eBlockType.EXP;
+            mmc.ablk.data_type = OMUD_MMUD_DataBlock.eBlockType.COMBAT;
+
             int exp = Integer.parseInt(_sbBlockData.toString());
+            mmc.dataExp.combat_gain += exp; // reset in parser
             mmc.dataExp.cur_total   += exp;
             mmc.dataExp.next_rem    -= exp;
             if (mmc.dataExp.next_rem < 0)
                 mmc.dataExp.next_rem = 0;
+
+            // find "my/YOU" most recent hit and assume that kill exp was the exp from that hit...
+            for (int i = mmc.dataCombat.lines.size() - 1; i >= 0; --i)
+                if (mmc.dataCombat.lines.get(i).unit.name.equals("YOU")){
+                    mmc.dataCombat.lines.get(i).tgt_exp = exp;
+                    break;
+                }
         }    
 
         return pos_data_found_start;
