@@ -41,23 +41,23 @@ public class OMUD_MMUD_ParseBlockCombat extends OMUD_MMUD_ParseBlocks.ParseBlock
     public static String getCmdText(){return "";}
     public OMUD_MMUD_ParseBlockCombat(){}
 
-    public int findBlockData(OMUD_MMUD_Char mmc, StringBuilder sbTelnetData, int pos_offset){
+    public int findBlockData(OMUD_Char.MMUD_Data mmd, StringBuilder sbTelnetData, int pos_offset){
         int pos_data_found_start = -1;
 
         // ------------------
         // Combat: On
         // ------------------
         if ((pos_data_found_start = findData(sbTelnetData, pos_offset, true, false, MSTR_ON, "")) > -1){
-            mmc.ablk.data_type = OMUD_MMUD_DataBlock.eBlockType.COMBAT;
-            mmc.dataStatline.in_combat = true;
+            mmd.ablk.data_type = OMUD_MMUD_DataBlock.eBlockType.COMBAT;
+            mmd.dataStatline.in_combat = true;
 
         // ------------------
         // Combat: Off
         // ------------------
         } else if ((pos_data_found_start = findData(sbTelnetData, pos_offset, true, false, MSTR_OFF, "")) > -1){
-            mmc.ablk.data_type = OMUD_MMUD_DataBlock.eBlockType.COMBAT;
+            mmd.ablk.data_type = OMUD_MMUD_DataBlock.eBlockType.COMBAT;
             // don't set as not-in-combat - using a timer to detect combat in next round
-            pos_data_found_start = checkPrefix("Combat Broken by Cmd", mmc.ablk.sbDebug, sbTelnetData, pos_data_found_start, MSTR_PREFIX_RESET_WHBL);
+            pos_data_found_start = checkPrefix("Combat Broken by Cmd", mmd.ablk.sbDebug, sbTelnetData, pos_data_found_start, MSTR_PREFIX_RESET_WHBL);
 
         // ------------------
         // Combat: Hit (You/I & They)
@@ -65,8 +65,8 @@ public class OMUD_MMUD_ParseBlockCombat extends OMUD_MMUD_ParseBlocks.ParseBlock
         } else if (
             (pos_data_found_start = findData(sbTelnetData, pos_offset, true, true, MSTR_HIT_PRE1, MSTR_HIT_END)) > -1 ||
             (pos_data_found_start = findData(sbTelnetData, pos_offset, true, true, MSTR_HIT_PRE2, MSTR_HIT_END)) > -1){
-            mmc.ablk.data_type = OMUD_MMUD_DataBlock.eBlockType.COMBAT;
-            mmc.dataStatline.in_combat = true;
+            mmd.ablk.data_type = OMUD_MMUD_DataBlock.eBlockType.COMBAT;
+            mmd.dataStatline.in_combat = true;
             cleanData(_sbBlockData, true, false);
 
             OMUD_MMUD_DataBlockCombat.CombatLine cl = new OMUD_MMUD_DataBlockCombat.CombatLine(OMUD_MMUD_DataBlockCombat.CombatLine.eMissType.HIT);
@@ -105,7 +105,7 @@ public class OMUD_MMUD_ParseBlockCombat extends OMUD_MMUD_ParseBlocks.ParseBlock
             if (cl.tgt_name.length() == 0){
                 if ((pos_tgt_left = strCrop.lastIndexOf(MSTR_YOU_TGT_SPC, pos_right)) > -1){
                     cl.tgt_name = MSTR_YOU_CAPS;
-                } else if ((pos_tgt_left = findUnitName(cl, mmc.dataRoom.arrlUnits, strCrop, false)) == -1){
+                } else if ((pos_tgt_left = findUnitName(cl, mmd.dataRoom.arrlUnits, strCrop, false)) == -1){
                     cl.tgt_name = "???";
                     pos_tgt_left = pos_right;
                 }
@@ -113,7 +113,7 @@ public class OMUD_MMUD_ParseBlockCombat extends OMUD_MMUD_ParseBlocks.ParseBlock
 
             // find unit name...
             if (cl.unit.name.length() == 0){
-                if ((pos_unit_left  = findUnitName(cl, mmc.dataRoom.arrlUnits, strCrop, true)) > -1){
+                if ((pos_unit_left  = findUnitName(cl, mmd.dataRoom.arrlUnits, strCrop, true)) > -1){
                      pos_unit_left += cl.unit.name.length() + 1; // +1 skip space to next word after name
                 // unit is unknown, just get text until the target as the unit name...
                 } else {
@@ -131,28 +131,28 @@ public class OMUD_MMUD_ParseBlockCombat extends OMUD_MMUD_ParseBlocks.ParseBlock
                     cl.unit_action += ", " + strCrop.substring(pos_tgt_left, pos_right + 1).trim();                
             }
 
-            mmc.dataCombat.lines.add(cl);
+            mmd.dataCombat.lines.add(cl);
 
         // ------------------
         // Combat: You Fail Cast
         // ------------------
         } else if ((pos_data_found_start = findData(sbTelnetData, pos_offset, true, true, MSTR_YOU_FAIL_PRE, MSTR_YOU_FAIL_END)) > -1){
-            mmc.ablk.data_type = OMUD_MMUD_DataBlock.eBlockType.COMBAT;
-            mmc.dataStatline.in_combat = true;
+            mmd.ablk.data_type = OMUD_MMUD_DataBlock.eBlockType.COMBAT;
+            mmd.dataStatline.in_combat = true;
             cleanData(_sbBlockData, true, false);
 
             OMUD_MMUD_DataBlockCombat.CombatLine cl = new OMUD_MMUD_DataBlockCombat.CombatLine(OMUD_MMUD_DataBlockCombat.CombatLine.eMissType.FAIL);
             cl.unit =        new OMUD_MMUD_DataUnit(MSTR_YOU_CAPS);
             cl.unit_action = _sbBlockData.toString();
             // no target on cast fails
-            mmc.dataCombat.lines.add(cl);
+            mmd.dataCombat.lines.add(cl);
 
         // ------------------
         // Combat: You Miss
         // ------------------
         } else if ((pos_data_found_start = findData(sbTelnetData, pos_offset, true, true, MSTR_YOU_MISS_PRE, MSTR_MISS_END)) > -1){
-            mmc.ablk.data_type = OMUD_MMUD_DataBlock.eBlockType.COMBAT;
-            mmc.dataStatline.in_combat = true;
+            mmd.ablk.data_type = OMUD_MMUD_DataBlock.eBlockType.COMBAT;
+            mmd.dataStatline.in_combat = true;
             cleanData(_sbBlockData, true, false);
 
             OMUD_MMUD_DataBlockCombat.CombatLine cl = new OMUD_MMUD_DataBlockCombat.CombatLine(OMUD_MMUD_DataBlockCombat.CombatLine.eMissType.MISS);
@@ -168,14 +168,14 @@ public class OMUD_MMUD_ParseBlockCombat extends OMUD_MMUD_ParseBlocks.ParseBlock
             if ((pos_right =  _sbBlockData.indexOf(" ", pos_left)) > -1)
                 cl.tgt_name = _sbBlockData.substring(pos_right + 1, _sbBlockData.length());
 
-            mmc.dataCombat.lines.add(cl);
+            mmd.dataCombat.lines.add(cl);
 
         // ------------------
         // Combat: They Miss
         // ------------------
         } else if ((pos_data_found_start = findData(sbTelnetData, pos_offset, true, true, MSTR_THEY_MISS_PRE, MSTR_MISS_END)) > -1){
-            mmc.ablk.data_type = OMUD_MMUD_DataBlock.eBlockType.COMBAT;
-            mmc.dataStatline.in_combat = true;
+            mmd.ablk.data_type = OMUD_MMUD_DataBlock.eBlockType.COMBAT;
+            mmd.dataStatline.in_combat = true;
             cleanData(_sbBlockData, true, false);
 
             OMUD_MMUD_DataBlockCombat.CombatLine cl = new OMUD_MMUD_DataBlockCombat.CombatLine(OMUD_MMUD_DataBlockCombat.CombatLine.eMissType.MISS);
@@ -215,28 +215,28 @@ public class OMUD_MMUD_ParseBlockCombat extends OMUD_MMUD_ParseBlocks.ParseBlock
                     cl.tgt_name = cl.tgt_name.toUpperCase();
             }
 
-            mmc.dataCombat.lines.add(cl);
+            mmd.dataCombat.lines.add(cl);
 
         // ------------------
         // EXP Gained
         // ------------------
         } else if ((pos_data_found_start = findData(sbTelnetData, pos_offset, true, true, MSTR_EXP_GAIN_PRE, MSTR_EXP_GAIN_END)) > -1){
-            mmc.ablk.data_type = OMUD_MMUD_DataBlock.eBlockType.COMBAT;
-            mmc.ablk.refresh_room = true;
+            mmd.ablk.data_type = OMUD_MMUD_DataBlock.eBlockType.COMBAT;
+            mmd.ablk.refresh_room = true;
             
             int exp = Integer.parseInt(_sbBlockData.toString());
-            mmc.dataExp.cur_total   += exp;
-            mmc.dataExp.next_rem    -= exp;
-            if (mmc.dataExp.next_rem < 0)
-                mmc.dataExp.next_rem = 0;
+            mmd.dataExp.cur_total   += exp;
+            mmd.dataExp.next_rem    -= exp;
+            if (mmd.dataExp.next_rem < 0)
+                mmd.dataExp.next_rem = 0;
 
             // accumulate exp gained during the current combat session (reset after session detected as complete)...
-            mmc.dataCombat.exp_gained += exp;
+            mmd.dataCombat.exp_gained += exp;
 
             // find "my/YOU" most recent hit and assume that kill exp was the exp from that hit...
-            for (int i = mmc.dataCombat.lines.size() - 1; i >= 0; --i)
-                if (mmc.dataCombat.lines.get(i).tgt_miss == OMUD_MMUD_DataBlockCombat.CombatLine.eMissType.HIT){
-                    mmc.dataCombat.lines.get(i).tgt_exp = exp;
+            for (int i = mmd.dataCombat.lines.size() - 1; i >= 0; --i)
+                if (mmd.dataCombat.lines.get(i).tgt_miss == OMUD_MMUD_DataBlockCombat.CombatLine.eMissType.HIT){
+                    mmd.dataCombat.lines.get(i).tgt_exp = exp;
                     break;
                 }
 
@@ -244,7 +244,7 @@ public class OMUD_MMUD_ParseBlockCombat extends OMUD_MMUD_ParseBlocks.ParseBlock
         // Unit Enters Room
         // ------------------
         } else if ((pos_data_found_start = findData(sbTelnetData, pos_offset, true, true, MSTR_UNIT_ENTER_PRE, MSTR_UNIT_ENTER_END)) > -1){
-            mmc.ablk.refresh_room = true;
+            mmd.ablk.refresh_room = true;
         }    
 
         return pos_data_found_start;

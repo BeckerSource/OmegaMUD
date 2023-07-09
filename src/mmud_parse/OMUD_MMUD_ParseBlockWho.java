@@ -13,12 +13,12 @@ public class OMUD_MMUD_ParseBlockWho extends OMUD_MMUD_ParseBlocks.ParseBlock{
         _arrlCmdText.add(new CmdText("who", 3));
     }
 
-    public int findBlockData(OMUD_MMUD_Char mmc, StringBuilder sbTelnetData, int pos_offset){
+    public int findBlockData(OMUD_Char.MMUD_Data mmd, StringBuilder sbTelnetData, int pos_offset){
         int pos_data_found_start = -1;
 
         if ((pos_data_found_start = findData(sbTelnetData, pos_offset, true, true, MSTR_WHO, "")) > -1){
-            mmc.ablk.data_type = OMUD_MMUD_DataBlock.eBlockType.WHO;
-            mmc.dataWho = new OMUD_MMUD_DataBlockWho();
+            mmd.ablk.data_type = OMUD_MMUD_DataBlock.eBlockType.WHO;
+            mmd.dataWho = new OMUD_MMUD_DataBlockWho();
 
             int pos_left =  -1;
             int pos_right = -1;
@@ -82,7 +82,7 @@ public class OMUD_MMUD_ParseBlockWho extends OMUD_MMUD_ParseBlocks.ParseBlock{
                                 whoChar.guild = strRight.substring(pos_left + MSTR_GUILD.length(), strRight.length());
                         }
 
-                        mmc.dataWho.chars.add(whoChar);
+                        mmd.dataWho.chars.add(whoChar);
                     }
                 }
             }

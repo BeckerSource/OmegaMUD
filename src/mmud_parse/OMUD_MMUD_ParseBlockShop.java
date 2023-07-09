@@ -12,14 +12,14 @@ public class OMUD_MMUD_ParseBlockShop extends OMUD_MMUD_ParseBlocks.ParseBlock{
         _arrlCmdText.add(new CmdText("list", 3));
     }
 
-    public int findBlockData(OMUD_MMUD_Char mmc, StringBuilder sbTelnetData, int pos_offset){
+    public int findBlockData(OMUD_Char.MMUD_Data mmd, StringBuilder sbTelnetData, int pos_offset){
         int pos_data_found_start = -1;
 
         if ((pos_data_found_start = findData(sbTelnetData, pos_offset, true, true, MSTR_SHOP_YES, "")) > -1){
-            mmc.ablk.data_type = OMUD_MMUD_DataBlock.eBlockType.SHOP;
-            mmc.dataShop = new OMUD_MMUD_DataBlockShop();
-            mmc.dataShop.megaID =   mmc.dataRoom.megaID;
-            mmc.dataShop.roomName = mmc.dataRoom.name;
+            mmd.ablk.data_type = OMUD_MMUD_DataBlock.eBlockType.SHOP;
+            mmd.dataShop = new OMUD_MMUD_DataBlockShop();
+            mmd.dataShop.megaID =   mmd.dataRoom.megaID;
+            mmd.dataShop.roomName = mmd.dataRoom.name;
 
             int pos_left = 0;
             int pos_right = 0;
@@ -58,10 +58,10 @@ public class OMUD_MMUD_ParseBlockShop extends OMUD_MMUD_ParseBlocks.ParseBlock{
                         }
                     }
                 }
-                mmc.dataShop.shop_items.add(item);
+                mmd.dataShop.shop_items.add(item);
             }
         } else if ((pos_data_found_start = findData(sbTelnetData, pos_offset, true, false, MSTR_SHOP_NO, "")) > -1){
-            mmc.ablk.sbDebug.append("[NO_SHOP_IN_ROOM]\n");
+            mmd.ablk.sbDebug.append("[NO_SHOP_IN_ROOM]\n");
         }
 
         return pos_data_found_start;

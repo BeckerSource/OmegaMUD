@@ -9,7 +9,7 @@ public class OMUD_MMUD_ParseBlockEditor extends OMUD_MMUD_ParseBlocks.ParseBlock
         _arrlCmdText.add(new CmdText("x",           1));
     }
 
-    public int findBlockData(OMUD_MMUD_Char mmc, StringBuilder sbTelnetData, int pos_offset){
+    public int findBlockData(OMUD_Char.MMUD_Data mmd, StringBuilder sbTelnetData, int pos_offset){
         return -1;
     }
 }

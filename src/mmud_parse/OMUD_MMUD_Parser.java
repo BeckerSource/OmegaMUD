@@ -26,20 +26,20 @@ public class OMUD_MMUD_Parser {
     // ------------------
     private OMUD.eBBSLocation   _eBBSLoc =      OMUD.eBBSLocation.BBS;
     private OMUD_IMUDEvents     _omme =         null;
-    private OMUD_MMUD_Char      _mmc =          null;
+    private OMUD_Char.MMUD_Data _mmd =          null;
     private StringBuilder       _sbDataTelnet = null;
     private static OMUD_MMUD_ParseBlocks _s_blocks = new OMUD_MMUD_ParseBlocks();
 
-    public OMUD_MMUD_Parser(OMUD_IMUDEvents omme, OMUD_MMUD_Char mmc){
+    public OMUD_MMUD_Parser(OMUD_IMUDEvents omme, OMUD_Char.MMUD_Data mmd){
         _omme = omme;
-        _mmc =  mmc;
+        _mmd =  mmd;
         _sbDataTelnet = new StringBuilder();
         reset(OMUD.eBBSLocation.BBS);
     }
 
     private void reset(OMUD.eBBSLocation eBBSLoc){
         _eBBSLoc = eBBSLoc;
-        _mmc.reset();
+        _mmd.reset();
     }
 
     public void appendChar(char c)          {_sbDataTelnet.append(c);}
@@ -84,10 +84,10 @@ public class OMUD_MMUD_Parser {
                 sbCmd.setLength(0);
 
                 _omme.notifyMUDLocation((_eBBSLoc = eNewLoc));
-                _mmc.ablk.statline_wait = false;
+                _mmd.ablk.statline_wait = false;
             // else have a valid command and still waiting for it in the telnet data...
             } else if (valid_cmd){
-                _mmc.ablk.statline_wait = true;
+                _mmd.ablk.statline_wait = true;
             }
         }
     }
@@ -100,7 +100,7 @@ public class OMUD_MMUD_Parser {
         // BBS MUD Menu
         // ------------------
         // find a better way to isolate this check based on a command in the future?...
-        if (_sbDataTelnet.length() > 0 && (pos_data_found_start = _s_blocks.parseBBSMenu(_mmc, _sbDataTelnet)) > -1){
+        if (_sbDataTelnet.length() > 0 && (pos_data_found_start = _s_blocks.parseBBSMenu(_mmd, _sbDataTelnet)) > -1){
             _sbDataTelnet.delete(0, pos_data_found_start);
             // reset data and location...
             reset(OMUD.eBBSLocation.MUD_MENU);
@@ -128,20 +128,20 @@ public class OMUD_MMUD_Parser {
                 // always wait for statline if we have a command -
                 // this may hit multiple times because
                 // we don't know when the linefeed will be sent from telnet...
-                _mmc.ablk.statline_wait = true;
+                _mmd.ablk.statline_wait = true;
 
                 if (OMUD.getNextLF(_sbDataTelnet, 0) == sbCmd.length() - 1){
                     _sbDataTelnet.delete(0, sbCmd.length());
 
                     sbCmd.deleteCharAt(sbCmd.length() - 1); // delete the trailing LF
-                    if (_s_blocks.findCmd(sbCmd.toString().toLowerCase(), _mmc.ablk))
+                    if (_s_blocks.findCmd(sbCmd.toString().toLowerCase(), _mmd.ablk))
                         _omme.notifyMUDLocation((_eBBSLoc = OMUD.eBBSLocation.MUD_EDITOR));
 
                     // if we just had a single linefeed/enter (length would be zero here),
                     // translate that to something visible...
                     if (sbCmd.length() == 0)
                         sbCmd.append("<ENTER>");
-                    sbCmd.append(" (" + _mmc.ablk.strCmdText + ")");
+                    sbCmd.append(" (" + _mmd.ablk.strCmdText + ")");
                         _omme.notifyMUDUserCmd(sbCmd.toString());
                     sbCmd.setLength(0); // clear to show as processed
                 }
@@ -150,7 +150,7 @@ public class OMUD_MMUD_Parser {
             // ------------------
             // Find Statline
             // ------------------
-            if (_sbDataTelnet.length() > 0 && (pos_data_found_start = _s_blocks.parseStatline(_mmc, _sbDataTelnet)) > -1){
+            if (_sbDataTelnet.length() > 0 && (pos_data_found_start = _s_blocks.parseStatline(_mmd, _sbDataTelnet)) > -1){
                 pos_buf_delete_len = updateParseDeleteLen(pos_data_found_start, pos_buf_delete_len);
 
                 // ------------------
@@ -161,22 +161,22 @@ public class OMUD_MMUD_Parser {
                     _omme.notifyMUDLocation((_eBBSLoc = OMUD.eBBSLocation.MUD));
 
                     // check for welcome msg...
-                    if (!_mmc.got_statline){
-                        _mmc.got_statline = true;
-                        _mmc.is_kai = 
-                             _mmc.dataStatline.ma_str.length() > 0 &&
-                            !_mmc.dataStatline.ma_str.equals(OMUD_MMUD_DataBlockStatline.MSTR_SLINE_MA);
-                        _omme.notifyMUDInit(new String(_mmc.strWelcome));
+                    if (!_mmd.got_statline){
+                        _mmd.got_statline = true;
+                        _mmd.is_kai = 
+                             _mmd.dataStatline.ma_str.length() > 0 &&
+                            !_mmd.dataStatline.ma_str.equals(OMUD_MMUD_DataBlockStatline.MSTR_SLINE_MA);
+                        _omme.notifyMUDInit(new String(_mmd.strWelcome));
                     }
 
                     // some basic auto commands on enter - can make manual/auto modes for this later...
-                    if (_mmc.dataRoom.name.length() == 0)
+                    if (_mmd.dataRoom.name.length() == 0)
                         _omme.requestMUDData(OMUD_MMUD_DataBlock.eBlockType.ROOM);
-                    if (_mmc.dataStats.name_first.length() == 0)
+                    if (_mmd.dataStats.name_first.length() == 0)
                         _omme.requestMUDData(OMUD_MMUD_DataBlock.eBlockType.STATS);
                     _omme.requestMUDData(OMUD_MMUD_DataBlock.eBlockType.INV);
                     _omme.requestMUDData(OMUD_MMUD_DataBlock.eBlockType.EXP);
-                    if (_mmc.dataStatline.ma_str.length() > 0)
+                    if (_mmd.dataStatline.ma_str.length() > 0)
                         _omme.requestMUDData(OMUD_MMUD_DataBlock.eBlockType.SPELLS);
                     _omme.requestMUDData(OMUD_MMUD_DataBlock.eBlockType.WHO);
                 }
@@ -188,44 +188,44 @@ public class OMUD_MMUD_Parser {
                 // reset the iterator to find more until none are found...
                 for (int i = 0; i < _sbDataTelnet.length(); ++i)
                     if (_sbDataTelnet.charAt(i) == OMUD.ASCII_LF &&
-                        (pos_data_found_start = _s_blocks.parseLineBlocks(_mmc, _sbDataTelnet, i)) > -1){
+                        (pos_data_found_start = _s_blocks.parseLineBlocks(_mmd, _sbDataTelnet, i)) > -1){
                         pos_buf_delete_len = updateParseDeleteLen(pos_data_found_start, pos_buf_delete_len);
                         i = pos_data_found_start;
                     }
 
                 // notify for statline update and other data that was updated...
-                OMUD_MMUD_DataBlockStatline dStatline = new OMUD_MMUD_DataBlockStatline(_mmc.dataStatline);
+                OMUD_MMUD_DataBlockStatline dStatline = new OMUD_MMUD_DataBlockStatline(_mmd.dataStatline);
                 _omme.notifyMUDStatline(dStatline);
-                     if (_mmc.ablk.data_type == OMUD_MMUD_DataBlock.eBlockType.ROOM)
-                    _omme.notifyMUDRoom(new OMUD_MMUD_DataBlockRoom(_mmc.dataRoom));
-                else if (_mmc.ablk.data_type == OMUD_MMUD_DataBlock.eBlockType.COMBAT){
-                    _omme.notifyMUDCombat(new OMUD_MMUD_DataBlockCombat(_mmc.dataCombat));
-                    if (_mmc.dataCombat.exp_gained > 0){
-                        _mmc.dataCombat.exp_gained = 0;
-                        _omme.notifyMUDExp(new OMUD_MMUD_DataBlockExp(_mmc.dataExp));
+                     if (_mmd.ablk.data_type == OMUD_MMUD_DataBlock.eBlockType.ROOM)
+                    _omme.notifyMUDRoom(new OMUD_MMUD_DataBlockRoom(_mmd.dataRoom));
+                else if (_mmd.ablk.data_type == OMUD_MMUD_DataBlock.eBlockType.COMBAT){
+                    _omme.notifyMUDCombat(new OMUD_MMUD_DataBlockCombat(_mmd.dataCombat));
+                    if (_mmd.dataCombat.exp_gained > 0){
+                        _mmd.dataCombat.exp_gained = 0;
+                        _omme.notifyMUDExp(new OMUD_MMUD_DataBlockExp(_mmd.dataExp));
                     }
                 }
-                else if (_mmc.ablk.data_type == OMUD_MMUD_DataBlock.eBlockType.INV)
-                    _omme.notifyMUDInv(new OMUD_MMUD_DataBlockInv(_mmc.dataInv));
-                else if (_mmc.ablk.data_type == OMUD_MMUD_DataBlock.eBlockType.EXP)
-                    _omme.notifyMUDExp(new OMUD_MMUD_DataBlockExp(_mmc.dataExp));
-                else if (_mmc.ablk.data_type == OMUD_MMUD_DataBlock.eBlockType.STATS)
-                    _omme.notifyMUDStats(new OMUD_MMUD_DataBlockStats(_mmc.dataStats), dStatline);
-                else if (_mmc.ablk.data_type == OMUD_MMUD_DataBlock.eBlockType.SHOP)
-                    _omme.notifyMUDShop(new OMUD_MMUD_DataBlockShop(_mmc.dataShop));
-                else if (_mmc.ablk.data_type == OMUD_MMUD_DataBlock.eBlockType.SPELLS)
-                    _omme.notifyMUDSpells(new OMUD_MMUD_DataBlockSpells(_mmc.dataSpells));
-                else if (_mmc.ablk.data_type == OMUD_MMUD_DataBlock.eBlockType.WHO)
-                    _omme.notifyMUDWho(new OMUD_MMUD_DataBlockWho(_mmc.dataWho));
-                if (_mmc.ablk.sbDebug.length() > 0)
-                    _omme.notifyMUDDebug(_mmc.ablk.sbDebug.toString());
+                else if (_mmd.ablk.data_type == OMUD_MMUD_DataBlock.eBlockType.INV)
+                    _omme.notifyMUDInv(new OMUD_MMUD_DataBlockInv(_mmd.dataInv));
+                else if (_mmd.ablk.data_type == OMUD_MMUD_DataBlock.eBlockType.EXP)
+                    _omme.notifyMUDExp(new OMUD_MMUD_DataBlockExp(_mmd.dataExp));
+                else if (_mmd.ablk.data_type == OMUD_MMUD_DataBlock.eBlockType.STATS)
+                    _omme.notifyMUDStats(new OMUD_MMUD_DataBlockStats(_mmd.dataStats), dStatline);
+                else if (_mmd.ablk.data_type == OMUD_MMUD_DataBlock.eBlockType.SHOP)
+                    _omme.notifyMUDShop(new OMUD_MMUD_DataBlockShop(_mmd.dataShop));
+                else if (_mmd.ablk.data_type == OMUD_MMUD_DataBlock.eBlockType.SPELLS)
+                    _omme.notifyMUDSpells(new OMUD_MMUD_DataBlockSpells(_mmd.dataSpells));
+                else if (_mmd.ablk.data_type == OMUD_MMUD_DataBlock.eBlockType.WHO)
+                    _omme.notifyMUDWho(new OMUD_MMUD_DataBlockWho(_mmd.dataWho));
+                if (_mmd.ablk.sbDebug.length() > 0)
+                    _omme.notifyMUDDebug(_mmd.ablk.sbDebug.toString());
 
                 // check if we need to get a room refresh (gets reset below)...
-                if (_mmc.ablk.refresh_room)
+                if (_mmd.ablk.refresh_room)
                     _omme.requestMUDData(OMUD_MMUD_DataBlock.eBlockType.ROOM);
 
                 // reset active block with statline forced as last data type...
-                _mmc.ablk = new OMUD_MMUD_Char.ActiveDataBlock(false, OMUD_MMUD_DataBlock.eBlockType.STATLINE);
+                _mmd.ablk = new OMUD_Char.ActiveDataBlock(false, OMUD_MMUD_DataBlock.eBlockType.STATLINE);
             }
 
             // ------------------
@@ -244,6 +244,6 @@ public class OMUD_MMUD_Parser {
             }
         }
 
-        return _eBBSLoc == OMUD.eBBSLocation.BBS ? true : !_mmc.ablk.statline_wait;
+        return _eBBSLoc == OMUD.eBBSLocation.BBS ? true : !_mmd.ablk.statline_wait;
     }
 }

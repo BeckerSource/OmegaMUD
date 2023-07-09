@@ -23,12 +23,12 @@ public class OMUD_MMUD_ParseBlockRoom extends OMUD_MMUD_ParseBlocks.ParseBlock{
         _arrlCmdText.add(new CmdText("search", 3)); // only "sea" is required
     }
 
-    public int findBlockData(OMUD_MMUD_Char mmc, StringBuilder sbTelnetData, int pos_offset){
+    public int findBlockData(OMUD_Char.MMUD_Data mmd, StringBuilder sbTelnetData, int pos_offset){
         int pos_data_found_start = -1;
 
         if ((pos_data_found_start = findData(sbTelnetData, pos_offset, true, true, MSTR_ROOM_NAME, "")) > -1){
-            mmc.ablk.data_type = OMUD_MMUD_DataBlock.eBlockType.ROOM;
-            mmc.dataRoom = new OMUD_MMUD_DataBlockRoom();
+            mmd.ablk.data_type = OMUD_MMUD_DataBlock.eBlockType.ROOM;
+            mmd.dataRoom = new OMUD_MMUD_DataBlockRoom();
             cleanData(_sbBlockData, true, true);
 
             int pos_left  = 0;
@@ -42,13 +42,13 @@ public class OMUD_MMUD_ParseBlockRoom extends OMUD_MMUD_ParseBlocks.ParseBlock{
                 // Optional: Light
                 // ------------------
                      if ((pos_right = _sbBlockData.indexOf(MSTR_LIGHT_DIM,      pos_left))  > -1)
-                    mmc.dataRoom.light = OMUD_MMUD_DataBlockRoom.eRoomLight.DIMLY_LIT;
+                    mmd.dataRoom.light = OMUD_MMUD_DataBlockRoom.eRoomLight.DIMLY_LIT;
                 else if ((pos_right = _sbBlockData.indexOf(MSTR_LIGHT_DARK,     pos_left))  > -1)
-                    mmc.dataRoom.light = OMUD_MMUD_DataBlockRoom.eRoomLight.VERY_DARK;
+                    mmd.dataRoom.light = OMUD_MMUD_DataBlockRoom.eRoomLight.VERY_DARK;
                 else if ((pos_right = _sbBlockData.indexOf(MSTR_LIGHT_BARELY,   pos_left))  > -1)
-                    mmc.dataRoom.light = OMUD_MMUD_DataBlockRoom.eRoomLight.BARELY_VIS;
+                    mmd.dataRoom.light = OMUD_MMUD_DataBlockRoom.eRoomLight.BARELY_VIS;
                 else if ((pos_right = _sbBlockData.indexOf(MSTR_LIGHT_BLACK,    pos_left))  > -1)
-                    mmc.dataRoom.light = OMUD_MMUD_DataBlockRoom.eRoomLight.PITCH_BLACK;
+                    mmd.dataRoom.light = OMUD_MMUD_DataBlockRoom.eRoomLight.PITCH_BLACK;
                 // if no light string, set right to the end...
                 if (pos_right == -1)
                      pos_right = _sbBlockData.length() - 1;
@@ -56,7 +56,7 @@ public class OMUD_MMUD_ParseBlockRoom extends OMUD_MMUD_ParseBlocks.ParseBlock{
                 else pos_right--;
 
                 // get exits here...
-                buildRoomExits(_sbBlockData.substring(pos_left + MSTR_OBVIOUS_EXITS.length(), pos_right + 1).trim(), mmc.dataRoom);
+                buildRoomExits(_sbBlockData.substring(pos_left + MSTR_OBVIOUS_EXITS.length(), pos_right + 1).trim(), mmd.dataRoom);
                 pos_right = pos_left - 1;
             } // else shouldn't happen
 
@@ -68,7 +68,7 @@ public class OMUD_MMUD_ParseBlockRoom extends OMUD_MMUD_ParseBlocks.ParseBlock{
                 (pos_left  = _sbBlockData.lastIndexOf(MSTR_ALSO_HERE_PRE, pos_right)) > -1){
                 ArrayList<String> arrlNew = new ArrayList<String>();
                 splitCommaListToArray(_sbBlockData.substring(pos_left + MSTR_ALSO_HERE_PRE.length(), pos_right).trim(), arrlNew);
-                buildUnits(arrlNew, mmc.dataRoom.arrlUnits);
+                buildUnits(arrlNew, mmd.dataRoom.arrlUnits);
                 pos_right = pos_left - 1;
             } else pos_right = pos_right_prev;
 
@@ -80,7 +80,7 @@ public class OMUD_MMUD_ParseBlockRoom extends OMUD_MMUD_ParseBlocks.ParseBlock{
                 (pos_left  = _sbBlockData.lastIndexOf(MSTR_YOU_NOTICE_PRE, pos_right)) > -1){
                 ArrayList<String> arrlNew = new ArrayList<String>();
                 splitCommaListToArray(_sbBlockData.substring(pos_left + MSTR_YOU_NOTICE_PRE.length(), pos_right).trim(), arrlNew);
-                buildItems(arrlNew, mmc.dataRoom.arrlItems, mmc.dataRoom.coins, null);
+                buildItems(arrlNew, mmd.dataRoom.arrlItems, mmd.dataRoom.coins, null);
                 pos_right = pos_left - 1;
             } else pos_right = pos_right_prev;
 
@@ -88,48 +88,48 @@ public class OMUD_MMUD_ParseBlockRoom extends OMUD_MMUD_ParseBlocks.ParseBlock{
             // Optional: Room Description
             // ------------------
             if ((pos_left = _sbBlockData.lastIndexOf(MSTR_ROOM_DESC, pos_right)) > -1){
-                mmc.dataRoom.desc = _sbBlockData.substring(pos_left + MSTR_ROOM_DESC.length(), pos_right + 1).trim();
+                mmd.dataRoom.desc = _sbBlockData.substring(pos_left + MSTR_ROOM_DESC.length(), pos_right + 1).trim();
                 pos_right = pos_left - 1;
             }
 
             // ------------------
             // Room Name
             // ------------------
-            if (!mmc.got_statline){
+            if (!mmd.got_statline){
                 StringBuilder sbWelcome = new StringBuilder(sbTelnetData.substring(0, pos_data_found_start));
                 cleanData(sbWelcome, false, true);
-                mmc.strWelcome = sbWelcome.toString().trim();
+                mmd.strWelcome = sbWelcome.toString().trim();
                 sbTelnetData.delete(0, pos_data_found_start);
                 pos_data_found_start = 0;
             // PREFIX: if room name is shown after a move command, it will have a white/black reset prefix...
             } else {
-                pos_data_found_start = checkPrefix("Room Name After Move", mmc.ablk.sbDebug, sbTelnetData, pos_data_found_start, MSTR_PREFIX_RESET_WHBL);
+                pos_data_found_start = checkPrefix("Room Name After Move", mmd.ablk.sbDebug, sbTelnetData, pos_data_found_start, MSTR_PREFIX_RESET_WHBL);
             }
 
-            mmc.dataRoom.name = _sbBlockData.substring(0, pos_right + 1).trim();
+            mmd.dataRoom.name = _sbBlockData.substring(0, pos_right + 1).trim();
             // create Megamud RoomID after the exit data is built above...
-            mmc.dataRoom.megaID =
-                OMUD_MEGA.getRoomNameHash(mmc.dataRoom.name) +
-                OMUD_MEGA.getRoomExitsCode(mmc.dataRoom.arrlExits);
+            mmd.dataRoom.megaID =
+                OMUD_MEGA.getRoomNameHash(mmd.dataRoom.name) +
+                OMUD_MEGA.getRoomExitsCode(mmd.dataRoom.arrlExits);
 
         // ------------------
         // Search: Found Items
         // ------------------
         } else if ((pos_data_found_start = findData(sbTelnetData, pos_offset, true, true, MSTR_SEARCH_PRE, MSTR_YOU_NOTICE_END)) > -1){
-            mmc.ablk.data_type = OMUD_MMUD_DataBlock.eBlockType.ROOM;
+            mmd.ablk.data_type = OMUD_MMUD_DataBlock.eBlockType.ROOM;
             cleanData(_sbBlockData, true, false);
 
             ArrayList<String> arrlNew = new ArrayList<String>();
             splitCommaListToArray(_sbBlockData.toString(), arrlNew);
             // special: reset coins -
             // coins and their full count are always shown on first search, so reset coins to avoid extra string processing...
-            buildItems(arrlNew, mmc.dataRoom.arrlItemsHidden, (mmc.dataRoom.coins_hidden = new OMUD_MMUD_DataCoins()), null);
+            buildItems(arrlNew, mmd.dataRoom.arrlItemsHidden, (mmd.dataRoom.coins_hidden = new OMUD_MMUD_DataCoins()), null);
 
         // ------------------
         // Search: No Items
         // ------------------
         } else if ((pos_data_found_start = findData(sbTelnetData, pos_offset, true, false, MSTR_SEARCH_NONE, "")) > -1){
-            mmc.ablk.sbDebug.append("[ROOM_SEARCH_NONE]\n");
+            mmd.ablk.sbDebug.append("[ROOM_SEARCH_NONE]\n");
         }
 
         return pos_data_found_start;

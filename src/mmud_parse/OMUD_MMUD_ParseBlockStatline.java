@@ -9,16 +9,16 @@ public class OMUD_MMUD_ParseBlockStatline extends OMUD_MMUD_ParseBlocks.ParseBlo
     public static String getCmdText(){return "";}
     public OMUD_MMUD_ParseBlockStatline(){}
 
-    public int findBlockData(OMUD_MMUD_Char mmc, StringBuilder sbTelnetData, int pos_offset){
+    public int findBlockData(OMUD_Char.MMUD_Data mmd, StringBuilder sbTelnetData, int pos_offset){
         int pos_data_found_start = -1;
 
         if ((pos_data_found_start = findData(sbTelnetData, sbTelnetData.length() - 1, false, true, MSTR_STATLINE_PRE, MSTR_STATLINE_END)) > -1){
 
             // PREFIX: statline after stats has an ANSI reset prefix...
-            pos_data_found_start = checkPrefix("Statline after Stats", mmc.ablk.sbDebug, sbTelnetData, pos_data_found_start, MSTR_PREFIX_RESET_WHBL);
+            pos_data_found_start = checkPrefix("Statline after Stats", mmd.ablk.sbDebug, sbTelnetData, pos_data_found_start, MSTR_PREFIX_RESET_WHBL);
 
             // default to active first...
-            mmc.dataStatline.rest_state = OMUD_MMUD_DataBlockStatline.eRestState.READY;
+            mmd.dataStatline.rest_state = OMUD_MMUD_DataBlockStatline.eRestState.READY;
 
             // ------------------
             // Statline: Resting/Meditation: MA/KAI Chars
@@ -28,10 +28,10 @@ public class OMUD_MMUD_ParseBlockStatline extends OMUD_MMUD_ParseBlocks.ParseBlo
                 int pos_rest_start = 0;
                 if ((pos_rest_start = sbTelnetData.indexOf(MSTR_STATLINE_MED, pos_data_found_start)) > -1){
                     sbTelnetData.delete(pos_rest_start, pos_rest_start + MSTR_STATLINE_MED.length());
-                    mmc.dataStatline.rest_state = OMUD_MMUD_DataBlockStatline.eRestState.MED;
+                    mmd.dataStatline.rest_state = OMUD_MMUD_DataBlockStatline.eRestState.MED;
                 } else if ((pos_rest_start = sbTelnetData.indexOf(MSTR_STATLINE_REST, pos_data_found_start)) > -1){
                     sbTelnetData.delete(pos_rest_start, pos_rest_start + MSTR_STATLINE_REST.length());
-                    mmc.dataStatline.rest_state = OMUD_MMUD_DataBlockStatline.eRestState.REST;
+                    mmd.dataStatline.rest_state = OMUD_MMUD_DataBlockStatline.eRestState.REST;
                 }
             }
 
@@ -39,15 +39,15 @@ public class OMUD_MMUD_ParseBlockStatline extends OMUD_MMUD_ParseBlocks.ParseBlo
             // Statline: Resting/Meditation: Non-MA/KAI Chars
             // ------------------
             // Non-MA/KAI chars: if not found above, try inside of the statline...
-            if (mmc.dataStatline.rest_state == OMUD_MMUD_DataBlockStatline.eRestState.READY){
+            if (mmd.dataStatline.rest_state == OMUD_MMUD_DataBlockStatline.eRestState.READY){
                 int pos_rest_start = 0;
                 if ((pos_rest_start = _sbBlockData.indexOf(MSTR_STATLINE_REST, 0)) > -1){
                     _sbBlockData.delete(pos_rest_start, pos_rest_start + MSTR_STATLINE_REST.length());
-                    mmc.dataStatline.rest_state = OMUD_MMUD_DataBlockStatline.eRestState.REST;
+                    mmd.dataStatline.rest_state = OMUD_MMUD_DataBlockStatline.eRestState.REST;
                 // not sure if non-MA/KAI chars would ever use meditate?
                 } else if ((pos_rest_start = _sbBlockData.indexOf(MSTR_STATLINE_MED, 0)) > -1){
                     _sbBlockData.delete(pos_rest_start, pos_rest_start + MSTR_STATLINE_MED.length());
-                    mmc.dataStatline.rest_state = OMUD_MMUD_DataBlockStatline.eRestState.MED;
+                    mmd.dataStatline.rest_state = OMUD_MMUD_DataBlockStatline.eRestState.MED;
                 }
             }
 
@@ -59,15 +59,15 @@ public class OMUD_MMUD_ParseBlockStatline extends OMUD_MMUD_ParseBlocks.ParseBlo
             int pos_hp_end  = 0;
             if ((pos_hp_end = _sbBlockData.indexOf("/", pos_equals)) > -1 &&
                 (pos_equals = _sbBlockData.indexOf("=", pos_hp_end)) > -1){
-                if (mmc.dataStatline.ma_str.length() == 0) // only get the mana string once for efficiency
-                    mmc.dataStatline.ma_str = _sbBlockData.substring(pos_hp_end + 1, pos_equals);
-                mmc.dataStatline.ma_cur = Integer.parseInt(_sbBlockData.substring(++pos_equals, _sbBlockData.length()));
+                if (mmd.dataStatline.ma_str.length() == 0) // only get the mana string once for efficiency
+                    mmd.dataStatline.ma_str = _sbBlockData.substring(pos_hp_end + 1, pos_equals);
+                mmd.dataStatline.ma_cur = Integer.parseInt(_sbBlockData.substring(++pos_equals, _sbBlockData.length()));
             } else pos_hp_end = _sbBlockData.length();
             // get hp...
             if ((pos_equals = _sbBlockData.indexOf("=", 0)) > -1){
-                if (mmc.dataStatline.hp_str.length() == 0)
-                    mmc.dataStatline.hp_str = _sbBlockData.substring(0, pos_equals);
-                mmc.dataStatline.hp_cur = Integer.parseInt(_sbBlockData.substring(pos_equals + 1, pos_hp_end));
+                if (mmd.dataStatline.hp_str.length() == 0)
+                    mmd.dataStatline.hp_str = _sbBlockData.substring(0, pos_equals);
+                mmd.dataStatline.hp_cur = Integer.parseInt(_sbBlockData.substring(pos_equals + 1, pos_hp_end));
             }
 
             // ------------------

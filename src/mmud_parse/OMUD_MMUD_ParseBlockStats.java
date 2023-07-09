@@ -31,16 +31,16 @@ public class OMUD_MMUD_ParseBlockStats extends OMUD_MMUD_ParseBlocks.ParseBlock{
         _arrlCmdText.add(new CmdText("stat", 2));
     }
 
-    public int findBlockData(OMUD_MMUD_Char mmc, StringBuilder sbTelnetData, int pos_offset){
+    public int findBlockData(OMUD_Char.MMUD_Data mmd, StringBuilder sbTelnetData, int pos_offset){
         int pos_data_found_start = -1;
 
         if ((pos_data_found_start = findData(sbTelnetData, pos_offset, true, true, MSTR_NAME, "")) > -1){
-            mmc.ablk.data_type = OMUD_MMUD_DataBlock.eBlockType.STATS;
-            mmc.dataStats = new OMUD_MMUD_DataBlockStats();
+            mmd.ablk.data_type = OMUD_MMUD_DataBlock.eBlockType.STATS;
+            mmd.dataStats = new OMUD_MMUD_DataBlockStats();
             cleanData(_sbBlockData, false, true);
 
             // PREFIX: normal stat command has a prefix, coming from a new char creation does not...
-            pos_data_found_start = checkPrefix("Stats from User Cmd and not New Char", mmc.ablk.sbDebug, sbTelnetData, pos_data_found_start, MSTR_PREFIX_RESET_WHBL);
+            pos_data_found_start = checkPrefix("Stats from User Cmd and not New Char", mmd.ablk.sbDebug, sbTelnetData, pos_data_found_start, MSTR_PREFIX_RESET_WHBL);
 
             // split by lines...
             String[] lines = _sbBlockData.toString().split("\n");
@@ -57,17 +57,17 @@ public class OMUD_MMUD_ParseBlockStats extends OMUD_MMUD_ParseBlocks.ParseBlock{
                     // get lives/cp...
                     String[] tokens = lines[row_num].substring(pos_left + MSTR_LIVES.length(), pos_right + 1).trim().split("/");
                     if (tokens.length == 2){
-                        mmc.dataStats.lives = Integer.parseInt(tokens[0]);
-                        mmc.dataStats.cp =    Integer.parseInt(tokens[1]);
+                        mmd.dataStats.lives = Integer.parseInt(tokens[0]);
+                        mmd.dataStats.cp =    Integer.parseInt(tokens[1]);
                     }
                     pos_right = pos_left - 1;
 
                     // found a last name if split...
-                    mmc.dataStats.name_first = lines[row_num].substring(0, pos_right + 1).trim();
-                    tokens = mmc.dataStats.name_first.split(" ");
+                    mmd.dataStats.name_first = lines[row_num].substring(0, pos_right + 1).trim();
+                    tokens = mmd.dataStats.name_first.split(" ");
                     if (tokens.length == 2){
-                        mmc.dataStats.name_first = tokens[0];
-                        mmc.dataStats.name_last  = tokens[1];
+                        mmd.dataStats.name_first = tokens[0];
+                        mmd.dataStats.name_last  = tokens[1];
                     }
                 }
 
@@ -76,7 +76,7 @@ public class OMUD_MMUD_ParseBlockStats extends OMUD_MMUD_ParseBlocks.ParseBlock{
                 // ------------------
                 pos_right = lines[++row_num].length() - 1;
                 if ((pos_left = lines[row_num].lastIndexOf(MSTR_PERC, pos_right)) > -1){
-                    mmc.dataStats.perc = Integer.parseInt(lines[row_num].substring(pos_left + MSTR_PERC.length(), pos_right + 1).trim());
+                    mmd.dataStats.perc = Integer.parseInt(lines[row_num].substring(pos_left + MSTR_PERC.length(), pos_right + 1).trim());
                     pos_right = pos_left - 1;
 
                     if ((pos_left = lines[row_num].lastIndexOf(MSTR_EXP, pos_right)) > -1){
@@ -84,7 +84,7 @@ public class OMUD_MMUD_ParseBlockStats extends OMUD_MMUD_ParseBlocks.ParseBlock{
                         pos_right = pos_left - 1;
 
                         if ((pos_left = lines[row_num].lastIndexOf(MSTR_RACE, pos_right)) > -1){
-                            mmc.dataStats.stats_race = lines[row_num].substring(pos_left + MSTR_RACE.length(), pos_right + 1).trim();
+                            mmd.dataStats.stats_race = lines[row_num].substring(pos_left + MSTR_RACE.length(), pos_right + 1).trim();
                             pos_right = pos_left - 1;
                         }
                     }
@@ -95,15 +95,15 @@ public class OMUD_MMUD_ParseBlockStats extends OMUD_MMUD_ParseBlocks.ParseBlock{
                 // ------------------
                 pos_right = lines[++row_num].length() - 1;
                 if ((pos_left = lines[row_num].lastIndexOf(MSTR_STEALTH, pos_right)) > -1){
-                    mmc.dataStats.stealth = Integer.parseInt(lines[row_num].substring(pos_left + MSTR_STEALTH.length(), pos_right + 1).trim());
+                    mmd.dataStats.stealth = Integer.parseInt(lines[row_num].substring(pos_left + MSTR_STEALTH.length(), pos_right + 1).trim());
                     pos_right = pos_left - 1;
 
                     if ((pos_left = lines[row_num].lastIndexOf(MSTR_LEVEL, pos_right)) > -1){
-                        mmc.dataStats.level = Integer.parseInt(lines[row_num].substring(pos_left + MSTR_LEVEL.length(), pos_right + 1).trim());
+                        mmd.dataStats.level = Integer.parseInt(lines[row_num].substring(pos_left + MSTR_LEVEL.length(), pos_right + 1).trim());
                         pos_right = pos_left - 1;
 
                         if ((pos_left = lines[row_num].lastIndexOf(MSTR_CLASS, pos_right)) > -1){
-                            mmc.dataStats.stats_class = lines[row_num].substring(pos_left + MSTR_CLASS.length(), pos_right + 1).trim();
+                            mmd.dataStats.stats_class = lines[row_num].substring(pos_left + MSTR_CLASS.length(), pos_right + 1).trim();
                             pos_right = pos_left - 1;
                         }
                     }
@@ -114,25 +114,25 @@ public class OMUD_MMUD_ParseBlockStats extends OMUD_MMUD_ParseBlocks.ParseBlock{
                 // ------------------
                 pos_right = lines[++row_num].length() - 1;
                 if ((pos_left = lines[row_num].lastIndexOf(MSTR_THIEVERY, pos_right)) > -1){
-                    mmc.dataStats.thievery = Integer.parseInt(lines[row_num].substring(pos_left + MSTR_THIEVERY.length(), pos_right + 1).trim());
+                    mmd.dataStats.thievery = Integer.parseInt(lines[row_num].substring(pos_left + MSTR_THIEVERY.length(), pos_right + 1).trim());
                     pos_right = pos_left - 1;
 
                     if ((pos_left = lines[row_num].lastIndexOf(MSTR_AC, pos_right)) > -1){
                         String[] tokens = lines[row_num].substring(pos_left + MSTR_AC.length(), pos_right + 1).trim().split("/");
                         if (tokens.length == 2){
-                            mmc.dataStats.ac_ac =   Integer.parseInt(tokens[0]);
-                            mmc.dataStats.ac_accy = Integer.parseInt(tokens[1]);
+                            mmd.dataStats.ac_ac =   Integer.parseInt(tokens[0]);
+                            mmd.dataStats.ac_accy = Integer.parseInt(tokens[1]);
                         }
                         pos_right = pos_left - 1;
 
                         if ((pos_left = lines[row_num].lastIndexOf(MSTR_HITS, pos_right)) > -1){
                             // check for modifier...
                             StringBuilder sbVal = new StringBuilder();
-                            mmc.dataStatline.hp_mod = parseModdedStat(lines[row_num].substring(pos_left + MSTR_HITS.length(), pos_right + 1).trim(), sbVal);
+                            mmd.dataStatline.hp_mod = parseModdedStat(lines[row_num].substring(pos_left + MSTR_HITS.length(), pos_right + 1).trim(), sbVal);
                             tokens = sbVal.toString().split("/");
                             if (tokens.length == 2){
-                                mmc.dataStatline.hp_cur = Integer.parseInt(tokens[0]);
-                                mmc.dataStatline.hp_max = Integer.parseInt(tokens[1]);
+                                mmd.dataStatline.hp_cur = Integer.parseInt(tokens[0]);
+                                mmd.dataStatline.hp_max = Integer.parseInt(tokens[1]);
                             }
                             pos_right = pos_left - 1;
                         }
@@ -144,22 +144,22 @@ public class OMUD_MMUD_ParseBlockStats extends OMUD_MMUD_ParseBlocks.ParseBlock{
                 // ------------------
                 pos_right = lines[++row_num].length() - 1;
                 if ((pos_left = lines[row_num].lastIndexOf(MSTR_TRAPS, pos_right)) > -1){
-                    mmc.dataStats.traps = Integer.parseInt(lines[row_num].substring(pos_left + MSTR_TRAPS.length(), pos_right + 1).trim());
+                    mmd.dataStats.traps = Integer.parseInt(lines[row_num].substring(pos_left + MSTR_TRAPS.length(), pos_right + 1).trim());
                     pos_right = pos_left - 1;
 
                     if ((pos_left = lines[row_num].lastIndexOf(MSTR_SC, pos_right)) > -1){
-                        mmc.dataStats.sc = Integer.parseInt(lines[row_num].substring(pos_left + MSTR_SC.length(), pos_right + 1).trim());
+                        mmd.dataStats.sc = Integer.parseInt(lines[row_num].substring(pos_left + MSTR_SC.length(), pos_right + 1).trim());
                         pos_right = pos_left - 1;
                     }
 
                     if ((pos_left = lines[row_num].lastIndexOf(":", pos_right)) > -1){
                         // check for modifier...
                         StringBuilder sbVal = new StringBuilder();
-                        mmc.dataStatline.ma_mod = parseModdedStat(lines[row_num].substring(pos_left + 1, pos_right + 1).trim(), sbVal);
+                        mmd.dataStatline.ma_mod = parseModdedStat(lines[row_num].substring(pos_left + 1, pos_right + 1).trim(), sbVal);
                         String[] tokens = sbVal.toString().split("/");
                         if (tokens.length == 2){
-                            mmc.dataStatline.ma_cur = Integer.parseInt(tokens[0]);
-                            mmc.dataStatline.ma_max = Integer.parseInt(tokens[1]);
+                            mmd.dataStatline.ma_cur = Integer.parseInt(tokens[0]);
+                            mmd.dataStatline.ma_max = Integer.parseInt(tokens[1]);
                         }
                         pos_right = pos_left - 1;
                     }
@@ -170,7 +170,7 @@ public class OMUD_MMUD_ParseBlockStats extends OMUD_MMUD_ParseBlocks.ParseBlock{
                 // ------------------
                 pos_right = lines[++row_num].length() - 1;
                 if ((pos_left = lines[row_num].lastIndexOf(MSTR_PICK, pos_right)) > -1){
-                    mmc.dataStats.pick = Integer.parseInt(lines[row_num].substring(pos_left + MSTR_PICK.length(), pos_right + 1).trim());
+                    mmd.dataStats.pick = Integer.parseInt(lines[row_num].substring(pos_left + MSTR_PICK.length(), pos_right + 1).trim());
                     pos_right = pos_left - 1;
                 }
 
@@ -179,18 +179,18 @@ public class OMUD_MMUD_ParseBlockStats extends OMUD_MMUD_ParseBlocks.ParseBlock{
                 // ------------------
                 pos_right = lines[++row_num].length() - 1;
                 if ((pos_left = lines[row_num].lastIndexOf(MSTR_TRACK, pos_right)) > -1){
-                    mmc.dataStats.track = Integer.parseInt(lines[row_num].substring(pos_left + MSTR_TRACK.length(), pos_right + 1).trim());
+                    mmd.dataStats.track = Integer.parseInt(lines[row_num].substring(pos_left + MSTR_TRACK.length(), pos_right + 1).trim());
                     pos_right = pos_left - 1;
 
                     if ((pos_left = lines[row_num].lastIndexOf(MSTR_AGI, pos_right)) > -1){
                         StringBuilder sbVal = new StringBuilder();
-                        mmc.dataStats.agi_mod = parseModdedStat(lines[row_num].substring(pos_left + MSTR_AGI.length(), pos_right + 1).trim(), sbVal);
-                        mmc.dataStats.agi = Integer.parseInt(sbVal.toString());
+                        mmd.dataStats.agi_mod = parseModdedStat(lines[row_num].substring(pos_left + MSTR_AGI.length(), pos_right + 1).trim(), sbVal);
+                        mmd.dataStats.agi = Integer.parseInt(sbVal.toString());
                         pos_right = pos_left - 1;
 
                         if ((pos_left = lines[row_num].lastIndexOf(MSTR_STR, pos_right)) > -1){
-                            mmc.dataStats.str_mod = parseModdedStat(lines[row_num].substring(pos_left + MSTR_STR.length(), pos_right + 1).trim(), sbVal);
-                            mmc.dataStats.str = Integer.parseInt(sbVal.toString());
+                            mmd.dataStats.str_mod = parseModdedStat(lines[row_num].substring(pos_left + MSTR_STR.length(), pos_right + 1).trim(), sbVal);
+                            mmd.dataStats.str = Integer.parseInt(sbVal.toString());
                             pos_right = pos_left - 1;
                         }
                     }
@@ -201,18 +201,18 @@ public class OMUD_MMUD_ParseBlockStats extends OMUD_MMUD_ParseBlocks.ParseBlock{
                 // ------------------
                 pos_right = lines[++row_num].length() - 1;
                 if ((pos_left = lines[row_num].lastIndexOf(MSTR_MA, pos_right)) > -1){
-                    mmc.dataStats.ma = Integer.parseInt(lines[row_num].substring(pos_left + MSTR_MA.length(), pos_right + 1).trim());
+                    mmd.dataStats.ma = Integer.parseInt(lines[row_num].substring(pos_left + MSTR_MA.length(), pos_right + 1).trim());
                     pos_right = pos_left - 1;
 
                     if ((pos_left = lines[row_num].lastIndexOf(MSTR_HEA, pos_right)) > -1){
                         StringBuilder sbVal = new StringBuilder();
-                        mmc.dataStats.hea_mod = parseModdedStat(lines[row_num].substring(pos_left + MSTR_HEA.length(), pos_right + 1).trim(), sbVal);
-                        mmc.dataStats.hea = Integer.parseInt(sbVal.toString());
+                        mmd.dataStats.hea_mod = parseModdedStat(lines[row_num].substring(pos_left + MSTR_HEA.length(), pos_right + 1).trim(), sbVal);
+                        mmd.dataStats.hea = Integer.parseInt(sbVal.toString());
                         pos_right = pos_left - 1;
 
                         if ((pos_left = lines[row_num].lastIndexOf(MSTR_INTEL, pos_right)) > -1){
-                            mmc.dataStats.intel_mod = parseModdedStat(lines[row_num].substring(pos_left + MSTR_INTEL.length(), pos_right + 1).trim(), sbVal);
-                            mmc.dataStats.intel = Integer.parseInt(sbVal.toString());
+                            mmd.dataStats.intel_mod = parseModdedStat(lines[row_num].substring(pos_left + MSTR_INTEL.length(), pos_right + 1).trim(), sbVal);
+                            mmd.dataStats.intel = Integer.parseInt(sbVal.toString());
                             pos_right = pos_left - 1;
                         }
                     }
@@ -223,18 +223,18 @@ public class OMUD_MMUD_ParseBlockStats extends OMUD_MMUD_ParseBlocks.ParseBlock{
                 // ------------------
                 pos_right = lines[++row_num].length() - 1;
                 if ((pos_left = lines[row_num].lastIndexOf(MSTR_MR, pos_right)) > -1){
-                    mmc.dataStats.mr = Integer.parseInt(lines[row_num].substring(pos_left + MSTR_MR.length(), pos_right + 1).trim());
+                    mmd.dataStats.mr = Integer.parseInt(lines[row_num].substring(pos_left + MSTR_MR.length(), pos_right + 1).trim());
                     pos_right = pos_left - 1;
 
                     if ((pos_left = lines[row_num].lastIndexOf(MSTR_CHA, pos_right)) > -1){
                         StringBuilder sbVal = new StringBuilder();
-                        mmc.dataStats.cha_mod = parseModdedStat(lines[row_num].substring(pos_left + MSTR_CHA.length(), pos_right + 1).trim(), sbVal);
-                        mmc.dataStats.cha = Integer.parseInt(sbVal.toString());
+                        mmd.dataStats.cha_mod = parseModdedStat(lines[row_num].substring(pos_left + MSTR_CHA.length(), pos_right + 1).trim(), sbVal);
+                        mmd.dataStats.cha = Integer.parseInt(sbVal.toString());
                         pos_right = pos_left - 1;
 
                         if ((pos_left = lines[row_num].lastIndexOf(MSTR_WIL, pos_right)) > -1){
-                            mmc.dataStats.wil_mod = parseModdedStat(lines[row_num].substring(pos_left + MSTR_WIL.length(), pos_right + 1).trim(), sbVal);
-                            mmc.dataStats.wil = Integer.parseInt(sbVal.toString());
+                            mmd.dataStats.wil_mod = parseModdedStat(lines[row_num].substring(pos_left + MSTR_WIL.length(), pos_right + 1).trim(), sbVal);
+                            mmd.dataStats.wil = Integer.parseInt(sbVal.toString());
                             pos_right = pos_left - 1;
                         }
                     }

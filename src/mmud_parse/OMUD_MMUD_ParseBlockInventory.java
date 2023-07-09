@@ -20,12 +20,12 @@ public class OMUD_MMUD_ParseBlockInventory extends OMUD_MMUD_ParseBlocks.ParseBl
         _arrlCmdText.add(new CmdText("inventory", 4)); // "inve" is min ("in" and "inv" conflict with "invite" so are ignored in mud)
     }
 
-    public int findBlockData(OMUD_MMUD_Char mmc, StringBuilder sbTelnetData, int pos_offset){
+    public int findBlockData(OMUD_Char.MMUD_Data mmd, StringBuilder sbTelnetData, int pos_offset){
         int pos_data_found_start = -1;
 
         if ((pos_data_found_start = findData(sbTelnetData, pos_offset, true, true, MSTR_INV_PRE, MSTR_INV_END)) > -1){
-            mmc.ablk.data_type = OMUD_MMUD_DataBlock.eBlockType.INV;
-            mmc.dataInv = new OMUD_MMUD_DataBlockInv();            
+            mmd.ablk.data_type = OMUD_MMUD_DataBlock.eBlockType.INV;
+            mmd.dataInv = new OMUD_MMUD_DataBlockInv();            
             cleanData(_sbBlockData, true, true);
 
             int pos_left =  0;
@@ -36,14 +36,14 @@ public class OMUD_MMUD_ParseBlockInventory extends OMUD_MMUD_ParseBlocks.ParseBl
             // ------------------
             if ((pos_right = _sbBlockData.lastIndexOf(MSTR_ENC_END, pos_right)) > -1 &&
                 (pos_left  = _sbBlockData.lastIndexOf(MSTR_ENC_MID, pos_right)) > -1){
-                mmc.dataInv.enc_level = _sbBlockData.substring(pos_left + MSTR_ENC_MID.length(), pos_right).trim().toLowerCase();
+                mmd.dataInv.enc_level = _sbBlockData.substring(pos_left + MSTR_ENC_MID.length(), pos_right).trim().toLowerCase();
                 pos_right = pos_left - 1;
 
                 if ((pos_left = _sbBlockData.lastIndexOf(MSTR_ENC_PRE, pos_right)) > -1){
                     String[] tokens = _sbBlockData.substring(pos_left + MSTR_ENC_PRE.length(), pos_right + 1).trim().split("/");
                     if (tokens.length == 2){
-                        mmc.dataInv.enc_cur = Integer.parseInt(tokens[0]);
-                        mmc.dataInv.enc_max = Integer.parseInt(tokens[1]);
+                        mmd.dataInv.enc_cur = Integer.parseInt(tokens[0]);
+                        mmd.dataInv.enc_max = Integer.parseInt(tokens[1]);
                     }
                     pos_right = pos_left - 1;
                 }
@@ -54,7 +54,7 @@ public class OMUD_MMUD_ParseBlockInventory extends OMUD_MMUD_ParseBlocks.ParseBl
             // ------------------
             if ((pos_right = _sbBlockData.lastIndexOf(MSTR_WEALTH_END, pos_right)) > -1 &&
                 (pos_left  = _sbBlockData.lastIndexOf(MSTR_WEALTH_PRE, pos_right)) > -1){
-                mmc.dataInv.wealth = Integer.parseInt(_sbBlockData.substring(pos_left + MSTR_WEALTH_PRE.length(), pos_right).trim());
+                mmd.dataInv.wealth = Integer.parseInt(_sbBlockData.substring(pos_left + MSTR_WEALTH_PRE.length(), pos_right).trim());
                 pos_right = pos_left - 1;
             }
 
@@ -68,8 +68,8 @@ public class OMUD_MMUD_ParseBlockInventory extends OMUD_MMUD_ParseBlocks.ParseBl
                     ArrayList<String> arrlKeys = new ArrayList<String>();
                     splitCommaListToArray(strKeys, arrlKeys);
                     for (int i = 0; i < arrlKeys.size(); ++i)
-                        mmc.dataInv.arrlKeys.add(new OMUD_MMUD_DataItem(arrlKeys.get(i)));
-                } //else mmc.dataInv.keys_str = "(no keys carried)";
+                        mmd.dataInv.arrlKeys.add(new OMUD_MMUD_DataItem(arrlKeys.get(i)));
+                } //else mmd.dataInv.keys_str = "(no keys carried)";
                 pos_right = pos_left - 1;
             }
 
@@ -81,8 +81,8 @@ public class OMUD_MMUD_ParseBlockInventory extends OMUD_MMUD_ParseBlocks.ParseBl
             if (!strItems.equals(MSTR_NO_ITEMS)){
                 ArrayList<String> arrlNew = new ArrayList<String>();
                 splitCommaListToArray(strItems, arrlNew);
-                buildItems(arrlNew, mmc.dataInv.arrlItems, mmc.dataInv.coins, mmc.dataInv.arrlWorn);
-            } // else mmc.dataInv.items_str = "(no items carried)";
+                buildItems(arrlNew, mmd.dataInv.arrlItems, mmd.dataInv.coins, mmd.dataInv.arrlWorn);
+            } // else mmd.dataInv.items_str = "(no items carried)";
         }
 
         return pos_data_found_start;

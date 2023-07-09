@@ -34,7 +34,7 @@ public class OMUD_MMUD_ParseBlocks{
             return strFoundCmdFull;
         }
 
-        public abstract int findBlockData(OMUD_MMUD_Char mmc, StringBuilder sbTelnetData, int pos_offset);
+        public abstract int findBlockData(OMUD_Char.MMUD_Data mmd, StringBuilder sbTelnetData, int pos_offset);
         protected int findData(StringBuilder sbTelnetData, int pos_offset, boolean offset_is_lf, boolean has_dynamic_text, String strStartSeq, String strEndSeq){
             int pos_endseq_left =    -1;
             int pos_endseq_right =   -1;
@@ -261,20 +261,20 @@ public class OMUD_MMUD_ParseBlocks{
         _blkBBSMenu = new OMUD_MMUD_ParseBlockBBSMenu();
     }
 
-    public int parseStatline(OMUD_MMUD_Char mmc, StringBuilder sbTelnetData){
-        int pos_data_found_start = _arrlBlocks.get(BPOS_STATLINE).findBlockData(mmc, sbTelnetData, 0);
+    public int parseStatline(OMUD_Char.MMUD_Data mmd, StringBuilder sbTelnetData){
+        int pos_data_found_start = _arrlBlocks.get(BPOS_STATLINE).findBlockData(mmd, sbTelnetData, 0);
         if (pos_data_found_start > -1 && sbTelnetData.length() > 0){
 
             int pos_cmd_data_found_start = -1;
 
             // check all blocks if active is unset/statline...
-            if (mmc.ablk.block_pos < BPOS_CMDS_START){
+            if (mmd.ablk.block_pos < BPOS_CMDS_START){
                 for (int i = BPOS_CMDS_START; i <= _bpos_cmd_editor && pos_cmd_data_found_start == -1; ++i)
-                    if ((pos_cmd_data_found_start = _arrlBlocks.get(i).findBlockData(mmc, sbTelnetData, pos_data_found_start)) > -1)
-                        mmc.ablk.update(i, "", _arrlBlocks.get(i).getStatlineWait());
+                    if ((pos_cmd_data_found_start = _arrlBlocks.get(i).findBlockData(mmd, sbTelnetData, pos_data_found_start)) > -1)
+                        mmd.ablk.update(i, "", _arrlBlocks.get(i).getStatlineWait());
             // else parse the active block...
             } else {
-                pos_cmd_data_found_start = _arrlBlocks.get(mmc.ablk.block_pos).findBlockData(mmc, sbTelnetData, pos_data_found_start);
+                pos_cmd_data_found_start = _arrlBlocks.get(mmd.ablk.block_pos).findBlockData(mmd, sbTelnetData, pos_data_found_start);
             }
 
             if (pos_cmd_data_found_start > -1)
@@ -284,20 +284,20 @@ public class OMUD_MMUD_ParseBlocks{
         return pos_data_found_start;
     }
 
-    public int parseLineBlocks(OMUD_MMUD_Char mmc, StringBuilder sbTelnetData, int pos_offset){
+    public int parseLineBlocks(OMUD_Char.MMUD_Data mmd, StringBuilder sbTelnetData, int pos_offset){
         int pos_data_found_start = -1;
         for (int i = _bpos_cmd_editor + 1; i < _arrlBlocks.size() && pos_data_found_start == -1; ++i)
-            pos_data_found_start = _arrlBlocks.get(i).findBlockData(mmc, sbTelnetData, pos_offset);
+            pos_data_found_start = _arrlBlocks.get(i).findBlockData(mmd, sbTelnetData, pos_offset);
         return pos_data_found_start;
     }
 
-    public int parseBBSMenu(OMUD_MMUD_Char mmc, StringBuilder sbTelnetData){
-        return _blkBBSMenu.findBlockData(mmc, sbTelnetData, 0);
+    public int parseBBSMenu(OMUD_Char.MMUD_Data mmd, StringBuilder sbTelnetData){
+        return _blkBBSMenu.findBlockData(mmd, sbTelnetData, 0);
     }
 
     // findCmd(): main external call to match a user-input command (assumes passed in as lower-case)
     // returns true if at an in-game menu/editor (train stats, etc.)
-    public boolean findCmd(String strCmd, OMUD_MMUD_Char.ActiveDataBlock ablk){
+    public boolean findCmd(String strCmd, OMUD_Char.ActiveDataBlock ablk){
         String strFoundCmdFull = null;
         for (int i = BPOS_CMDS_START; i <= _bpos_cmd_editor && strFoundCmdFull == null; ++i)
             if ((strFoundCmdFull = _arrlBlocks.get(i).matchCmdText(strCmd)) != null)

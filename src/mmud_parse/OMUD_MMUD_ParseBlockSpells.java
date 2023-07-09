@@ -10,13 +10,13 @@ public class OMUD_MMUD_ParseBlockSpells extends OMUD_MMUD_ParseBlocks.ParseBlock
         _arrlCmdText.add(new CmdText("powers", 2));
     }
 
-    public int findBlockData(OMUD_MMUD_Char mmc, StringBuilder sbTelnetData, int pos_offset){
+    public int findBlockData(OMUD_Char.MMUD_Data mmd, StringBuilder sbTelnetData, int pos_offset){
         int pos_data_found_start = -1;
 
         if ((pos_data_found_start = findData(sbTelnetData, pos_offset, true, true, MSTR_SPELLS, "")) > -1 ||
             (pos_data_found_start = findData(sbTelnetData, pos_offset, true, true, MSTR_POWERS, "")) > -1){
-            mmc.ablk.data_type = OMUD_MMUD_DataBlock.eBlockType.SPELLS;
-            mmc.dataSpells = new OMUD_MMUD_DataBlockSpells();
+            mmd.ablk.data_type = OMUD_MMUD_DataBlock.eBlockType.SPELLS;
+            mmd.dataSpells = new OMUD_MMUD_DataBlockSpells();
 
             int pos_left =  -1;
             int pos_right = -1;
@@ -44,7 +44,7 @@ public class OMUD_MMUD_ParseBlockSpells extends OMUD_MMUD_ParseBlocks.ParseBlock
                         sb.append(tokens[i] + (i + 1 < tokens.length ? " " : ""));
                     spell.name_long = sb.toString();
 
-                    mmc.dataSpells.spells.add(spell);
+                    mmd.dataSpells.spells.add(spell);
                 }
             }
         }
