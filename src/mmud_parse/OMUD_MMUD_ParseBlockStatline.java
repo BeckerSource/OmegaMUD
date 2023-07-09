@@ -5,7 +5,8 @@ public class OMUD_MMUD_ParseBlockStatline extends OMUD_MMUD_ParseBlocks.ParseBlo
     private final String MSTR_STATLINE_REST =       " (Resting) ";
     private final String MSTR_STATLINE_MED =        " (Meditating) ";
 
-    public boolean getStatlineWait(){return false;}
+    public boolean getStatlineWait() {return false;}
+    public static String getCmdText(){return "";}
     public OMUD_MMUD_ParseBlockStatline(){}
 
     public int findBlockData(OMUD_MMUD_Char mmc, StringBuilder sbTelnetData, int pos_offset){

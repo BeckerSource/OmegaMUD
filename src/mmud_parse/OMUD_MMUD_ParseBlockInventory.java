@@ -13,9 +13,10 @@ public class OMUD_MMUD_ParseBlockInventory extends OMUD_MMUD_ParseBlocks.ParseBl
     private final String MSTR_ENC_MID =     " - ";
     private final String MSTR_ENC_END =     "[";
 
-    public boolean getStatlineWait(){return true;}
+    public boolean getStatlineWait() {return true;}
+    public static String getCmdText(){return "i\n";}
     public OMUD_MMUD_ParseBlockInventory(){
-        _arrlCmdText.add(new CmdText(OMUD_MMUD_DataBlock.CMD_STRINGS[OMUD_MMUD_DataBlock.eBlockType.INV.ordinal()], 1));
+        _arrlCmdText.add(new CmdText("i", 1));
         _arrlCmdText.add(new CmdText("inventory", 4)); // "inve" is min ("in" and "inv" conflict with "invite" so are ignored in mud)
     }
 

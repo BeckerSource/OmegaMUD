@@ -2,7 +2,7 @@ import java.util.ArrayList;
 
 interface OMUD_IMUDEvents{
     public void requestMUDData(OMUD_MMUD_DataBlock.eBlockType block_type);
-    public void notifyMUDInit(final String strWelcome, final String strSpellsCmd);
+    public void notifyMUDInit(final String strWelcome);
     public void notifyMUDUnknown(final String strText);
     public void notifyMUDDebug(final String strDebugText);
     public void notifyMUDUserCmd(final String strText);
@@ -30,15 +30,16 @@ public class OMUD_MMUD_Parser {
     private StringBuilder       _sbDataTelnet = null;
     private static OMUD_MMUD_ParseBlocks _s_blocks = new OMUD_MMUD_ParseBlocks();
 
-    public OMUD_MMUD_Parser(OMUD_IMUDEvents omme){
+    public OMUD_MMUD_Parser(OMUD_IMUDEvents omme, OMUD_MMUD_Char mmc){
         _omme = omme;
+        _mmc =  mmc;
         _sbDataTelnet = new StringBuilder();
-        resetData(OMUD.eBBSLocation.BBS);
+        reset(OMUD.eBBSLocation.BBS);
     }
 
-    private void resetData(OMUD.eBBSLocation eBBSLoc){
+    private void reset(OMUD.eBBSLocation eBBSLoc){
         _eBBSLoc = eBBSLoc;
-        _mmc = new OMUD_MMUD_Char();
+        _mmc.reset();
     }
 
     public void appendChar(char c)          {_sbDataTelnet.append(c);}
@@ -102,7 +103,7 @@ public class OMUD_MMUD_Parser {
         if (_sbDataTelnet.length() > 0 && (pos_data_found_start = _s_blocks.parseBBSMenu(_mmc, _sbDataTelnet)) > -1){
             _sbDataTelnet.delete(0, pos_data_found_start);
             // reset data and location...
-            resetData(OMUD.eBBSLocation.MUD_MENU);
+            reset(OMUD.eBBSLocation.MUD_MENU);
             _omme.notifyMUDLocation(_eBBSLoc);
         }
 
@@ -161,13 +162,11 @@ public class OMUD_MMUD_Parser {
 
                     // check for welcome msg...
                     if (!_mmc.got_statline){
-                         _mmc.got_statline = true;
-
-                        String strSpellsCmd = OMUD_MMUD_DataBlock.CMD_STRINGS[OMUD_MMUD_DataBlock.eBlockType.SPELLS.ordinal()];
-                        if ( _mmc.dataStatline.ma_str.length() > 0 &&
-                            !_mmc.dataStatline.ma_str.equals(OMUD_MMUD_DataBlockStatline.MSTR_SLINE_MA))
-                            strSpellsCmd = OMUD_MMUD_DataBlock.MSTR_CMD_SPELLS_KAI;
-                        _omme.notifyMUDInit(new String(_mmc.strWelcome), strSpellsCmd);
+                        _mmc.got_statline = true;
+                        _mmc.is_kai = 
+                             _mmc.dataStatline.ma_str.length() > 0 &&
+                            !_mmc.dataStatline.ma_str.equals(OMUD_MMUD_DataBlockStatline.MSTR_SLINE_MA);
+                        _omme.notifyMUDInit(new String(_mmc.strWelcome));
                     }
 
                     // some basic auto commands on enter - can make manual/auto modes for this later...
@@ -220,6 +219,10 @@ public class OMUD_MMUD_Parser {
                     _omme.notifyMUDWho(new OMUD_MMUD_DataBlockWho(_mmc.dataWho));
                 if (_mmc.ablk.sbDebug.length() > 0)
                     _omme.notifyMUDDebug(_mmc.ablk.sbDebug.toString());
+
+                // check if we need to get a room refresh (gets reset below)...
+                if (_mmc.ablk.refresh_room)
+                    _omme.requestMUDData(OMUD_MMUD_DataBlock.eBlockType.ROOM);
 
                 // reset active block with statline forced as last data type...
                 _mmc.ablk = new OMUD_MMUD_Char.ActiveDataBlock(false, OMUD_MMUD_DataBlock.eBlockType.STATLINE);

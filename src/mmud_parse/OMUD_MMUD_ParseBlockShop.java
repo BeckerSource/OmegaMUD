@@ -6,9 +6,10 @@ public class OMUD_MMUD_ParseBlockShop extends OMUD_MMUD_ParseBlocks.ParseBlock{
     private final String MSTR_NO_USE =      " (You can't use)";
     private final String MSTR_FREE =        "Free";
 
-    public boolean getStatlineWait(){return true;}
+    public boolean getStatlineWait() {return true;}
+    public static String getCmdText(){return "lis\n";}
     public OMUD_MMUD_ParseBlockShop(){
-        _arrlCmdText.add(new CmdText(OMUD_MMUD_DataBlock.CMD_STRINGS[OMUD_MMUD_DataBlock.eBlockType.SHOP.ordinal()], 3));
+        _arrlCmdText.add(new CmdText("list", 3));
     }
 
     public int findBlockData(OMUD_MMUD_Char mmc, StringBuilder sbTelnetData, int pos_offset){

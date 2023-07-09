@@ -11,10 +11,10 @@ public class OMUD_TelnetParser{
     private boolean                     _gui_busy =     false;
     private final int MAX_BUFFER_LINES = 150;
 
-    public OMUD_TelnetParser(OMUD_ITelnetEvents omte, OMUD_IMUDEvents omme){
+    public OMUD_TelnetParser(OMUD_ITelnetEvents omte, OMUD_IMUDEvents omme, OMUD_MMUD_Char mmc){
         _omte = omte;
         _omb = new OMUD_Buffer();
-        _mmp = new OMUD_MMUD_Parser(omme);
+        _mmp = new OMUD_MMUD_Parser(omme, mmc);
         _arrlBMods = new ArrayList<OMUD_IBufferMod>();
         _sbEscSeq = new StringBuilder();
         _sbNewData = new StringBuilder();

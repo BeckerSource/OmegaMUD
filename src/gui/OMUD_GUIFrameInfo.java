@@ -226,7 +226,7 @@ public class OMUD_GUIFrameInfo extends JFrame {
         _txtMudDbg.setCaretPosition(_txtMudDbg.getText().length());
     }
 
-    public void processMUDWelcome(final String strText){
+    public void processMUDInit(final String strText){
         _txtWelcome.setText(strText);
     }
 

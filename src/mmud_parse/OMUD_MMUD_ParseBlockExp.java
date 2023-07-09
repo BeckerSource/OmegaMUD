@@ -5,9 +5,10 @@ public class OMUD_MMUD_ParseBlockExp extends OMUD_MMUD_ParseBlocks.ParseBlock{
     private final String MSTR_EXP_NEXT_TOTAL_PRE =  "(";
     private final String MSTR_EXP_NEXT_TOTAL_END =  ")";
 
-    public boolean getStatlineWait(){return true;}
+    public boolean getStatlineWait() {return true;}
+    public static String getCmdText(){return "exp\n";}
     public OMUD_MMUD_ParseBlockExp(){
-        _arrlCmdText.add(new CmdText(OMUD_MMUD_DataBlock.CMD_STRINGS[OMUD_MMUD_DataBlock.eBlockType.EXP.ordinal()], 3));
+        _arrlCmdText.add(new CmdText("experience", 3));
     }
 
     public int findBlockData(OMUD_MMUD_Char mmc, StringBuilder sbTelnetData, int pos_offset){

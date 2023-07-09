@@ -12,7 +12,8 @@ public class OMUD_MMUD_ParseBlockOther extends OMUD_MMUD_ParseBlocks.ParseBlock{
     private final String MSTR_COLOR_WHITE =             "[79D[K[1;37m";
     //private final String MSTR_NQC =                     "[0m(N)onstop, (Q)uit, or (C)ontinue?";
 
-    public boolean getStatlineWait(){return false;}
+    public boolean getStatlineWait() {return false;}
+    public static String getCmdText(){return "";}
     public OMUD_MMUD_ParseBlockOther(){}
 
     public int findBlockData(OMUD_MMUD_Char mmc, StringBuilder sbTelnetData, int pos_offset){

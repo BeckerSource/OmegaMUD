@@ -3,10 +3,11 @@ public class OMUD_MMUD_ParseBlockSpells extends OMUD_MMUD_ParseBlocks.ParseBlock
     private final String MSTR_POWERS =      "[0;37;40m[79D[K[1;37mYou have the following powers:\n[0;35mLevel Kai  Short Spell Name\n";
     private final String MSTR_COLOR_PRE =   "[36m";
 
-    public boolean getStatlineWait(){return true;}
+    public boolean getStatlineWait() {return true;}
+    public static String getCmdText(boolean is_kai){return is_kai ? "po\n" : "sp\n";}
     public OMUD_MMUD_ParseBlockSpells(){
-        _arrlCmdText.add(new CmdText(OMUD_MMUD_DataBlock.CMD_STRINGS[OMUD_MMUD_DataBlock.eBlockType.SPELLS.ordinal()], 2));
-        _arrlCmdText.add(new CmdText(OMUD_MMUD_DataBlock.MSTR_CMD_SPELLS_KAI, 2));
+        _arrlCmdText.add(new CmdText("spells", 2));
+        _arrlCmdText.add(new CmdText("powers", 2));
     }
 
     public int findBlockData(OMUD_MMUD_Char mmc, StringBuilder sbTelnetData, int pos_offset){

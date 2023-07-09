@@ -16,9 +16,10 @@ public class OMUD_MMUD_ParseBlockRoom extends OMUD_MMUD_ParseBlocks.ParseBlock{
     private final String MSTR_SEARCH_NONE =         "[0;36mYour search revealed nothing.";
     private final String MSTR_SEARCH_PRE =          "[0;37;40m[0;36mYou notice ";
 
-    public boolean getStatlineWait(){return true;}
+    public boolean getStatlineWait() {return true;}
+    public static String getCmdText(){return "\n";}
     public OMUD_MMUD_ParseBlockRoom(){
-        _arrlCmdText.add(new CmdText(OMUD_MMUD_DataBlock.CMD_STRINGS[OMUD_MMUD_DataBlock.eBlockType.ROOM.ordinal()], 0)); // 0-len covers LF/enter only (zero-len) and all chars as part of look
+        _arrlCmdText.add(new CmdText("look",   0)); // 0-len covers LF/enter only (zero-len) and all chars as part of look
         _arrlCmdText.add(new CmdText("search", 3)); // only "sea" is required
     }
 

@@ -13,9 +13,9 @@ public class OMUD_MMUD_ParseBlocks{
 
         protected ArrayList<CmdText> _arrlCmdText = new ArrayList<CmdText>();
         protected StringBuilder      _sbBlockData = new StringBuilder();
-
-        public abstract boolean getStatlineWait();
         
+        public abstract boolean getStatlineWait();
+
         public String matchCmdText(String strCmd){
             String strFoundCmdFull = null;
 

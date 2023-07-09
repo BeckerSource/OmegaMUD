@@ -9,15 +9,15 @@ public class OMUD_GUI implements OMUD_ITextInputEvents, OMUD_ITelnetEvents, OMUD
     private OMUD_GUIFrameChars  _fChars =       null;
     private OMUD_GUIFrameView   _fView =        null;
     private OMUD_GUIFrameInfo   _fInfo =        null;
-    private String              _strSpellsCmd = "";
 
     public OMUD_GUI() {
+        _fChars = new OMUD_GUIFrameChars(); // need first for now for mmc object
 
         // --------------
         // Telnet
         // --------------
         try{
-            _omtp = new OMUD_TelnetParser(this, this);
+            _omtp = new OMUD_TelnetParser(this, this, _fChars.getSelectedChar());
             _omt  = new OMUD_Telnet(this, _omtp);
         } catch (Exception e) {
             OMUD.logError("Error creating core OmegaMUD objects:" + e.getMessage());
@@ -26,9 +26,8 @@ public class OMUD_GUI implements OMUD_ITextInputEvents, OMUD_ITelnetEvents, OMUD
         // --------------
         // GUI
         // --------------
-        _fChars =   new OMUD_GUIFrameChars();
-        _fView =    new OMUD_GUIFrameView(this, _omt, _omtp);
-        _fInfo =    new OMUD_GUIFrameInfo(this);
+        _fView = new OMUD_GUIFrameView(this, _omt, _omtp);
+        _fInfo = new OMUD_GUIFrameInfo(this);
 
         //_fView.setLocationRelativeTo(null); // center in main display
         Dimension size = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice().getDefaultConfiguration().getBounds().getSize();
@@ -82,18 +81,26 @@ public class OMUD_GUI implements OMUD_ITextInputEvents, OMUD_ITelnetEvents, OMUD
     // MUD Events
     // --------------
     public void requestMUDData(OMUD_MMUD_DataBlock.eBlockType block_type){
-        String strCmd = "";
-        if (block_type == OMUD_MMUD_DataBlock.eBlockType.SPELLS)
-             strCmd = _strSpellsCmd;
-        else strCmd = OMUD_MMUD_DataBlock.CMD_STRINGS[block_type.ordinal()];
-        if (strCmd.length() > 0)
-            _omt.sendText(strCmd + "\n");
+        String strCmdText = "";
+             if (block_type == OMUD_MMUD_DataBlock.eBlockType.ROOM)
+            strCmdText = OMUD_MMUD_ParseBlockRoom.getCmdText();
+        else if (block_type == OMUD_MMUD_DataBlock.eBlockType.INV)
+            strCmdText = OMUD_MMUD_ParseBlockInventory.getCmdText();
+        else if (block_type == OMUD_MMUD_DataBlock.eBlockType.STATS)
+            strCmdText = OMUD_MMUD_ParseBlockStats.getCmdText();
+        else if (block_type == OMUD_MMUD_DataBlock.eBlockType.SHOP)
+            strCmdText = OMUD_MMUD_ParseBlockShop.getCmdText();
+        else if (block_type == OMUD_MMUD_DataBlock.eBlockType.SPELLS)
+            strCmdText = OMUD_MMUD_ParseBlockSpells.getCmdText(_fChars.getSelectedChar().is_kai);
+        else if (block_type == OMUD_MMUD_DataBlock.eBlockType.WHO)
+            strCmdText = OMUD_MMUD_ParseBlockWho.getCmdText();
+        if (strCmdText.length() > 0)
+            _omt.sendText(strCmdText);
     }
 
-    public void notifyMUDInit(final String strWelcome, final String strSpellsCmd){
+    public void notifyMUDInit(final String strWelcome){
         SwingUtilities.invokeLater(new Runnable(){public void run(){
-            _fInfo.processMUDWelcome(strWelcome);
-            _strSpellsCmd = strSpellsCmd;
+            _fInfo.processMUDInit(strWelcome);
         }});
     }
 

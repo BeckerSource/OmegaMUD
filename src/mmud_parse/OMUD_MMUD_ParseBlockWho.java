@@ -7,9 +7,10 @@ public class OMUD_MMUD_ParseBlockWho extends OMUD_MMUD_ParseBlocks.ParseBlock{
     private final String MSTR_TITLE_END =   "[32m";
     private final String MSTR_GUILD =       "  of [33m";
 
-    public boolean getStatlineWait(){return true;}
+    public boolean getStatlineWait() {return true;}
+    public static String getCmdText(){return "who\n";}
     public OMUD_MMUD_ParseBlockWho(){
-        _arrlCmdText.add(new CmdText(OMUD_MMUD_DataBlock.CMD_STRINGS[OMUD_MMUD_DataBlock.eBlockType.WHO.ordinal()], 3));
+        _arrlCmdText.add(new CmdText("who", 3));
     }
 
     public int findBlockData(OMUD_MMUD_Char mmc, StringBuilder sbTelnetData, int pos_offset){

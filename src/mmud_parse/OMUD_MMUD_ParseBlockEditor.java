@@ -1,6 +1,7 @@
 public class OMUD_MMUD_ParseBlockEditor extends OMUD_MMUD_ParseBlocks.ParseBlock{
 
-    public boolean getStatlineWait(){return false;}
+    public boolean getStatlineWait() {return false;}
+    public static String getCmdText(){return "";}
     public OMUD_MMUD_ParseBlockEditor(){
         _arrlCmdText.add(new CmdText("train stats", 11));
         _arrlCmdText.add(new CmdText("set suicide", 5));  // only "set s" required

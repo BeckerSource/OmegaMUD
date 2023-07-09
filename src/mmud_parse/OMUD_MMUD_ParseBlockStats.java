@@ -25,9 +25,10 @@ public class OMUD_MMUD_ParseBlockStats extends OMUD_MMUD_ParseBlocks.ParseBlock{
     private final String MSTR_MR =          "MagicRes:";
     private final int    MSTR_STAT_ROW_COUNT = 9;
 
-    public boolean getStatlineWait(){return true;}
+    public boolean getStatlineWait() {return true;}
+    public static String getCmdText(){return "st\n";}
     public OMUD_MMUD_ParseBlockStats(){
-        _arrlCmdText.add(new CmdText(OMUD_MMUD_DataBlock.CMD_STRINGS[OMUD_MMUD_DataBlock.eBlockType.STATS.ordinal()], 2));
+        _arrlCmdText.add(new CmdText("stat", 2));
     }
 
     public int findBlockData(OMUD_MMUD_Char mmc, StringBuilder sbTelnetData, int pos_offset){
