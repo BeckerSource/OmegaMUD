@@ -1,7 +1,7 @@
 import java.util.ArrayList;
 
 interface OMUD_IMUDEvents{
-    public void requestMUDData(OMUD_MMUD_DataBlock.eBlockType block_type);
+    public void requestMUDData(final OMUD_MMUD_DataBlock.eBlockType block_type);
     public void notifyMUDInit(final String strWelcome);
     public void notifyMUDUnknown(final String strText);
     public void notifyMUDDebug(final String strDebugText);

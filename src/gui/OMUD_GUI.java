@@ -80,22 +80,26 @@ public class OMUD_GUI implements OMUD_ITextInputEvents, OMUD_ITelnetEvents, OMUD
     // --------------
     // MUD Events
     // --------------
-    public void requestMUDData(OMUD_MMUD_DataBlock.eBlockType block_type){
-        String strCmdText = "";
-             if (block_type == OMUD_MMUD_DataBlock.eBlockType.ROOM)
-            strCmdText = OMUD_MMUD_ParseBlockRoom.getCmdText();
-        else if (block_type == OMUD_MMUD_DataBlock.eBlockType.INV)
-            strCmdText = OMUD_MMUD_ParseBlockInventory.getCmdText();
-        else if (block_type == OMUD_MMUD_DataBlock.eBlockType.STATS)
-            strCmdText = OMUD_MMUD_ParseBlockStats.getCmdText();
-        else if (block_type == OMUD_MMUD_DataBlock.eBlockType.SHOP)
-            strCmdText = OMUD_MMUD_ParseBlockShop.getCmdText();
-        else if (block_type == OMUD_MMUD_DataBlock.eBlockType.SPELLS)
-            strCmdText = OMUD_MMUD_ParseBlockSpells.getCmdText(_fChars.getSelectedChar().is_kai);
-        else if (block_type == OMUD_MMUD_DataBlock.eBlockType.WHO)
-            strCmdText = OMUD_MMUD_ParseBlockWho.getCmdText();
-        if (strCmdText.length() > 0)
-            _omt.sendText(strCmdText);
+    public void requestMUDData(final OMUD_MMUD_DataBlock.eBlockType block_type){
+        SwingUtilities.invokeLater(new Runnable(){public void run(){
+            String strCmdText = "";
+                 if (block_type == OMUD_MMUD_DataBlock.eBlockType.ROOM)
+                strCmdText = OMUD_MMUD_ParseBlockRoom.getCmdText();
+            else if (block_type == OMUD_MMUD_DataBlock.eBlockType.INV)
+                strCmdText = OMUD_MMUD_ParseBlockInventory.getCmdText();
+            else if (block_type == OMUD_MMUD_DataBlock.eBlockType.EXP)
+                strCmdText = OMUD_MMUD_ParseBlockExp.getCmdText();
+            else if (block_type == OMUD_MMUD_DataBlock.eBlockType.STATS)
+                strCmdText = OMUD_MMUD_ParseBlockStats.getCmdText();
+            else if (block_type == OMUD_MMUD_DataBlock.eBlockType.SHOP)
+                strCmdText = OMUD_MMUD_ParseBlockShop.getCmdText();
+            else if (block_type == OMUD_MMUD_DataBlock.eBlockType.SPELLS)
+                strCmdText = OMUD_MMUD_ParseBlockSpells.getCmdText(_fChars.getSelectedChar().is_kai);
+            else if (block_type == OMUD_MMUD_DataBlock.eBlockType.WHO)
+                strCmdText = OMUD_MMUD_ParseBlockWho.getCmdText();
+            if (strCmdText.length() > 0)
+                _omt.sendText(strCmdText);
+        }});
     }
 
     public void notifyMUDInit(final String strWelcome){

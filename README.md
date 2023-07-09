@@ -75,9 +75,6 @@ Mac: Untested
 ## Screenshot: MUD Show Stats
 ![MUD CMD History](./screenshots/omud-mud_stats.png)
 
-## Screenshot: MUD Newhaven Arena
-![MUD Newhaven Arena](./screenshots/omud-mud_newhaven_arena.png)
-
 ## Screenshot: MUD Room Items
 ![MUD Room Items](./screenshots/omud-mud_room_items.png)
 
@@ -92,3 +89,6 @@ Mac: Untested
 
 ## Screenshot: MUD Who's Online
 ![MUD Who](./screenshots/omud-mud_who.png)
+
+## Screenshot: MUD Combat
+![MUD Newhaven Arena](./screenshots/omud-mud_combat.png)
