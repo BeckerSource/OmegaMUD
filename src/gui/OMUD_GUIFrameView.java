@@ -331,4 +331,10 @@ public class OMUD_GUIFrameView extends JFrame{
     public void processMUDRoom(final OMUD_MMUD_DataBlockRoom dataRoom){
         _lblCharMegaID.setText("MID: " + dataRoom.megaID);
     }
+
+    public void processMUDCombatTimeout(){
+        // no longer in combat: if not resting or meditating, set as ready...
+        if (_lblCharState.getText().equals(OMUD_MMUD_DataBlockStatline.ACTION_STATE_STRINGS[OMUD_MMUD_DataBlockStatline.eActionState.COMBAT.ordinal()]))
+            _lblCharState.setText(OMUD_MMUD_DataBlockStatline.ACTION_STATE_STRINGS[OMUD_MMUD_DataBlockStatline.eActionState.READY.ordinal()]);
+    }
 }

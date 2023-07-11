@@ -16,7 +16,7 @@ public class OMUD_MMUD_ParseBlockShop extends OMUD_MMUD_ParseBlocks.ParseBlock{
         int pos_data_found_start = -1;
 
         if ((pos_data_found_start = findData(sbTelnetData, pos_offset, true, true, MSTR_SHOP_YES, "")) > -1){
-            mmd.ablk.data_type = OMUD_MMUD_DataBlock.eBlockType.SHOP;
+            mmd.apblock.data_type = OMUD_MMUD_DataBlock.eBlockType.SHOP;
             mmd.dataShop = new OMUD_MMUD_DataBlockShop();
             mmd.dataShop.megaID =   mmd.dataRoom.megaID;
             mmd.dataShop.roomName = mmd.dataRoom.name;
@@ -61,7 +61,7 @@ public class OMUD_MMUD_ParseBlockShop extends OMUD_MMUD_ParseBlocks.ParseBlock{
                 mmd.dataShop.shop_items.add(item);
             }
         } else if ((pos_data_found_start = findData(sbTelnetData, pos_offset, true, false, MSTR_SHOP_NO, "")) > -1){
-            mmd.ablk.sbDebug.append("[NO_SHOP_IN_ROOM]\n");
+            mmd.apblock.sbDebug.append("[NO_SHOP_IN_ROOM]\n");
         }
 
         return pos_data_found_start;

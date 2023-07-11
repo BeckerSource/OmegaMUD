@@ -15,7 +15,7 @@ public class OMUD_MMUD_ParseBlockStatline extends OMUD_MMUD_ParseBlocks.ParseBlo
         if ((pos_data_found_start = findData(sbTelnetData, sbTelnetData.length() - 1, false, true, MSTR_STATLINE_PRE, MSTR_STATLINE_END)) > -1){
 
             // PREFIX: statline after stats has an ANSI reset prefix...
-            pos_data_found_start = checkPrefix("Statline after Stats", mmd.ablk.sbDebug, sbTelnetData, pos_data_found_start, MSTR_PREFIX_RESET_WHBL);
+            pos_data_found_start = checkPrefix("Statline after Stats", mmd.apblock.sbDebug, sbTelnetData, pos_data_found_start, MSTR_PREFIX_RESET_WHBL);
 
             // default to active first...
             OMUD_MMUD_DataBlockStatline.eActionState sline_state = OMUD_MMUD_DataBlockStatline.eActionState.READY;
@@ -51,6 +51,7 @@ public class OMUD_MMUD_ParseBlockStatline extends OMUD_MMUD_ParseBlocks.ParseBlo
                 }
             }
 
+            // only set if rest/med was found to avoid changing a combat state...
             if (sline_state != OMUD_MMUD_DataBlockStatline.eActionState.READY)
                 mmd.dataStatline.action_state = sline_state;
 

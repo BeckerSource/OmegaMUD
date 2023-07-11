@@ -17,7 +17,7 @@ public class OMUD_MMUD_ParseBlockWho extends OMUD_MMUD_ParseBlocks.ParseBlock{
         int pos_data_found_start = -1;
 
         if ((pos_data_found_start = findData(sbTelnetData, pos_offset, true, true, MSTR_WHO, "")) > -1){
-            mmd.ablk.data_type = OMUD_MMUD_DataBlock.eBlockType.WHO;
+            mmd.apblock.data_type = OMUD_MMUD_DataBlock.eBlockType.WHO;
             mmd.dataWho = new OMUD_MMUD_DataBlockWho();
 
             int pos_left =  -1;

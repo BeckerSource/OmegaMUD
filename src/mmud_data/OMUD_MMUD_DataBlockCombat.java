@@ -2,14 +2,14 @@ import java.util.ArrayList;
 
 public class OMUD_MMUD_DataBlockCombat extends OMUD_MMUD_DataBlock{
     public static class CombatLine{
-        public static enum eMissType{
+        public static enum eHitType{
             HIT,
             MISS,
             DODGE,
             FAIL
         }
 
-        public static final String[] MISS_TYPE_STRINGS = {
+        public static final String[] HIT_TYPE_STRINGS = {
             "HIT",
             "MISS",
             "DODGE",
@@ -22,10 +22,10 @@ public class OMUD_MMUD_DataBlockCombat extends OMUD_MMUD_DataBlock{
         public String       tgt_weapon =    "";
         public int          tgt_dmg =       0;
         public int          tgt_exp =       0;
-        public eMissType    tgt_miss =      eMissType.HIT;
+        public eHitType     tgt_htype =     eHitType.HIT;
 
         CombatLine(){}
-        CombatLine(eMissType miss){tgt_miss = miss;}
+        CombatLine(eHitType htype){tgt_htype = htype;}
         CombatLine(CombatLine cl){
             unit =          new OMUD_MMUD_DataUnit(cl.unit);
             unit_action =   new String(cl.unit_action);
@@ -33,7 +33,7 @@ public class OMUD_MMUD_DataBlockCombat extends OMUD_MMUD_DataBlock{
             tgt_weapon =    new String(cl.tgt_weapon);
             tgt_dmg =       cl.tgt_dmg;
             tgt_exp =       cl.tgt_exp;
-            tgt_miss =      cl.tgt_miss;
+            tgt_htype =     cl.tgt_htype;
         }
     }
 

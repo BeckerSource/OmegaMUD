@@ -35,12 +35,12 @@ public class OMUD_MMUD_ParseBlockStats extends OMUD_MMUD_ParseBlocks.ParseBlock{
         int pos_data_found_start = -1;
 
         if ((pos_data_found_start = findData(sbTelnetData, pos_offset, true, true, MSTR_NAME, "")) > -1){
-            mmd.ablk.data_type = OMUD_MMUD_DataBlock.eBlockType.STATS;
+            mmd.apblock.data_type = OMUD_MMUD_DataBlock.eBlockType.STATS;
             mmd.dataStats = new OMUD_MMUD_DataBlockStats();
             cleanData(_sbBlockData, false, true);
 
             // PREFIX: normal stat command has a prefix, coming from a new char creation does not...
-            pos_data_found_start = checkPrefix("Stats from User Cmd and not New Char", mmd.ablk.sbDebug, sbTelnetData, pos_data_found_start, MSTR_PREFIX_RESET_WHBL);
+            pos_data_found_start = checkPrefix("Stats from User Cmd and not New Char", mmd.apblock.sbDebug, sbTelnetData, pos_data_found_start, MSTR_PREFIX_RESET_WHBL);
 
             // split by lines...
             String[] lines = _sbBlockData.toString().split("\n");

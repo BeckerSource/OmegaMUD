@@ -15,7 +15,7 @@ public class OMUD_MMUD_ParseBlockExp extends OMUD_MMUD_ParseBlocks.ParseBlock{
         int pos_data_found_start = -1;
 
         if ((pos_data_found_start = findData(sbTelnetData, pos_offset, true, true, MSTR_EXP_PRE, MSTR_EXP_END)) > -1){
-            mmd.ablk.data_type = OMUD_MMUD_DataBlock.eBlockType.EXP;
+            mmd.apblock.data_type = OMUD_MMUD_DataBlock.eBlockType.EXP;
             mmd.dataExp = new OMUD_MMUD_DataBlockExp();
             cleanData(_sbBlockData, false, true);
 

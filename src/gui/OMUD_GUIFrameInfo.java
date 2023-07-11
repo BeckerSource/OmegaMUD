@@ -451,17 +451,25 @@ public class OMUD_GUIFrameInfo extends JFrame {
         setTab(eTab.MUD_COMBAT);
 
         StringBuilder sb = new StringBuilder();
+        StringBuilder sbHit = new StringBuilder();
         sb.append("--------------------\n");
-        sb.append("Attacker (vs) Attacked (H/M/D/F) (Action) (Weap)\n");
+        sb.append("[H/M/D/F] Attacker <V> Attacked (Action) (Weap)\n");
         sb.append("--------------------\n");
         for (int i = 0; i < dataCombat.lines.size(); ++i){
+            // H/M/D/F...
+            sbHit.setLength(0);
+            sbHit.append(OMUD_MMUD_DataBlockCombat.CombatLine.HIT_TYPE_STRINGS[dataCombat.lines.get(i).tgt_htype.ordinal()]);
+            if (dataCombat.lines.get(i).tgt_htype == OMUD_MMUD_DataBlockCombat.CombatLine.eHitType.HIT)
+                sbHit.append(": " + dataCombat.lines.get(i).tgt_dmg);
+            sb.append("[");
+            int fill_len = 8 - sbHit.length();
+            if (fill_len > 0)
+                sb.append(OMUD.getFillString(" ", fill_len));
+            sb.append(sbHit + "] ");
+            // others...
             sb.append(dataCombat.lines.get(i).unit.name);
             if (dataCombat.lines.get(i).tgt_name.length() > 0)
-                sb.append(" <VS> " + dataCombat.lines.get(i).tgt_name);
-            sb.append(" (" + OMUD_MMUD_DataBlockCombat.CombatLine.MISS_TYPE_STRINGS[dataCombat.lines.get(i).tgt_miss.ordinal()]);
-            if (dataCombat.lines.get(i).tgt_miss == OMUD_MMUD_DataBlockCombat.CombatLine.eMissType.HIT)
-                sb.append(": " + dataCombat.lines.get(i).tgt_dmg);
-            sb.append(")");
+                sb.append(" <V> " + dataCombat.lines.get(i).tgt_name);
             if (dataCombat.lines.get(i).unit_action.length() > 0)
                 sb.append(" (" + dataCombat.lines.get(i).unit_action + ")");
             if (dataCombat.lines.get(i).tgt_weapon.length() > 0)

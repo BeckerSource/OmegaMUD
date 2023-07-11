@@ -48,16 +48,18 @@ public class OMUD_MMUD_ParseBlockCombat extends OMUD_MMUD_ParseBlocks.ParseBlock
         // Combat: On
         // ------------------
         if ((pos_data_found_start = findData(sbTelnetData, pos_offset, true, false, MSTR_ON, "")) > -1){
-            mmd.ablk.data_type = OMUD_MMUD_DataBlock.eBlockType.COMBAT;
+            mmd.apblock.data_type = OMUD_MMUD_DataBlock.eBlockType.COMBAT;
             mmd.dataStatline.action_state = OMUD_MMUD_DataBlockStatline.eActionState.COMBAT;
 
         // ------------------
         // Combat: Off
         // ------------------
         } else if ((pos_data_found_start = findData(sbTelnetData, pos_offset, true, false, MSTR_OFF, "")) > -1){
-            mmd.ablk.data_type = OMUD_MMUD_DataBlock.eBlockType.COMBAT;
-            // don't set as not-in-combat - using a timer to detect combat in next round
-            pos_data_found_start = checkPrefix("Combat Broken by Cmd", mmd.ablk.sbDebug, sbTelnetData, pos_data_found_start, MSTR_PREFIX_RESET_WHBL);
+            mmd.apblock.data_type = OMUD_MMUD_DataBlock.eBlockType.COMBAT;
+            // don't change the state if already something other than combat (rest, med, etc...
+            if (mmd.dataStatline.action_state == OMUD_MMUD_DataBlockStatline.eActionState.COMBAT)
+                mmd.dataStatline.action_state  = OMUD_MMUD_DataBlockStatline.eActionState.READY;
+            pos_data_found_start = checkPrefix("Combat Broken by Cmd", mmd.apblock.sbDebug, sbTelnetData, pos_data_found_start, MSTR_PREFIX_RESET_WHBL);
 
         // ------------------
         // Combat: Hit (You/I & They)
@@ -65,11 +67,11 @@ public class OMUD_MMUD_ParseBlockCombat extends OMUD_MMUD_ParseBlocks.ParseBlock
         } else if (
             (pos_data_found_start = findData(sbTelnetData, pos_offset, true, true, MSTR_HIT_PRE1, MSTR_HIT_END)) > -1 ||
             (pos_data_found_start = findData(sbTelnetData, pos_offset, true, true, MSTR_HIT_PRE2, MSTR_HIT_END)) > -1){
-            mmd.ablk.data_type = OMUD_MMUD_DataBlock.eBlockType.COMBAT;
+            mmd.apblock.data_type = OMUD_MMUD_DataBlock.eBlockType.COMBAT;
             mmd.dataStatline.action_state = OMUD_MMUD_DataBlockStatline.eActionState.COMBAT;
             cleanData(_sbBlockData, true, false);
 
-            OMUD_MMUD_DataBlockCombat.CombatLine cl = new OMUD_MMUD_DataBlockCombat.CombatLine(OMUD_MMUD_DataBlockCombat.CombatLine.eMissType.HIT);
+            OMUD_MMUD_DataBlockCombat.CombatLine cl = new OMUD_MMUD_DataBlockCombat.CombatLine(OMUD_MMUD_DataBlockCombat.CombatLine.eHitType.HIT);
 
             int pos_left =  0;
             int pos_right = 0;
@@ -137,11 +139,11 @@ public class OMUD_MMUD_ParseBlockCombat extends OMUD_MMUD_ParseBlocks.ParseBlock
         // Combat: You Fail Cast
         // ------------------
         } else if ((pos_data_found_start = findData(sbTelnetData, pos_offset, true, true, MSTR_YOU_FAIL_PRE, MSTR_YOU_FAIL_END)) > -1){
-            mmd.ablk.data_type = OMUD_MMUD_DataBlock.eBlockType.COMBAT;
+            mmd.apblock.data_type = OMUD_MMUD_DataBlock.eBlockType.COMBAT;
             mmd.dataStatline.action_state = OMUD_MMUD_DataBlockStatline.eActionState.COMBAT;
             cleanData(_sbBlockData, true, false);
 
-            OMUD_MMUD_DataBlockCombat.CombatLine cl = new OMUD_MMUD_DataBlockCombat.CombatLine(OMUD_MMUD_DataBlockCombat.CombatLine.eMissType.FAIL);
+            OMUD_MMUD_DataBlockCombat.CombatLine cl = new OMUD_MMUD_DataBlockCombat.CombatLine(OMUD_MMUD_DataBlockCombat.CombatLine.eHitType.FAIL);
             cl.unit =        new OMUD_MMUD_DataUnit(MSTR_YOU_CAPS);
             cl.unit_action = _sbBlockData.toString();
             // no target on cast fails
@@ -151,11 +153,11 @@ public class OMUD_MMUD_ParseBlockCombat extends OMUD_MMUD_ParseBlocks.ParseBlock
         // Combat: You Miss
         // ------------------
         } else if ((pos_data_found_start = findData(sbTelnetData, pos_offset, true, true, MSTR_YOU_MISS_PRE, MSTR_MISS_END)) > -1){
-            mmd.ablk.data_type = OMUD_MMUD_DataBlock.eBlockType.COMBAT;
+            mmd.apblock.data_type = OMUD_MMUD_DataBlock.eBlockType.COMBAT;
             mmd.dataStatline.action_state = OMUD_MMUD_DataBlockStatline.eActionState.COMBAT;
             cleanData(_sbBlockData, true, false);
 
-            OMUD_MMUD_DataBlockCombat.CombatLine cl = new OMUD_MMUD_DataBlockCombat.CombatLine(OMUD_MMUD_DataBlockCombat.CombatLine.eMissType.MISS);
+            OMUD_MMUD_DataBlockCombat.CombatLine cl = new OMUD_MMUD_DataBlockCombat.CombatLine(OMUD_MMUD_DataBlockCombat.CombatLine.eHitType.MISS);
             cl.unit = new OMUD_MMUD_DataUnit(MSTR_YOU_CAPS);
 
             int pos_left =  0;
@@ -174,11 +176,11 @@ public class OMUD_MMUD_ParseBlockCombat extends OMUD_MMUD_ParseBlocks.ParseBlock
         // Combat: They Miss
         // ------------------
         } else if ((pos_data_found_start = findData(sbTelnetData, pos_offset, true, true, MSTR_THEY_MISS_PRE, MSTR_MISS_END)) > -1){
-            mmd.ablk.data_type = OMUD_MMUD_DataBlock.eBlockType.COMBAT;
+            mmd.apblock.data_type = OMUD_MMUD_DataBlock.eBlockType.COMBAT;
             mmd.dataStatline.action_state = OMUD_MMUD_DataBlockStatline.eActionState.COMBAT;
             cleanData(_sbBlockData, true, false);
 
-            OMUD_MMUD_DataBlockCombat.CombatLine cl = new OMUD_MMUD_DataBlockCombat.CombatLine(OMUD_MMUD_DataBlockCombat.CombatLine.eMissType.MISS);
+            OMUD_MMUD_DataBlockCombat.CombatLine cl = new OMUD_MMUD_DataBlockCombat.CombatLine(OMUD_MMUD_DataBlockCombat.CombatLine.eHitType.MISS);
 
             int pos_left =  0;
             int pos_right = 0;
@@ -197,7 +199,7 @@ public class OMUD_MMUD_ParseBlockCombat extends OMUD_MMUD_ParseBlocks.ParseBlock
                     // check for dodge (from the end)...
                     if (_sbBlockData.length() > MSTR_DODGE_END.length() &&
                         _sbBlockData.substring(_sbBlockData.length() - MSTR_DODGE_END.length(), _sbBlockData.length()).equals(MSTR_DODGE_END)){
-                        cl.tgt_miss = OMUD_MMUD_DataBlockCombat.CombatLine.eMissType.DODGE;
+                        cl.tgt_htype = OMUD_MMUD_DataBlockCombat.CombatLine.eHitType.DODGE;
                         pos_right = _sbBlockData.indexOf(MSTR_DODGE_PRE, pos_left);
                     } else pos_right = _sbBlockData.length();
 
@@ -221,8 +223,8 @@ public class OMUD_MMUD_ParseBlockCombat extends OMUD_MMUD_ParseBlocks.ParseBlock
         // EXP Gained
         // ------------------
         } else if ((pos_data_found_start = findData(sbTelnetData, pos_offset, true, true, MSTR_EXP_GAIN_PRE, MSTR_EXP_GAIN_END)) > -1){
-            mmd.ablk.data_type = OMUD_MMUD_DataBlock.eBlockType.COMBAT;
-            mmd.ablk.refresh_room = true;
+            mmd.apblock.data_type = OMUD_MMUD_DataBlock.eBlockType.COMBAT;
+            mmd.apblock.refresh_room = true; // refresh room to rebuild the unit list in the room
             
             int exp = Integer.parseInt(_sbBlockData.toString());
             mmd.dataExp.cur_total   += exp;
@@ -235,7 +237,7 @@ public class OMUD_MMUD_ParseBlockCombat extends OMUD_MMUD_ParseBlocks.ParseBlock
 
             // find "my/YOU" most recent hit and assume that kill exp was the exp from that hit...
             for (int i = mmd.dataCombat.lines.size() - 1; i >= 0; --i)
-                if (mmd.dataCombat.lines.get(i).tgt_miss == OMUD_MMUD_DataBlockCombat.CombatLine.eMissType.HIT){
+                if (mmd.dataCombat.lines.get(i).tgt_htype == OMUD_MMUD_DataBlockCombat.CombatLine.eHitType.HIT){
                     mmd.dataCombat.lines.get(i).tgt_exp = exp;
                     break;
                 }
@@ -244,7 +246,7 @@ public class OMUD_MMUD_ParseBlockCombat extends OMUD_MMUD_ParseBlocks.ParseBlock
         // Unit Enters Room
         // ------------------
         } else if ((pos_data_found_start = findData(sbTelnetData, pos_offset, true, true, MSTR_UNIT_ENTER_PRE, MSTR_UNIT_ENTER_END)) > -1){
-            mmd.ablk.refresh_room = true;
+            mmd.apblock.refresh_room = true; // refresh room to rebuild the unit list in the room
         }    
 
         return pos_data_found_start;

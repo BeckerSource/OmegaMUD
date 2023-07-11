@@ -24,7 +24,7 @@ public class OMUD_MMUD_ParseBlockInventory extends OMUD_MMUD_ParseBlocks.ParseBl
         int pos_data_found_start = -1;
 
         if ((pos_data_found_start = findData(sbTelnetData, pos_offset, true, true, MSTR_INV_PRE, MSTR_INV_END)) > -1){
-            mmd.ablk.data_type = OMUD_MMUD_DataBlock.eBlockType.INV;
+            mmd.apblock.data_type = OMUD_MMUD_DataBlock.eBlockType.INV;
             mmd.dataInv = new OMUD_MMUD_DataBlockInv();            
             cleanData(_sbBlockData, true, true);
 

@@ -27,7 +27,7 @@ public class OMUD_MMUD_ParseBlockRoom extends OMUD_MMUD_ParseBlocks.ParseBlock{
         int pos_data_found_start = -1;
 
         if ((pos_data_found_start = findData(sbTelnetData, pos_offset, true, true, MSTR_ROOM_NAME, "")) > -1){
-            mmd.ablk.data_type = OMUD_MMUD_DataBlock.eBlockType.ROOM;
+            mmd.apblock.data_type = OMUD_MMUD_DataBlock.eBlockType.ROOM;
             mmd.dataRoom = new OMUD_MMUD_DataBlockRoom();
             cleanData(_sbBlockData, true, true);
 
@@ -103,7 +103,7 @@ public class OMUD_MMUD_ParseBlockRoom extends OMUD_MMUD_ParseBlocks.ParseBlock{
                 pos_data_found_start = 0;
             // PREFIX: if room name is shown after a move command, it will have a white/black reset prefix...
             } else {
-                pos_data_found_start = checkPrefix("Room Name After Move", mmd.ablk.sbDebug, sbTelnetData, pos_data_found_start, MSTR_PREFIX_RESET_WHBL);
+                pos_data_found_start = checkPrefix("Room Name After Move", mmd.apblock.sbDebug, sbTelnetData, pos_data_found_start, MSTR_PREFIX_RESET_WHBL);
             }
 
             mmd.dataRoom.name = _sbBlockData.substring(0, pos_right + 1).trim();
@@ -116,7 +116,7 @@ public class OMUD_MMUD_ParseBlockRoom extends OMUD_MMUD_ParseBlocks.ParseBlock{
         // Search: Found Items
         // ------------------
         } else if ((pos_data_found_start = findData(sbTelnetData, pos_offset, true, true, MSTR_SEARCH_PRE, MSTR_YOU_NOTICE_END)) > -1){
-            mmd.ablk.data_type = OMUD_MMUD_DataBlock.eBlockType.ROOM;
+            mmd.apblock.data_type = OMUD_MMUD_DataBlock.eBlockType.ROOM;
             cleanData(_sbBlockData, true, false);
 
             ArrayList<String> arrlNew = new ArrayList<String>();
@@ -129,7 +129,7 @@ public class OMUD_MMUD_ParseBlockRoom extends OMUD_MMUD_ParseBlocks.ParseBlock{
         // Search: No Items
         // ------------------
         } else if ((pos_data_found_start = findData(sbTelnetData, pos_offset, true, false, MSTR_SEARCH_NONE, "")) > -1){
-            mmd.ablk.sbDebug.append("[ROOM_SEARCH_NONE]\n");
+            mmd.apblock.sbDebug.append("[ROOM_SEARCH_NONE]\n");
         }
 
         return pos_data_found_start;

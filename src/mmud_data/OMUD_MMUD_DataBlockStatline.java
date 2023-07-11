@@ -1,6 +1,6 @@
 public class OMUD_MMUD_DataBlockStatline extends OMUD_MMUD_DataBlock{
     public static enum eActionState{
-        READY, // not a real game state, just a state for non-rest/med
+        READY,
         COMBAT,
         REST,
         MED

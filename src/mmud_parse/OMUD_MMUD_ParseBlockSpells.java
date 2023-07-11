@@ -15,7 +15,7 @@ public class OMUD_MMUD_ParseBlockSpells extends OMUD_MMUD_ParseBlocks.ParseBlock
 
         if ((pos_data_found_start = findData(sbTelnetData, pos_offset, true, true, MSTR_SPELLS, "")) > -1 ||
             (pos_data_found_start = findData(sbTelnetData, pos_offset, true, true, MSTR_POWERS, "")) > -1){
-            mmd.ablk.data_type = OMUD_MMUD_DataBlock.eBlockType.SPELLS;
+            mmd.apblock.data_type = OMUD_MMUD_DataBlock.eBlockType.SPELLS;
             mmd.dataSpells = new OMUD_MMUD_DataBlockSpells();
 
             int pos_left =  -1;

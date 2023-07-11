@@ -291,13 +291,13 @@ public class OMUD_MMUD_ParseBlocks{
             int pos_cmd_data_found_start = -1;
 
             // check all blocks if active is unset/statline...
-            if (mmd.ablk.block_pos < BPOS_CMDS_START){
+            if (mmd.apblock.block_pos < BPOS_CMDS_START){
                 for (int i = BPOS_CMDS_START; i <= _bpos_cmd_editor && pos_cmd_data_found_start == -1; ++i)
                     if ((pos_cmd_data_found_start = _arrlBlocks.get(i).findBlockData(mmd, sbTelnetData, pos_data_found_start)) > -1)
-                        mmd.ablk.update(i, "", _arrlBlocks.get(i).getStatlineWait());
+                        mmd.apblock.update(i, "", _arrlBlocks.get(i).getStatlineWait());
             // else parse the active block...
             } else {
-                pos_cmd_data_found_start = _arrlBlocks.get(mmd.ablk.block_pos).findBlockData(mmd, sbTelnetData, pos_data_found_start);
+                pos_cmd_data_found_start = _arrlBlocks.get(mmd.apblock.block_pos).findBlockData(mmd, sbTelnetData, pos_data_found_start);
             }
 
             if (pos_cmd_data_found_start > -1)
@@ -320,11 +320,11 @@ public class OMUD_MMUD_ParseBlocks{
 
     // findCmd(): main external call to match a user-input command (assumes passed in as lower-case)
     // returns true if at an in-game menu/editor (train stats, etc.)
-    public boolean findCmd(String strNewCmd, ActiveParseBlock ablk){
+    public boolean findCmd(String strNewCmd, ActiveParseBlock apblock){
         String strMatchedCmd = null;
         for (int i = BPOS_CMDS_START; i <= _bpos_cmd_editor && strMatchedCmd == null; ++i)
             if ((strMatchedCmd = _arrlBlocks.get(i).matchCmdText(strNewCmd)) != null)
-                ablk.update(i, strMatchedCmd, _arrlBlocks.get(i).getStatlineWait());
-        return ablk.block_pos == _bpos_cmd_editor;
+                apblock.update(i, strMatchedCmd, _arrlBlocks.get(i).getStatlineWait());
+        return apblock.block_pos == _bpos_cmd_editor;
     }
 }

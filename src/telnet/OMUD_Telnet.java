@@ -92,7 +92,7 @@ public class OMUD_Telnet {
                 // create timer/task for connectivity checks...
                 _ayt_last_response_time_ms = 0;
                 _taskAYT = new TimerTaskAYT();
-                _tmrAYT = new Timer();
+                _tmrAYT =  new Timer();
                 _tmrAYT.schedule(_taskAYT, TELNET_AYT_MS, TELNET_AYT_MS);
             } catch (Exception e) {
                 OMUD.logError("Telnet: error on connect: " + e.getMessage());

@@ -19,7 +19,7 @@ public class OMUD_Char implements OMUD_ITextInputEvents, OMUD_ITelnetEvents, OMU
         public OMUD_MMUD_DataBlockWho       dataWho =           null;
         public OMUD_MMUD_DataBlockParty     dataParty =         null;
         public OMUD_MMUD_DataBlockCombat    dataCombat =        null;
-        public OMUD_MMUD_ParseBlocks.ActiveParseBlock ablk =    null;
+        public OMUD_MMUD_ParseBlocks.ActiveParseBlock apblock = null;
 
         MMUD_Data(){reset();}
         public void reset(){
@@ -36,20 +36,21 @@ public class OMUD_Char implements OMUD_ITextInputEvents, OMUD_ITelnetEvents, OMU
             dataWho =       new OMUD_MMUD_DataBlockWho();
             dataParty =     new OMUD_MMUD_DataBlockParty();
             dataCombat =    new OMUD_MMUD_DataBlockCombat();
-            ablk =          new OMUD_MMUD_ParseBlocks.ActiveParseBlock(false, OMUD_MMUD_DataBlock.eBlockType.ROOM);
+            apblock =       new OMUD_MMUD_ParseBlocks.ActiveParseBlock(false, OMUD_MMUD_DataBlock.eBlockType.ROOM);
         }
     }
 
     // -----------
     // OMUD_Char
     // -----------
-    private OMUD_Telnet         _omt =      null;
-    private OMUD_TelnetParser   _omtp =     null;
-    private MMUD_Data           _mmd =      null;
-    private OMUD_GUIFrameView   _fView =    null;
-    private OMUD_GUIFrameInfo   _fInfo =    null;    
+    private OMUD_Telnet         _omt =          null;
+    private OMUD_TelnetParser   _omtp =         null;
+    private MMUD_Data           _mmd =          null;
+    private OMUD_GUIFrameView   _fView =        null;
+    private OMUD_GUIFrameInfo   _fInfo =        null;    
+
     OMUD_Char(){
-        _mmd = new MMUD_Data();
+        _mmd =        new MMUD_Data();
 
         try{
             _omtp = new OMUD_TelnetParser(this, this, _mmd);
@@ -61,6 +62,7 @@ public class OMUD_Char implements OMUD_ITextInputEvents, OMUD_ITelnetEvents, OMU
         _fView = new OMUD_GUIFrameView(this, _omt, _omtp);
         _fInfo = new OMUD_GUIFrameInfo(this);
     }
+
     public OMUD_GUIFrameView getViewFrame(){return _fView;}
     public OMUD_GUIFrameInfo getInfoFrame(){return _fInfo;}
 
@@ -202,6 +204,12 @@ public class OMUD_Char implements OMUD_ITextInputEvents, OMUD_ITelnetEvents, OMU
     public void notifyMUDCombat(final OMUD_MMUD_DataBlockCombat dataCombat){
         SwingUtilities.invokeLater(new Runnable(){public void run(){
             _fInfo.processMUDCombat(dataCombat);
+        }});        
+    }
+
+    public void notifyMUDCombatTimeout(){
+        SwingUtilities.invokeLater(new Runnable(){public void run(){
+            _fView.processMUDCombatTimeout();
         }});        
     }
 
