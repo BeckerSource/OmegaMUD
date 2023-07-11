@@ -314,9 +314,7 @@ public class OMUD_GUIFrameView extends JFrame{
     }
 
     public void processMUDStatline(final OMUD_MMUD_DataBlockStatline dataStatline){
-        _lblCharState.setText(dataStatline.in_combat ?
-            OMUD_MMUD_DataBlockStatline.MSTR_COMBAT_STATE : 
-            OMUD_MMUD_DataBlockStatline.REST_STATE_STRINGS[dataStatline.rest_state.ordinal()]);
+        _lblCharState.setText(OMUD_MMUD_DataBlockStatline.ACTION_STATE_STRINGS[dataStatline.action_state.ordinal()]);
 
         StringBuilder sb = new StringBuilder();
         sb.append(dataStatline.hp_str + "=" + dataStatline.hp_cur + "/" + dataStatline.hp_max);

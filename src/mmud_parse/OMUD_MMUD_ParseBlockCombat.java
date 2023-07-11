@@ -49,7 +49,7 @@ public class OMUD_MMUD_ParseBlockCombat extends OMUD_MMUD_ParseBlocks.ParseBlock
         // ------------------
         if ((pos_data_found_start = findData(sbTelnetData, pos_offset, true, false, MSTR_ON, "")) > -1){
             mmd.ablk.data_type = OMUD_MMUD_DataBlock.eBlockType.COMBAT;
-            mmd.dataStatline.in_combat = true;
+            mmd.dataStatline.action_state = OMUD_MMUD_DataBlockStatline.eActionState.COMBAT;
 
         // ------------------
         // Combat: Off
@@ -66,7 +66,7 @@ public class OMUD_MMUD_ParseBlockCombat extends OMUD_MMUD_ParseBlocks.ParseBlock
             (pos_data_found_start = findData(sbTelnetData, pos_offset, true, true, MSTR_HIT_PRE1, MSTR_HIT_END)) > -1 ||
             (pos_data_found_start = findData(sbTelnetData, pos_offset, true, true, MSTR_HIT_PRE2, MSTR_HIT_END)) > -1){
             mmd.ablk.data_type = OMUD_MMUD_DataBlock.eBlockType.COMBAT;
-            mmd.dataStatline.in_combat = true;
+            mmd.dataStatline.action_state = OMUD_MMUD_DataBlockStatline.eActionState.COMBAT;
             cleanData(_sbBlockData, true, false);
 
             OMUD_MMUD_DataBlockCombat.CombatLine cl = new OMUD_MMUD_DataBlockCombat.CombatLine(OMUD_MMUD_DataBlockCombat.CombatLine.eMissType.HIT);
@@ -138,7 +138,7 @@ public class OMUD_MMUD_ParseBlockCombat extends OMUD_MMUD_ParseBlocks.ParseBlock
         // ------------------
         } else if ((pos_data_found_start = findData(sbTelnetData, pos_offset, true, true, MSTR_YOU_FAIL_PRE, MSTR_YOU_FAIL_END)) > -1){
             mmd.ablk.data_type = OMUD_MMUD_DataBlock.eBlockType.COMBAT;
-            mmd.dataStatline.in_combat = true;
+            mmd.dataStatline.action_state = OMUD_MMUD_DataBlockStatline.eActionState.COMBAT;
             cleanData(_sbBlockData, true, false);
 
             OMUD_MMUD_DataBlockCombat.CombatLine cl = new OMUD_MMUD_DataBlockCombat.CombatLine(OMUD_MMUD_DataBlockCombat.CombatLine.eMissType.FAIL);
@@ -152,7 +152,7 @@ public class OMUD_MMUD_ParseBlockCombat extends OMUD_MMUD_ParseBlocks.ParseBlock
         // ------------------
         } else if ((pos_data_found_start = findData(sbTelnetData, pos_offset, true, true, MSTR_YOU_MISS_PRE, MSTR_MISS_END)) > -1){
             mmd.ablk.data_type = OMUD_MMUD_DataBlock.eBlockType.COMBAT;
-            mmd.dataStatline.in_combat = true;
+            mmd.dataStatline.action_state = OMUD_MMUD_DataBlockStatline.eActionState.COMBAT;
             cleanData(_sbBlockData, true, false);
 
             OMUD_MMUD_DataBlockCombat.CombatLine cl = new OMUD_MMUD_DataBlockCombat.CombatLine(OMUD_MMUD_DataBlockCombat.CombatLine.eMissType.MISS);
@@ -175,7 +175,7 @@ public class OMUD_MMUD_ParseBlockCombat extends OMUD_MMUD_ParseBlocks.ParseBlock
         // ------------------
         } else if ((pos_data_found_start = findData(sbTelnetData, pos_offset, true, true, MSTR_THEY_MISS_PRE, MSTR_MISS_END)) > -1){
             mmd.ablk.data_type = OMUD_MMUD_DataBlock.eBlockType.COMBAT;
-            mmd.dataStatline.in_combat = true;
+            mmd.dataStatline.action_state = OMUD_MMUD_DataBlockStatline.eActionState.COMBAT;
             cleanData(_sbBlockData, true, false);
 
             OMUD_MMUD_DataBlockCombat.CombatLine cl = new OMUD_MMUD_DataBlockCombat.CombatLine(OMUD_MMUD_DataBlockCombat.CombatLine.eMissType.MISS);
