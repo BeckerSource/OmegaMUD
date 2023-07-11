@@ -2,8 +2,31 @@ import java.util.ArrayList;
 
 public class OMUD_MMUD_ParseBlocks{
     // ------------------
-    // ParseBlock
+    // ActiveParseBlock
+    // ------------------    
+    public static class ActiveParseBlock{
+        public int              block_pos =     BPOS_STATLINE;
+        public String           strCmdText =    "?";
+        public boolean          statline_wait = false;
+        public boolean          refresh_room =  false;
+        public StringBuilder    sbDebug =       new StringBuilder();
+        public OMUD_MMUD_DataBlock.eBlockType data_type = OMUD_MMUD_DataBlock.eBlockType.ROOM;
+
+        public ActiveParseBlock(boolean sw, OMUD_MMUD_DataBlock.eBlockType dt){
+            statline_wait = sw;
+            data_type =     dt;
+        }
+
+        public void update(int bp, String ct, boolean sw){
+            block_pos =     bp;
+            strCmdText =    ct;
+            statline_wait = sw;
+        }
+    }
+
     // ------------------
+    // ParseBlock
+    // ------------------    
     public static abstract class ParseBlock{
         protected class CmdText{
             public String   text  =     "";
@@ -17,7 +40,7 @@ public class OMUD_MMUD_ParseBlocks{
         public abstract boolean getStatlineWait();
 
         public String matchCmdText(String strCmd){
-            String strFoundCmdFull = null;
+            String strMatchedCmd = null;
 
             int i = 0;
             boolean found = false;
@@ -30,8 +53,8 @@ public class OMUD_MMUD_ParseBlocks{
             }
 
             if (found)
-                strFoundCmdFull = _arrlCmdText.get(--i).text;
-            return strFoundCmdFull;
+                strMatchedCmd = _arrlCmdText.get(--i).text;
+            return strMatchedCmd;
         }
 
         public abstract int findBlockData(OMUD_Char.MMUD_Data mmd, StringBuilder sbTelnetData, int pos_offset);
@@ -222,11 +245,11 @@ public class OMUD_MMUD_ParseBlocks{
     // ------------------
     // OMUD_MMUD_ParseBlocks
     // ------------------
-    private OMUD_MMUD_ParseBlockBBSMenu _blkBBSMenu = null;
-    private ArrayList<ParseBlock>       _arrlBlocks = null;
-    private int _bpos_cmd_editor =      0;
-    private final int BPOS_STATLINE =   0;
-    private final int BPOS_CMDS_START = 1;
+    private OMUD_MMUD_ParseBlockBBSMenu             _blkBBSMenu = null;
+    private ArrayList<ParseBlock>                   _arrlBlocks = null;
+    private int _bpos_cmd_editor =                  0;
+    private static final    int BPOS_STATLINE =     0;
+    private final           int BPOS_CMDS_START =   1;
 
     public OMUD_MMUD_ParseBlocks(){
         _arrlBlocks = new ArrayList<ParseBlock>();
@@ -297,11 +320,11 @@ public class OMUD_MMUD_ParseBlocks{
 
     // findCmd(): main external call to match a user-input command (assumes passed in as lower-case)
     // returns true if at an in-game menu/editor (train stats, etc.)
-    public boolean findCmd(String strCmd, OMUD_Char.ActiveDataBlock ablk){
-        String strFoundCmdFull = null;
-        for (int i = BPOS_CMDS_START; i <= _bpos_cmd_editor && strFoundCmdFull == null; ++i)
-            if ((strFoundCmdFull = _arrlBlocks.get(i).matchCmdText(strCmd)) != null)
-                ablk.update(i, strFoundCmdFull, _arrlBlocks.get(i).getStatlineWait());
+    public boolean findCmd(String strNewCmd, ActiveParseBlock ablk){
+        String strMatchedCmd = null;
+        for (int i = BPOS_CMDS_START; i <= _bpos_cmd_editor && strMatchedCmd == null; ++i)
+            if ((strMatchedCmd = _arrlBlocks.get(i).matchCmdText(strNewCmd)) != null)
+                ablk.update(i, strMatchedCmd, _arrlBlocks.get(i).getStatlineWait());
         return ablk.block_pos == _bpos_cmd_editor;
     }
 }

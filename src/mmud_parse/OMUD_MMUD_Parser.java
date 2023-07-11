@@ -225,7 +225,7 @@ public class OMUD_MMUD_Parser {
                     _omme.requestMUDData(OMUD_MMUD_DataBlock.eBlockType.ROOM);
 
                 // reset active block with statline forced as last data type...
-                _mmd.ablk = new OMUD_Char.ActiveDataBlock(false, OMUD_MMUD_DataBlock.eBlockType.STATLINE);
+                _mmd.ablk = new OMUD_MMUD_ParseBlocks.ActiveParseBlock(false, OMUD_MMUD_DataBlock.eBlockType.STATLINE);
             }
 
             // ------------------
