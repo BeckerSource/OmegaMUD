@@ -18,7 +18,7 @@ public class OMUD_MMUD_DataItem{
         NECK,
         FINGER, // 2 slots
         WORN,
-        NOWHERE
+        ANYWHERE
     }
     
     public static final String[] EQUIP_SLOT_STRINGS = {
@@ -40,7 +40,7 @@ public class OMUD_MMUD_DataItem{
         "(neck)",
         "(finger)",
         "(worn)",
-        "(nowhere)"
+        "(anywhere)"
     };
 
     public int          id  =           -1;
