@@ -1,12 +1,12 @@
 public class OMUD_MMUD_DataItem{
     public static enum eEquipSlot{
-        NONE,       // not a real slot
+        NONE,   // not a real slot
         WEAPON,
         OFFHAND,
         HEAD,
         TORSO,
         ARMS,
-        WRIST,
+        WRIST,  // 2 slots
         HANDS,
         WAIST,
         LEGS,
@@ -16,7 +16,7 @@ public class OMUD_MMUD_DataItem{
         EYES,
         EARS,
         NECK,
-        FINGER,
+        FINGER, // 2 slots
         WORN,
         NOWHERE
     }
