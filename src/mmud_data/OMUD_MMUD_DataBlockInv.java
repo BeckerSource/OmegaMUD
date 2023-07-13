@@ -1,6 +1,20 @@
 import java.util.ArrayList;
 
 public class OMUD_MMUD_DataBlockInv extends OMUD_MMUD_DataBlock{
+    public enum eEncLevel{
+        NONE,
+        LIGHT,
+        MEDIUM,
+        HEAVY
+    }
+
+    public static final String[] ENC_LEVEL_STRINGS = {
+        "None",
+        "Light",
+        "Medium",
+        "Heavy"
+    };
+
     public int          wealth =        -1; // in copper
     public int          enc_cur =       -1;
     public int          enc_max =       -1;
